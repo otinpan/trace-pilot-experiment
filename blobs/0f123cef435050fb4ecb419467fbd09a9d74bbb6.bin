@@ -1,0 +1,14 @@
+enum Direction {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    DIR_SIZE
+};
+
+const Pos DIRS[DIR_SIZE] = {
+    Pos(-1, 0), // UP
+    Pos(1, 0),  // DOWN
+    Pos(0, -1), // LEFT
+    Pos(0, 1),  // RIGHT
+};
