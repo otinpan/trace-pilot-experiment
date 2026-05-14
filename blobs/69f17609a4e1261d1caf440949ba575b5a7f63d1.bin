@@ -1,0 +1,83 @@
+考え方はかなり良いです。
+ただ、この場合 std::map より array や switch の方がおすすめです。
+理由は：
+Direction は4種類固定
+だからです。
+
+今の設計
+C++enum Direction {  UP,  DOWN,  LEFT,  RIGHT,};std::map<Direction, Pos> dir;
+でも動きます。
+ただ：
+
+
+map は木構造
+
+
+毎回探索が入る
+
+
+少し重い
+
+
+です。
+
+おすすめ1: array
+かなり自然。
+C++enum Direction {    UP,    DOWN,    LEFT,    RIGHT,    DIR_SIZE};const Pos DIRS[DIR_SIZE] = {    Pos(-1, 0), // UP    Pos(1, 0),  // DOWN    Pos(0, -1), // LEFT    Pos(0, 1),  // RIGHT};
+使うとき：
+C++Pos np = p + DIRS[d];
+かなり速いです。
+
+おすすめ2: enum class
+普通の enum は：
+C++UP
+がグローバルに漏れます。
+なので最近は：
+C++enum class Direction {    UP,    DOWN,    LEFT,    RIGHT,};
+がおすすめ。
+
+enum class の場合
+C++const array<Pos, 4> DIRS = {    Pos(-1,0),    Pos(1,0),    Pos(0,-1),    Pos(0,1)};
+アクセス：
+C++DIRS[(int)Direction::UP]
+
+さらにおすすめ
+方向配列と方向文字列を対応させる。
+C++const array<char, 4> DIR_CHAR = {    'U',    'D',    'L',    'R'};
+すると：
+C++answer.push_back(DIR_CHAR[(int)d]);
+できる。
+
+Pos operator+ を作ると便利
+C++Pos operator+(const Pos& a, const Pos& b) {    return Pos(a.i + b.i, a.j + b.j);}
+すると：
+C++Pos np = p + DIRS[(int)d];
+が書けます。
+かなり綺麗。
+
+個人的おすすめ完成形
+C++enum class Direction {    UP,    DOWN,    LEFT,    RIGHT,};const array<Pos, 4> DIRS = {    Pos(-1,0),    Pos(1,0),    Pos(0,-1),    Pos(0,1),};const array<char, 4> DIR_CHAR = {    'U', 'D', 'L', 'R'};
+かなりAHCっぽいです。
+
+map が向くケース
+逆に map が向くのは：
+種類数が動的
+な場合。
+例えば：
+
+
+状態遷移表
+
+
+ラベル辞書
+
+
+重み付きグラフ
+
+
+など。
+
+この問題では
+方向は固定4種類なので、
+配列アクセス
+がベストに近いです。
