@@ -1,0 +1,1 @@
+answer.push_back(DIR_CHAR[(int)d]);
