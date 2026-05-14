@@ -1,0 +1,1 @@
+Pos np = p + DIRS[(int)d];
