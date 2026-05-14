@@ -1,0 +1,6 @@
+const array<char, 4> DIR_CHAR = {
+    'U',
+    'D',
+    'L',
+    'R'
+};
