@@ -1,0 +1,74 @@
+===================================================================
+--- common_test.cpp (before)	snapshot
++++ common_test.cpp (after)	create
+@@ -0,0 +1,70 @@
++#include <cassert>
++
++#include "common.h"
++
++void test_pos_constructor_and_equality() {
++    const Pos pos(2, 3);
++    const Pos same(2, 3);
++    const Pos different_i(1, 3);
++    const Pos different_j(2, 4);
++
++    assert(pos.i == 2);
++    assert(pos.j == 3);
++    assert(pos == same);
++    assert(!(pos != same));
++    assert(pos != different_i);
++    assert(pos != different_j);
++}
++
++void test_pos_addition() {
++    const Pos lhs(4, 5);
++    const Pos rhs(-2, 3);
++
++    const Pos result = lhs + rhs;
++    assert(result == Pos(2, 8));
++}
++
++void test_pos_subtraction() {
++    const Pos lhs(4, 5);
++    const Pos rhs(1, 7);
++
++    const Pos result = lhs - rhs;
++    assert(result == Pos(3, -2));
++}
++
++void test_segment_constructor() {
++    const Segment segment(Pos(6, 1), 4);
++
++    assert(segment.pos == Pos(6, 1));
++    assert(segment.color == 4);
++}
++
++void test_color_constants() {
++    assert(EMPTY == 0);
++    assert(OUT_OF_BOUND == -1);
++}
++
++void test_direction_tables() {
++    assert(DIRS.size() == 4);
++    assert(OUTPUT_DIR.size() == 4);
++
++    assert(DIRS[static_cast<int>(Direction::UP)] == Pos(-1, 0));
++    assert(DIRS[static_cast<int>(Direction::DOWN)] == Pos(1, 0));
++    assert(DIRS[static_cast<int>(Direction::LEFT)] == Pos(0, -1));
++    assert(DIRS[static_cast<int>(Direction::RIGHT)] == Pos(0, 1));
++
++    assert(OUTPUT_DIR[static_cast<int>(Direction::UP)] == 'U');
++    assert(OUTPUT_DIR[static_cast<int>(Direction::DOWN)] == 'D');
++    assert(OUTPUT_DIR[static_cast<int>(Direction::LEFT)] == 'L');
++    assert(OUTPUT_DIR[static_cast<int>(Direction::RIGHT)] == 'R');
++}
++
++int main() {
++    test_pos_constructor_and_equality();
++    test_pos_addition();
++    test_pos_subtraction();
++    test_segment_constructor();
++    test_color_constants();
++    test_direction_tables();
++    return 0;
++}
