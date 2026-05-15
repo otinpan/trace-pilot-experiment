@@ -1,0 +1,4 @@
+struct Segment {
+    Pos pos;
+    int color;
+};
