@@ -1,0 +1,1 @@
+Add a new test suite named 'snake_test' and update the testing framework to include its performance data, also fix an error message in 'snake_test.cpp' to display expected and actual positions and colors correctly.
