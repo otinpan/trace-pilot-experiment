@@ -1,5 +1,6 @@
 #pragma once
 #include<iostream>
+#include<vector>
 
 #include"common.h"
 #include"stage.h"
@@ -10,8 +11,11 @@ class State{
     State(Stage stage,Snake snake);
     ~State();
 
+    const Stage& stage() const {return stage_;}
+    const Snake& snake() const {return snake_;}
+
     bool apply(Direction dir);
   private:
-    class Stage stage_;
-    class Snake snake_;
+    Stage stage_;
+    Snake snake_;
 };

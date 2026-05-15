@@ -1,0 +1,98 @@
+// @trace-pilot f5c5f8e270a6e5c70339e7f74c99a5e9f2b50917
+#include <cassert>
+#include <vector>
+
+#include "stage.h"
+
+namespace {
+
+std::vector<std::vector<int>> makeGrid() {
+    return {
+        {1, 2, 0},
+        {3, 0, 4},
+        {0, 5, 6},
+    };
+}
+
+void test_check_in_stage() {
+    const Stage stage(3, makeGrid());
+
+    assert(stage.checkInStage(Pos(0, 0)));
+    assert(stage.checkInStage(Pos(2, 2)));
+    assert(!stage.checkInStage(Pos(-1, 0)));
+    assert(!stage.checkInStage(Pos(0, -1)));
+    assert(!stage.checkInStage(Pos(3, 0)));
+    assert(!stage.checkInStage(Pos(0, 3)));
+}
+
+void test_remove_food_returns_value_and_clears_cell() {
+    Stage stage(3, makeGrid());
+
+    assert(stage.removeFood(Pos(0, 1)) == 2);
+    assert(stage.removeFood(Pos(0, 1)) == EMPTY);
+    assert(stage.removeFood(Pos(1, 1)) == EMPTY);
+}
+
+void test_remove_food_out_of_bounds() {
+    Stage stage(3, makeGrid());
+
+    assert(stage.removeFood(Pos(-1, 0)) == OUT_OF_BOUND);
+    assert(stage.removeFood(Pos(3, 2)) == OUT_OF_BOUND);
+}
+
+void test_add_food_writes_color() {
+    Stage stage(3, makeGrid());
+
+    assert(stage.addFood(Segment(Pos(1, 1), 7)));
+    assert(stage.removeFood(Pos(1, 1)) == 7);
+
+    assert(stage.addFood(Segment(Pos(0, 0), 8)));
+    assert(stage.removeFood(Pos(0, 0)) == 8);
+}
+
+void test_add_food_rejects_out_of_bounds() {
+    Stage stage(3, makeGrid());
+
+    assert(!stage.addFood(Segment(Pos(3, 1), 9)));
+    assert(stage.removeFood(Pos(2, 1)) == 5);
+}
+
+void test_add_foods_writes_all_segments() {
+    Stage stage(3, makeGrid());
+    const std::vector<Segment> foods = {
+        Segment(Pos(0, 2), 7),
+        Segment(Pos(1, 1), 8),
+        Segment(Pos(2, 0), 9),
+    };
+
+    assert(stage.addFoods(foods));
+    assert(stage.removeFood(Pos(0, 2)) == 7);
+    assert(stage.removeFood(Pos(1, 1)) == 8);
+    assert(stage.removeFood(Pos(2, 0)) == 9);
+}
+
+void test_add_foods_returns_false_after_partial_write_when_invalid_exists() {
+    Stage stage(3, makeGrid());
+    const std::vector<Segment> foods = {
+        Segment(Pos(0, 2), 7),
+        Segment(Pos(3, 0), 8),
+        Segment(Pos(2, 0), 9),
+    };
+
+    assert(!stage.addFoods(foods));
+    assert(stage.removeFood(Pos(0, 2)) == 7);
+    assert(stage.removeFood(Pos(2, 0)) == EMPTY);
+}
+
+}  // namespace
+
+int main() {
+    test_check_in_stage();
+    test_remove_food_returns_value_and_clears_cell();
+    test_remove_food_out_of_bounds();
+    test_add_food_writes_color();
+    test_add_food_rejects_out_of_bounds();
+    test_add_foods_writes_all_segments();
+    test_add_foods_returns_false_after_partial_write_when_invalid_exists();
+    return 0;
+}

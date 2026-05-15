@@ -2,20 +2,21 @@
 #include"state.h"
 
 State::State(Stage state,Snake snake)
-  :stage_(state)
-  ,snake_(snake)
+  :stage_(std::move(state))
+  ,snake_(std::move(snake))
 {
   
 }
 
-Stage::~Stage(){
+State::~State(){
 
 }
 
 bool State::apply(Direction dir){
+  const Pos next_head=snake_.head().pos+DIRS[(int)dir];
+
   // 境界判定
-  const Pos next_head=snake_.head().pos;
-  if(stage_.checkInStage(next_head)){
+  if(!stage_.checkInStage(next_head)){
     return false;
   }
 
@@ -36,7 +37,7 @@ bool State::apply(Direction dir){
     snake_.grow(old_segment.pos,food);
   }
 
-  // 嚙みちぎり判定
+  // 嚙みちぎり
   const std::vector<Segment> dropped=snake_.bite();
   stage_.addFoods(dropped);
 

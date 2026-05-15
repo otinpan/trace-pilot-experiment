@@ -39,7 +39,7 @@ void Snake::grow(Pos old_pos,Color food){
 }
 
 
-bool Snake::canMove(Direction dir){
+bool Snake::canMove(Direction dir) const{
   // 境界チェック
   const Pos head_pos=body_[0].pos+DIRS[(int)dir];
   if(head_pos.i<0 || head_pos.i>=stage_size_ ||
@@ -75,7 +75,6 @@ std::vector<Segment> Snake::bite(){
     dropped.emplace_back(body_[i]);
   }
 
-  // 削除
   body_.erase(body_.begin()+iter+1,body_.end());
   return dropped;
 }

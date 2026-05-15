@@ -1,7 +1,8 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include <array>
+#include<iostream>
+#include<vector>
+#include<array>
+#include<map>
 
 using Color=int;
 constexpr Color EMPTY=0;
@@ -58,4 +59,11 @@ const std::array<Pos, 4> DIRS = {
     Pos(1,0),
     Pos(0,-1),
     Pos(0,1),
+};
+
+const std::array<char, 4> OUTPUT_DIR = {
+    'U',
+    'D',
+    'L',
+    'R',
 };

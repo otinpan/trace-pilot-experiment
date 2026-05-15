@@ -1,3 +1,9 @@
-/home/hase/atcoder/AHC063/build/CMakeFiles/main.dir
-/home/hase/atcoder/AHC063/build/CMakeFiles/edit_cache.dir
-/home/hase/atcoder/AHC063/build/CMakeFiles/rebuild_cache.dir
+/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/main.dir
+/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/common_test.dir
+/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/stage_test.dir
+/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/snake_test.dir
+/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/state_test.dir
+/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/submit_cpp.dir
+/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/test.dir
+/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/edit_cache.dir
+/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/rebuild_cache.dir

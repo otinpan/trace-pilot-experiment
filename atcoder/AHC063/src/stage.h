@@ -14,6 +14,8 @@ class Stage{
     bool addFood(Segment food);
     bool addFoods(const std::vector<Segment>& foods);
 
+    const int& size() const{return size_;}
+    const std::vector<std::vector<Color>>& food() const{return food_;}
   private:
     int size_;
     std::vector<std::vector<Color>> food_;

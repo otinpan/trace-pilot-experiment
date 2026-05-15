@@ -11,12 +11,12 @@ class Snake{
 
     const Segment& head() const{return body_[0];}
     const Segment& tail() const{return body_[body_.size()-1];}
+    const std::vector<Segment>& body() const{return body_;}
 
     // 動く直前のtailを返す
     Segment move(Direction dir);
 
-    // u-turnしないか
-    bool canMove(Direction dir);
+    bool canMove(Direction dir) const;
 
     // old_posに餌の色のsegmentを付ける
     void grow(Pos old_pos,Color food);

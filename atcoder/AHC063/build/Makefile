@@ -57,13 +57,23 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/hase/atcoder/AHC063
+CMAKE_SOURCE_DIR = /home/hase/trace-pilot-experiment/atcoder/AHC063
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/hase/atcoder/AHC063/build
+CMAKE_BINARY_DIR = /home/hase/trace-pilot-experiment/atcoder/AHC063/build
 
 #=============================================================================
 # Targets provided globally by CMake.
+
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -87,9 +97,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/hase/atcoder/AHC063/build/CMakeFiles /home/hase/atcoder/AHC063/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles /home/hase/trace-pilot-experiment/atcoder/AHC063/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/hase/atcoder/AHC063/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -129,6 +139,98 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+#=============================================================================
+# Target rules for targets named common_test
+
+# Build rule for target.
+common_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 common_test
+.PHONY : common_test
+
+# fast build rule for target.
+common_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/common_test.dir/build.make CMakeFiles/common_test.dir/build
+.PHONY : common_test/fast
+
+#=============================================================================
+# Target rules for targets named stage_test
+
+# Build rule for target.
+stage_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 stage_test
+.PHONY : stage_test
+
+# fast build rule for target.
+stage_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stage_test.dir/build.make CMakeFiles/stage_test.dir/build
+.PHONY : stage_test/fast
+
+#=============================================================================
+# Target rules for targets named snake_test
+
+# Build rule for target.
+snake_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 snake_test
+.PHONY : snake_test
+
+# fast build rule for target.
+snake_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/snake_test.dir/build.make CMakeFiles/snake_test.dir/build
+.PHONY : snake_test/fast
+
+#=============================================================================
+# Target rules for targets named state_test
+
+# Build rule for target.
+state_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 state_test
+.PHONY : state_test
+
+# fast build rule for target.
+state_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/build
+.PHONY : state_test/fast
+
+#=============================================================================
+# Target rules for targets named submit_cpp
+
+# Build rule for target.
+submit_cpp: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 submit_cpp
+.PHONY : submit_cpp
+
+# fast build rule for target.
+submit_cpp/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/submit_cpp.dir/build.make CMakeFiles/submit_cpp.dir/build
+.PHONY : submit_cpp/fast
+
+src/logger.o: src/logger.cpp.o
+.PHONY : src/logger.o
+
+# target to build an object file
+src/logger.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/logger.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/logger.cpp.o
+.PHONY : src/logger.cpp.o
+
+src/logger.i: src/logger.cpp.i
+.PHONY : src/logger.i
+
+# target to preprocess a source file
+src/logger.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/logger.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/logger.cpp.i
+.PHONY : src/logger.cpp.i
+
+src/logger.s: src/logger.cpp.s
+.PHONY : src/logger.s
+
+# target to generate assembly for a file
+src/logger.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/logger.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/logger.cpp.s
+.PHONY : src/logger.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -153,6 +255,213 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/simulator.o: src/simulator.cpp.o
+.PHONY : src/simulator.o
+
+# target to build an object file
+src/simulator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/simulator.cpp.o
+.PHONY : src/simulator.cpp.o
+
+src/simulator.i: src/simulator.cpp.i
+.PHONY : src/simulator.i
+
+# target to preprocess a source file
+src/simulator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/simulator.cpp.i
+.PHONY : src/simulator.cpp.i
+
+src/simulator.s: src/simulator.cpp.s
+.PHONY : src/simulator.s
+
+# target to generate assembly for a file
+src/simulator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/simulator.cpp.s
+.PHONY : src/simulator.cpp.s
+
+src/snake.o: src/snake.cpp.o
+.PHONY : src/snake.o
+
+# target to build an object file
+src/snake.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/snake.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/snake_test.dir/build.make CMakeFiles/snake_test.dir/src/snake.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/snake.cpp.o
+.PHONY : src/snake.cpp.o
+
+src/snake.i: src/snake.cpp.i
+.PHONY : src/snake.i
+
+# target to preprocess a source file
+src/snake.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/snake.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/snake_test.dir/build.make CMakeFiles/snake_test.dir/src/snake.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/snake.cpp.i
+.PHONY : src/snake.cpp.i
+
+src/snake.s: src/snake.cpp.s
+.PHONY : src/snake.s
+
+# target to generate assembly for a file
+src/snake.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/snake.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/snake_test.dir/build.make CMakeFiles/snake_test.dir/src/snake.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/snake.cpp.s
+.PHONY : src/snake.cpp.s
+
+src/stage.o: src/stage.cpp.o
+.PHONY : src/stage.o
+
+# target to build an object file
+src/stage.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/stage.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stage_test.dir/build.make CMakeFiles/stage_test.dir/src/stage.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/stage.cpp.o
+.PHONY : src/stage.cpp.o
+
+src/stage.i: src/stage.cpp.i
+.PHONY : src/stage.i
+
+# target to preprocess a source file
+src/stage.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/stage.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stage_test.dir/build.make CMakeFiles/stage_test.dir/src/stage.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/stage.cpp.i
+.PHONY : src/stage.cpp.i
+
+src/stage.s: src/stage.cpp.s
+.PHONY : src/stage.s
+
+# target to generate assembly for a file
+src/stage.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/stage.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stage_test.dir/build.make CMakeFiles/stage_test.dir/src/stage.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/stage.cpp.s
+.PHONY : src/stage.cpp.s
+
+src/state.o: src/state.cpp.o
+.PHONY : src/state.o
+
+# target to build an object file
+src/state.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/state.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/state.cpp.o
+.PHONY : src/state.cpp.o
+
+src/state.i: src/state.cpp.i
+.PHONY : src/state.i
+
+# target to preprocess a source file
+src/state.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/state.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/state.cpp.i
+.PHONY : src/state.cpp.i
+
+src/state.s: src/state.cpp.s
+.PHONY : src/state.s
+
+# target to generate assembly for a file
+src/state.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/state.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/state.cpp.s
+.PHONY : src/state.cpp.s
+
+tests/common_test.o: tests/common_test.cpp.o
+.PHONY : tests/common_test.o
+
+# target to build an object file
+tests/common_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/common_test.dir/build.make CMakeFiles/common_test.dir/tests/common_test.cpp.o
+.PHONY : tests/common_test.cpp.o
+
+tests/common_test.i: tests/common_test.cpp.i
+.PHONY : tests/common_test.i
+
+# target to preprocess a source file
+tests/common_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/common_test.dir/build.make CMakeFiles/common_test.dir/tests/common_test.cpp.i
+.PHONY : tests/common_test.cpp.i
+
+tests/common_test.s: tests/common_test.cpp.s
+.PHONY : tests/common_test.s
+
+# target to generate assembly for a file
+tests/common_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/common_test.dir/build.make CMakeFiles/common_test.dir/tests/common_test.cpp.s
+.PHONY : tests/common_test.cpp.s
+
+tests/snake_test.o: tests/snake_test.cpp.o
+.PHONY : tests/snake_test.o
+
+# target to build an object file
+tests/snake_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/snake_test.dir/build.make CMakeFiles/snake_test.dir/tests/snake_test.cpp.o
+.PHONY : tests/snake_test.cpp.o
+
+tests/snake_test.i: tests/snake_test.cpp.i
+.PHONY : tests/snake_test.i
+
+# target to preprocess a source file
+tests/snake_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/snake_test.dir/build.make CMakeFiles/snake_test.dir/tests/snake_test.cpp.i
+.PHONY : tests/snake_test.cpp.i
+
+tests/snake_test.s: tests/snake_test.cpp.s
+.PHONY : tests/snake_test.s
+
+# target to generate assembly for a file
+tests/snake_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/snake_test.dir/build.make CMakeFiles/snake_test.dir/tests/snake_test.cpp.s
+.PHONY : tests/snake_test.cpp.s
+
+tests/stage_test.o: tests/stage_test.cpp.o
+.PHONY : tests/stage_test.o
+
+# target to build an object file
+tests/stage_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stage_test.dir/build.make CMakeFiles/stage_test.dir/tests/stage_test.cpp.o
+.PHONY : tests/stage_test.cpp.o
+
+tests/stage_test.i: tests/stage_test.cpp.i
+.PHONY : tests/stage_test.i
+
+# target to preprocess a source file
+tests/stage_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stage_test.dir/build.make CMakeFiles/stage_test.dir/tests/stage_test.cpp.i
+.PHONY : tests/stage_test.cpp.i
+
+tests/stage_test.s: tests/stage_test.cpp.s
+.PHONY : tests/stage_test.s
+
+# target to generate assembly for a file
+tests/stage_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stage_test.dir/build.make CMakeFiles/stage_test.dir/tests/stage_test.cpp.s
+.PHONY : tests/stage_test.cpp.s
+
+tests/state_test.o: tests/state_test.cpp.o
+.PHONY : tests/state_test.o
+
+# target to build an object file
+tests/state_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/tests/state_test.cpp.o
+.PHONY : tests/state_test.cpp.o
+
+tests/state_test.i: tests/state_test.cpp.i
+.PHONY : tests/state_test.i
+
+# target to preprocess a source file
+tests/state_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/tests/state_test.cpp.i
+.PHONY : tests/state_test.cpp.i
+
+tests/state_test.s: tests/state_test.cpp.s
+.PHONY : tests/state_test.s
+
+# target to generate assembly for a file
+tests/state_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/tests/state_test.cpp.s
+.PHONY : tests/state_test.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -161,10 +470,43 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
+	@echo "... submit_cpp"
+	@echo "... common_test"
 	@echo "... main"
+	@echo "... snake_test"
+	@echo "... stage_test"
+	@echo "... state_test"
+	@echo "... src/logger.o"
+	@echo "... src/logger.i"
+	@echo "... src/logger.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/simulator.o"
+	@echo "... src/simulator.i"
+	@echo "... src/simulator.s"
+	@echo "... src/snake.o"
+	@echo "... src/snake.i"
+	@echo "... src/snake.s"
+	@echo "... src/stage.o"
+	@echo "... src/stage.i"
+	@echo "... src/stage.s"
+	@echo "... src/state.o"
+	@echo "... src/state.i"
+	@echo "... src/state.s"
+	@echo "... tests/common_test.o"
+	@echo "... tests/common_test.i"
+	@echo "... tests/common_test.s"
+	@echo "... tests/snake_test.o"
+	@echo "... tests/snake_test.i"
+	@echo "... tests/snake_test.s"
+	@echo "... tests/stage_test.o"
+	@echo "... tests/stage_test.i"
+	@echo "... tests/stage_test.s"
+	@echo "... tests/state_test.o"
+	@echo "... tests/state_test.i"
+	@echo "... tests/state_test.s"
 .PHONY : help
 
 
