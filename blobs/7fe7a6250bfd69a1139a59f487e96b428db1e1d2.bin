@@ -1,0 +1,6 @@
+===================================================================
+--- compiler_depend.ts (before)	snapshot
++++ compiler_depend.ts (after)	create
+@@ -0,0 +1,2 @@
++# CMAKE generated file: DO NOT EDIT!
++# Timestamp file for compiler generated dependencies management for common_test.
