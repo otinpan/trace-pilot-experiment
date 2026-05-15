@@ -1,0 +1,22 @@
+===================================================================
+--- snake_test.cpp (before)	snapshot
++++ snake_test.cpp (after)	external
+@@ -1,18 +1,12 @@
+ #include <cassert>
+-#include <iostream>
+ #include <vector>
+ 
+ #include "snake.h"
+ 
+ namespace {
+ 
+ void assertSegment(const Segment& segment, const Pos& pos, Color color) {
+-    if (!(segment.pos == pos) || segment.color != color) {
+-        std::cerr << "expected pos=(" << pos.i << "," << pos.j << "), color=" << color
+-                  << " but got pos=(" << segment.pos.i << "," << segment.pos.j
+-                  << "), color=" << segment.color << "\n";
+-    }
+     assert(segment.pos == pos);
+     assert(segment.color == color);
+ }
+ 
