@@ -1,0 +1,202 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/tests/stage_test.cpp
+```diff
+===================================================================
+--- stage_test.cpp (before)	snapshot
++++ stage_test.cpp (after)	create
+@@ -0,0 +1,97 @@
++#include <cassert>
++#include <vector>
++
++#include "stage.h"
++
++namespace {
++
++std::vector<std::vector<int>> makeGrid() {
++    return {
++        {1, 2, 0},
++        {3, 0, 4},
++        {0, 5, 6},
++    };
++}
++
++void test_check_in_stage() {
++    const Stage stage(3, makeGrid());
++
++    assert(stage.checkInStage(Pos(0, 0)));
++    assert(stage.checkInStage(Pos(2, 2)));
++    assert(!stage.checkInStage(Pos(-1, 0)));
++    assert(!stage.checkInStage(Pos(0, -1)));
++    assert(!stage.checkInStage(Pos(3, 0)));
++    assert(!stage.checkInStage(Pos(0, 3)));
++}
++
++void test_remove_food_returns_value_and_clears_cell() {
++    Stage stage(3, makeGrid());
++
++    assert(stage.removeFood(Pos(0, 1)) == 2);
++    assert(stage.removeFood(Pos(0, 1)) == EMPTY);
++    assert(stage.removeFood(Pos(1, 1)) == EMPTY);
++}
++
++void test_remove_food_out_of_bounds() {
++    Stage stage(3, makeGrid());
++
++    assert(stage.removeFood(Pos(-1, 0)) == OUT_OF_BOUND);
++    assert(stage.removeFood(Pos(3, 2)) == OUT_OF_BOUND);
++}
++
++void test_add_food_writes_color() {
++    Stage stage(3, makeGrid());
++
++    assert(stage.addFood(Segment(Pos(1, 1), 7)));
++    assert(stage.removeFood(Pos(1, 1)) == 7);
++
++    assert(stage.addFood(Segment(Pos(0, 0), 8)));
++    assert(stage.removeFood(Pos(0, 0)) == 8);
++}
++
++void test_add_food_rejects_out_of_bounds() {
++    Stage stage(3, makeGrid());
++
++    assert(!stage.addFood(Segment(Pos(3, 1), 9)));
++    assert(stage.removeFood(Pos(2, 1)) == 5);
++}
++
++void test_add_foods_writes_all_segments() {
++    Stage stage(3, makeGrid());
++    const std::vector<Segment> foods = {
++        Segment(Pos(0, 2), 7),
++        Segment(Pos(1, 1), 8),
++        Segment(Pos(2, 0), 9),
++    };
++
++    assert(stage.addFoods(foods));
++    assert(stage.removeFood(Pos(0, 2)) == 7);
++    assert(stage.removeFood(Pos(1, 1)) == 8);
++    assert(stage.removeFood(Pos(2, 0)) == 9);
++}
++
++void test_add_foods_returns_false_after_partial_write_when_invalid_exists() {
++    Stage stage(3, makeGrid());
++    const std::vector<Segment> foods = {
++        Segment(Pos(0, 2), 7),
++        Segment(Pos(3, 0), 8),
++        Segment(Pos(2, 0), 9),
++    };
++
++    assert(!stage.addFoods(foods));
++    assert(stage.removeFood(Pos(0, 2)) == 7);
++    assert(stage.removeFood(Pos(2, 0)) == EMPTY);
++}
++
++}  // namespace
++
++int main() {
++    test_check_in_stage();
++    test_remove_food_returns_value_and_clears_cell();
++    test_remove_food_out_of_bounds();
++    test_add_food_writes_color();
++    test_add_food_rejects_out_of_bounds();
++    test_add_foods_writes_all_segments();
++    test_add_foods_returns_false_after_partial_write_when_invalid_exists();
++    return 0;
++}
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/CMakeLists.txt
+```diff
+===================================================================
+--- CMakeLists.txt (before)	snapshot
++++ CMakeLists.txt (after)	external
+@@ -22,4 +22,13 @@
+ 
+ set_target_properties(common_test PROPERTIES
+     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
+ )
++
++add_executable(stage_test tests/stage_test.cpp src/stage.cpp)
++target_include_directories(stage_test PRIVATE "${CMAKE_SOURCE_DIR}/src")
++
++add_test(NAME stage_test COMMAND stage_test)
++
++set_target_properties(stage_test PROPERTIES
++    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
++)
+
+```
+
+# Record 3: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/TargetDirectories.txt
+```diff
+===================================================================
+--- TargetDirectories.txt (before)	snapshot
++++ TargetDirectories.txt (after)	create
+@@ -0,0 +1,6 @@
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/main.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/common_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/stage_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/edit_cache.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/rebuild_cache.dir
+
+```
+
+# Record 4: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/stage_test.dir/compiler_depend.ts
+```diff
+===================================================================
+--- compiler_depend.ts (before)	snapshot
++++ compiler_depend.ts (after)	create
+@@ -0,0 +1,2 @@
++# CMAKE generated file: DO NOT EDIT!
++# Timestamp file for compiler generated dependencies management for stage_test.
+
+```
+
+# Record 5: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/stage_test.dir/link.txt
+```diff
+===================================================================
+--- link.txt (before)	snapshot
++++ link.txt (after)	create
+@@ -0,0 +1,1 @@
++/usr/bin/c++ CMakeFiles/stage_test.dir/tests/stage_test.cpp.o CMakeFiles/stage_test.dir/src/stage.cpp.o -o stage_test 
+
+```
+
+# Record 6: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/Progress/count.txt
+```diff
+===================================================================
+--- count.txt (before)	snapshot
++++ count.txt (after)	external
+@@ -0,0 +1,1 @@
++3
+
+```
+
+# Record 7: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/Testing/Temporary/CTestCostData.txt
+```diff
+===================================================================
+--- CTestCostData.txt (before)	snapshot
++++ CTestCostData.txt (after)	external
+@@ -1,2 +1,3 @@
+-common_test 1 0.00333459
++common_test 2 0.00282376
++stage_test 1 0.00633968
+ ---
+
+```
+
+`Stage` の公開挙動を確認して、`common_test` と同じ方針で `assert` ベースのユニットテストを追加します。まず実装の細部を見て、境界条件と返り値の契約を固めます。
+
+`Stage` は getter がないので、状態確認は `removeFood()` を通して行います。`addFoods()` は途中で盤外要素が来ると `false` を返しますが、それ以前の追加は巻き戻さない実装なので、その挙動も今の契約として固定します。
+
+テストを追加したので、`stage_test` をビルドして `ctest` まで通します。ここで落ちる場合は、期待値ではなく実装契約の読み違いを先に潰します。
+
+先ほどと同じで configure と build を並列に投げたため、ターゲット生成前にビルドが先走りました。生成は済んでいるので、そのままビルドと実行確認を順にやります。
+
+まだリンク中だったので実行ファイルがありませんでした。ビルド完了を待ってから `stage_test` と `ctest` を通します。
+
+`Stage` のユニットテストを追加しました。[tests/stage_test.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/tests/stage_test.cpp:1) で `checkInStage`、`removeFood`、`addFood`、`addFoods` の正常系と境界系を確認しています。`addFoods()` は途中に盤外要素があると `false` を返しつつ、それ以前の書き込みは残る実装なので、その現在の挙動もテストに固定しました。
+
+あわせて [CMakeLists.txt](/home/hase/trace-pilot-experiment/atcoder/AHC063/CMakeLists.txt:1) に `stage_test` ターゲットと `ctest` 登録を追加しています。検証は `cmake -S . -B build`、`cmake --build build --target stage_test`、`ctest --test-dir build --output-on-failure` で実施し、`common_test` と `stage_test` の両方が通っています。
+
+次は `snake.h` のテストに進めます。
