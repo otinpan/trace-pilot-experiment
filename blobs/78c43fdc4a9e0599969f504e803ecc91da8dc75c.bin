@@ -1,0 +1,176 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/tests/snake_test.cpp
+```diff
+===================================================================
+--- snake_test.cpp (before)	snapshot
++++ snake_test.cpp (after)	idle
+@@ -0,0 +1,133 @@
++#include <cassert>
++#include <vector>
++
++#include "snake.h"
++
++namespace {
++
++void assertSegment(const Segment& segment, const Pos& pos, Color color) {
++    assert(segment.pos == pos);
++    assert(segment.color == color);
++}
++
++void test_initial_state() {
++    const Snake snake(8);
++
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(4, 0), 1);
++    assertSegment(snake.tail(), Pos(0, 0), 1);
++
++    const std::vector<Segment>& body = snake.body();
++    assertSegment(body[0], Pos(4, 0), 1);
++    assertSegment(body[1], Pos(3, 0), 1);
++    assertSegment(body[2], Pos(2, 0), 1);
++    assertSegment(body[3], Pos(1, 0), 1);
++    assertSegment(body[4], Pos(0, 0), 1);
++}
++
++void test_can_move_checks_bounds_and_u_turn() {
++    Snake snake(8);
++
++    assert(!snake.canMove(Direction::UP));
++    assert(!snake.canMove(Direction::LEFT));
++    assert(snake.canMove(Direction::DOWN));
++    assert(snake.canMove(Direction::RIGHT));
++}
++
++void test_move_shifts_positions_and_returns_old_tail() {
++    Snake snake(8);
++
++    const Segment old_tail = snake.move(Direction::RIGHT);
++
++    assertSegment(old_tail, Pos(0, 0), 1);
++    assert(snake.size() == 5);
++
++    const std::vector<Segment>& body = snake.body();
++    assertSegment(body[0], Pos(4, 1), 1);
++    assertSegment(body[1], Pos(4, 0), 1);
++    assertSegment(body[2], Pos(3, 0), 1);
++    assertSegment(body[3], Pos(2, 0), 1);
++    assertSegment(body[4], Pos(1, 0), 1);
++}
++
++void test_grow_appends_new_tail_segment() {
++    Snake snake(8);
++    const Segment old_tail = snake.move(Direction::RIGHT);
++
++    snake.grow(old_tail.pos, 6);
++
++    assert(snake.size() == 6);
++    assertSegment(snake.tail(), Pos(0, 0), 6);
++}
++
++void test_grow_ignores_empty_and_out_of_bound_colors() {
++    Snake snake(8);
++    const size_t original_size = snake.size();
++
++    snake.grow(Pos(7, 7), EMPTY);
++    snake.grow(Pos(6, 6), OUT_OF_BOUND);
++
++    assert(snake.size() == original_size);
++    assertSegment(snake.tail(), Pos(0, 0), 1);
++}
++
++void test_bite_returns_empty_when_no_collision() {
++    Snake snake(8);
++    snake.move(Direction::RIGHT);
++
++    const std::vector<Segment> dropped = snake.bite();
++
++    assert(dropped.empty());
++    assert(snake.size() == 5);
++}
++
++void test_bite_ignores_collision_with_tail() {
++    Snake snake(8);
++    snake.move(Direction::RIGHT);
++    snake.move(Direction::UP);
++    snake.move(Direction::LEFT);
++
++    const std::vector<Segment> dropped = snake.bite();
++
++    assert(dropped.empty());
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(3, 0), 1);
++    assertSegment(snake.tail(), Pos(3, 0), 1);
++}
++
++void test_bite_drops_from_first_non_tail_collision_index() {
++    Snake snake(8);
++
++    const Segment old_tail = snake.move(Direction::RIGHT);
++    snake.grow(old_tail.pos, 2);
++    snake.move(Direction::UP);
++    snake.move(Direction::LEFT);
++
++    const std::vector<Segment> dropped = snake.bite();
++
++    assert(dropped.size() == 2);
++    assertSegment(dropped[0], Pos(3, 0), 1);
++    assertSegment(dropped[1], Pos(2, 0), 2);
++
++    assert(snake.size() == 5);
++    const std::vector<Segment>& body = snake.body();
++    assertSegment(body[0], Pos(3, 0), 1);
++    assertSegment(body[1], Pos(3, 1), 1);
++    assertSegment(body[2], Pos(4, 1), 1);
++    assertSegment(body[3], Pos(4, 0), 1);
++    assertSegment(body[4], Pos(3, 0), 1);
++}
++
++}  // namespace
++
++int main() {
++    test_initial_state();
++    test_can_move_checks_bounds_and_u_turn();
++    test_move_shifts_positions_and_returns_old_tail();
++    test_grow_appends_new_tail_segment();
++    test_grow_ignores_empty_and_out_of_bound_colors();
++    test_bite_returns_empty_when_no_collision();
++    test_bite_ignores_collision_with_tail();
++    test_bite_drops_from_first_non_tail_collision_index();
++    return 0;
++}
+\ No newline at end of file
+
+```
+
+`Snake` は状態遷移が多いので、まず実装を読んで初期配置・移動・成長・噛みちぎりの契約を整理してから、公開 API 単位で固定します。既存テストと同じく依存追加なしで進めます。
+
+`Snake::bite()` は仕様としてはかなり癖があり、現実装では「末尾衝突は噛みちぎり扱いしない」「衝突した部位自体は body に残したまま dropped にも含める」挙動です。今回はその実装契約をそのまま固定するテストにします。
+
+テスト追加は終わったので、`snake_test` をビルドして `ctest` まで確認します。もし落ちれば、`bite()` 周りの期待値を実装に合わせて調整します。
+
+また configure と build の競合で先走りました。生成は通っているので、ここからは順にビルドして実行します。
+
+ビルドエラーは `canMove()` が `const` ではないのに、テスト側で `const Snake` にしていた点だけです。実装の const 性は変えず、テストを合わせます。
+
+修正は小さいので、そのまま再ビルドして `snake_test` と全体の `ctest` を確認します。
+
+まだリンク完了前に実行側が走っただけです。ビルドを最後まで待ってから `snake_test` と `ctest` を再実行します。
+
+落ちたのは `grow()` で追加した色が、`move()` のたびに末尾固定ではなくセグメントと一緒に前へ運ばれる点でした。`Snake` は「位置だけ更新して色は各セグメントに保持する」実装なので、`bite()` の期待色をそれに合わせます。
+
+期待値を直したので、`snake_test` 単体と全 `ctest` をもう一度通します。
+
+どのケースでずれているかを切り分けるため、テスト補助関数に最小限のデバッグ出力を入れます。失敗箇所が特定できたら、期待値だけ直して出力は消します。
+
+ビルドし直して `snake_test` 単体を見ます。これで期待値のずれが具体化します。
+
+単体では通りました。先ほどの失敗はビルド途中の古い実行ファイルを叩いていた影響だったので、全体の `ctest` を最新バイナリで確認したうえで、デバッグ出力は消します。
+
+`ctest` も通ったので、補助出力だけ消して最終状態を整えます。消した後にもう一度 `snake_test` を軽く確認します。
+
+`Snake` のユニットテストを追加しました。[tests/snake_test.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/tests/snake_test.cpp:1) で初期配置、`canMove()` の境界・Uターン判定、`move()` の位置シフトと戻り値、`grow()` の追加と無視条件、`bite()` の非衝突・尻尾衝突・非末尾衝突を確認しています。
+
+あわせて [CMakeLists.txt](/home/hase/trace-pilot-experiment/atcoder/AHC063/CMakeLists.txt:1) に `snake_test` ターゲットと `ctest` 登録を追加しました。`Snake` の実装は「色が位置ではなくセグメントに付いて移動する」ので、その挙動に合わせて期待値を固定しています。
+
+検証は `cmake --build build --target snake_test` と `./build/snake_test`、`ctest --test-dir build --output-on-failure` で実施し、`common_test`・`stage_test`・`snake_test` の全件が通っています。
+
+次は `state.h` のテストに進めます。
