@@ -1,0 +1,26 @@
+===================================================================
+--- gen_submit.py (before)	snapshot
++++ gen_submit.py (after)	external
+@@ -22,9 +22,10 @@
+     "src/simulator.cpp",
+     "src/main.cpp",
+ ]
+ 
+-LOCAL_INCLUDE_RE = re.compile(r'^\s*#include\s+"[^"]+"')
++LOCAL_INCLUDE_RE = re.compile(r'^\s*#include\s*"[^"]+"')
++SYSTEM_INCLUDE_RE = re.compile(r"^\s*#include\s*<[^>]+>")
+ 
+ 
+ def split_includes_and_body(source: Path) -> tuple[list[str], list[str]]:
+     includes: list[str] = []
+@@ -35,9 +36,9 @@
+         if stripped == "#pragma once":
+             continue
+         if LOCAL_INCLUDE_RE.match(line):
+             continue
+-        if stripped.startswith("#include <"):
++        if SYSTEM_INCLUDE_RE.match(line):
+             includes.append(line)
+             continue
+         body.append(line)
+ 
