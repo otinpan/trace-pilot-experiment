@@ -1,0 +1,240 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/tests/state_test.cpp
+```diff
+===================================================================
+--- state_test.cpp (before)	snapshot
++++ state_test.cpp (after)	create
+@@ -0,0 +1,98 @@
++#include <cassert>
++#include <vector>
++
++#include "state.h"
++
++namespace {
++
++void assertSegment(const Segment& segment, const Pos& pos, Color color) {
++    assert(segment.pos == pos);
++    assert(segment.color == color);
++}
++
++std::vector<std::vector<int>> emptyGrid() {
++    return std::vector<std::vector<int>>(8, std::vector<int>(8, 0));
++}
++
++void test_apply_rejects_out_of_bounds_move() {
++    State state(Stage(8, emptyGrid()), Snake(8));
++
++    assert(!state.apply(Direction::UP));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(4, 0), 1);
++    assertSegment(snake.tail(), Pos(0, 0), 1);
++}
++
++void test_apply_rejects_u_turn() {
++    State state(Stage(8, emptyGrid()), Snake(8));
++
++    assert(!state.apply(Direction::LEFT));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(4, 0), 1);
++    assertSegment(snake.body()[1], Pos(3, 0), 1);
++}
++
++void test_apply_moves_snake_without_food() {
++    State state(Stage(8, emptyGrid()), Snake(8));
++
++    assert(state.apply(Direction::RIGHT));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(4, 1), 1);
++    assertSegment(snake.body()[1], Pos(4, 0), 1);
++    assertSegment(snake.tail(), Pos(1, 0), 1);
++
++    Stage stage = state.stage();
++    assert(stage.removeFood(Pos(4, 1)) == EMPTY);
++}
++
++void test_apply_eats_food_and_grows() {
++    std::vector<std::vector<int>> grid = emptyGrid();
++    grid[4][1] = 6;
++    State state(Stage(8, grid), Snake(8));
++
++    assert(state.apply(Direction::RIGHT));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 6);
++    assertSegment(snake.head(), Pos(4, 1), 1);
++    assertSegment(snake.tail(), Pos(0, 0), 6);
++
++    Stage stage = state.stage();
++    assert(stage.removeFood(Pos(4, 1)) == EMPTY);
++}
++
++void test_apply_bites_and_drops_segments_as_food() {
++    std::vector<std::vector<int>> grid = emptyGrid();
++    grid[4][1] = 2;
++    State state(Stage(8, grid), Snake(8));
++
++    assert(state.apply(Direction::RIGHT));
++    assert(state.apply(Direction::UP));
++    assert(state.apply(Direction::LEFT));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(3, 0), 1);
++    assertSegment(snake.tail(), Pos(3, 0), 1);
++
++    Stage stage = state.stage();
++    assert(stage.removeFood(Pos(3, 0)) == 1);
++    assert(stage.removeFood(Pos(2, 0)) == 2);
++}
++
++}  // namespace
++
++int main() {
++    test_apply_rejects_out_of_bounds_move();
++    test_apply_rejects_u_turn();
++    test_apply_moves_snake_without_food();
++    test_apply_eats_food_and_grows();
++    test_apply_bites_and_drops_segments_as_food();
++    return 0;
++}
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/src/state.cpp
+```diff
+===================================================================
+--- state.cpp (before)	snapshot
++++ state.cpp (after)	idle
+@@ -7,16 +7,17 @@
+ {
+   
+ }
+ 
+-Stage::~Stage(){
++State::~State(){
+ 
+ }
+ 
+ bool State::apply(Direction dir){
++  const Pos next_head=snake_.head().pos+DIRS[(int)dir];
++
+   // 境界判定
+-  const Pos next_head=snake_.head().pos;
+-  if(stage_.checkInStage(next_head)){
++  if(!stage_.checkInStage(next_head)){
+     return false;
+   }
+ 
+   // 移動可能判定
+
+```
+
+# Record 3: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/CMakeLists.txt
+```diff
+===================================================================
+--- CMakeLists.txt (before)	snapshot
++++ CMakeLists.txt (after)	idle
+@@ -40,4 +40,13 @@
+ 
+ set_target_properties(snake_test PROPERTIES
+     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
+ )
++
++add_executable(state_test tests/state_test.cpp src/state.cpp src/stage.cpp src/snake.cpp)
++target_include_directories(state_test PRIVATE "${CMAKE_SOURCE_DIR}/src")
++
++add_test(NAME state_test COMMAND state_test)
++
++set_target_properties(state_test PROPERTIES
++    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
++)
+
+```
+
+# Record 4: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/TargetDirectories.txt
+```diff
+===================================================================
+--- TargetDirectories.txt (before)	snapshot
++++ TargetDirectories.txt (after)	create
+@@ -0,0 +1,8 @@
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/main.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/common_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/stage_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/snake_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/state_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/edit_cache.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/rebuild_cache.dir
+
+```
+
+# Record 5: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/state_test.dir/compiler_depend.ts
+```diff
+===================================================================
+--- compiler_depend.ts (before)	snapshot
++++ compiler_depend.ts (after)	create
+@@ -0,0 +1,2 @@
++# CMAKE generated file: DO NOT EDIT!
++# Timestamp file for compiler generated dependencies management for state_test.
+
+```
+
+# Record 6: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/state_test.dir/link.txt
+```diff
+===================================================================
+--- link.txt (before)	snapshot
++++ link.txt (after)	create
+@@ -0,0 +1,1 @@
++/usr/bin/c++ CMakeFiles/state_test.dir/tests/state_test.cpp.o CMakeFiles/state_test.dir/src/state.cpp.o CMakeFiles/state_test.dir/src/stage.cpp.o CMakeFiles/state_test.dir/src/snake.cpp.o -o state_test 
+
+```
+
+# Record 7: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/Progress/count.txt
+```diff
+===================================================================
+--- count.txt (before)	snapshot
++++ count.txt (after)	external
+@@ -0,0 +1,1 @@
++5
+
+```
+
+# Record 8: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/Testing/Temporary/CTestCostData.txt
+```diff
+===================================================================
+--- CTestCostData.txt (before)	snapshot
++++ CTestCostData.txt (after)	external
+@@ -1,4 +1,5 @@
+-common_test 6 0.000482216
+-stage_test 5 0.000727881
+-snake_test 1 0.00298428
++common_test 7 0.000528748
++stage_test 6 0.000585242
++snake_test 2 0.00220914
++state_test 1 0.00513742
+ ---
+
+```
+
+`State` は `Stage` と `Snake` の統合境界なので、`apply()` が移動・食事・噛みちぎりをどう束ねているかを見てから、公開結果だけを固定します。成功/失敗と副作用の組み合わせを重点的に確認します。
+
+`state.cpp` を見ると、テスト追加前に実装修正が必要な箇所があります。`Stage::~Stage()` の重複定義と、`apply()` が次の頭位置ではなく現在位置を見ているため、現状のままだと `State` の正しいテストが成立しません。そこは最小修正してからテストを入れます。
+
+これから `state.cpp` の最小修正と `state_test` の追加を行います。修正範囲は `State::~State()` の誤定義修正と、`apply()` の次頭座標・食事判定の順序だけに絞ります。
+
+`state_test` を追加したので、`state.cpp` の修正込みでビルドと実行確認をします。ここは `bite()` 後の餌再配置まで見ているので、統合部分の齟齬があればこの段階で出ます。
+
+また configure と build の競合です。生成は済んでいるので、そのまま `state_test` を順にビルドして実行します。
+
+ビルド中なので完了を待ってから `state_test` と全体の `ctest` を通します。
+
+`State` のユニットテストを追加しました。[tests/state_test.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/tests/state_test.cpp:1) で `apply()` の盤外拒否、Uターン拒否、通常移動、食事による成長、噛みちぎり後の餌再配置まで確認しています。
+
+テストを成立させるために [src/state.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/state.cpp:1) も最小修正しました。内容は `State::~State()` の誤定義修正と、`apply()` が現在の頭ではなく「次の頭位置」で境界判定・餌取得を行うようにしたものです。あわせて [CMakeLists.txt](/home/hase/trace-pilot-experiment/atcoder/AHC063/CMakeLists.txt:1) に `state_test` を追加しています。
+
+検証は `./build/state_test` と `ctest --test-dir build --output-on-failure` で行い、`common_test`、`stage_test`、`snake_test`、`state_test` の全件が通っています。
