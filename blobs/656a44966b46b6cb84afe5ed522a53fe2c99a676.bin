@@ -1,0 +1,17 @@
+===================================================================
+--- CMakeLists.txt (before)	snapshot
++++ CMakeLists.txt (after)	idle
+@@ -40,4 +40,13 @@
+ 
+ set_target_properties(snake_test PROPERTIES
+     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
+ )
++
++add_executable(state_test tests/state_test.cpp src/state.cpp src/stage.cpp src/snake.cpp)
++target_include_directories(state_test PRIVATE "${CMAKE_SOURCE_DIR}/src")
++
++add_test(NAME state_test COMMAND state_test)
++
++set_target_properties(state_test PROPERTIES
++    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
++)

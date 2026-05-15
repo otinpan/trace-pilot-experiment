@@ -1,0 +1,24 @@
+===================================================================
+--- state.cpp (before)	snapshot
++++ state.cpp (after)	idle
+@@ -7,16 +7,17 @@
+ {
+   
+ }
+ 
+-Stage::~Stage(){
++State::~State(){
+ 
+ }
+ 
+ bool State::apply(Direction dir){
++  const Pos next_head=snake_.head().pos+DIRS[(int)dir];
++
+   // 境界判定
+-  const Pos next_head=snake_.head().pos;
+-  if(stage_.checkInStage(next_head)){
++  if(!stage_.checkInStage(next_head)){
+     return false;
+   }
+ 
+   // 移動可能判定
