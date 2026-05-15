@@ -1,0 +1,102 @@
+===================================================================
+--- state_test.cpp (before)	snapshot
++++ state_test.cpp (after)	create
+@@ -0,0 +1,98 @@
++#include <cassert>
++#include <vector>
++
++#include "state.h"
++
++namespace {
++
++void assertSegment(const Segment& segment, const Pos& pos, Color color) {
++    assert(segment.pos == pos);
++    assert(segment.color == color);
++}
++
++std::vector<std::vector<int>> emptyGrid() {
++    return std::vector<std::vector<int>>(8, std::vector<int>(8, 0));
++}
++
++void test_apply_rejects_out_of_bounds_move() {
++    State state(Stage(8, emptyGrid()), Snake(8));
++
++    assert(!state.apply(Direction::UP));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(4, 0), 1);
++    assertSegment(snake.tail(), Pos(0, 0), 1);
++}
++
++void test_apply_rejects_u_turn() {
++    State state(Stage(8, emptyGrid()), Snake(8));
++
++    assert(!state.apply(Direction::LEFT));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(4, 0), 1);
++    assertSegment(snake.body()[1], Pos(3, 0), 1);
++}
++
++void test_apply_moves_snake_without_food() {
++    State state(Stage(8, emptyGrid()), Snake(8));
++
++    assert(state.apply(Direction::RIGHT));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(4, 1), 1);
++    assertSegment(snake.body()[1], Pos(4, 0), 1);
++    assertSegment(snake.tail(), Pos(1, 0), 1);
++
++    Stage stage = state.stage();
++    assert(stage.removeFood(Pos(4, 1)) == EMPTY);
++}
++
++void test_apply_eats_food_and_grows() {
++    std::vector<std::vector<int>> grid = emptyGrid();
++    grid[4][1] = 6;
++    State state(Stage(8, grid), Snake(8));
++
++    assert(state.apply(Direction::RIGHT));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 6);
++    assertSegment(snake.head(), Pos(4, 1), 1);
++    assertSegment(snake.tail(), Pos(0, 0), 6);
++
++    Stage stage = state.stage();
++    assert(stage.removeFood(Pos(4, 1)) == EMPTY);
++}
++
++void test_apply_bites_and_drops_segments_as_food() {
++    std::vector<std::vector<int>> grid = emptyGrid();
++    grid[4][1] = 2;
++    State state(Stage(8, grid), Snake(8));
++
++    assert(state.apply(Direction::RIGHT));
++    assert(state.apply(Direction::UP));
++    assert(state.apply(Direction::LEFT));
++
++    const Snake& snake = state.snake();
++    assert(snake.size() == 5);
++    assertSegment(snake.head(), Pos(3, 0), 1);
++    assertSegment(snake.tail(), Pos(3, 0), 1);
++
++    Stage stage = state.stage();
++    assert(stage.removeFood(Pos(3, 0)) == 1);
++    assert(stage.removeFood(Pos(2, 0)) == 2);
++}
++
++}  // namespace
++
++int main() {
++    test_apply_rejects_out_of_bounds_move();
++    test_apply_rejects_u_turn();
++    test_apply_moves_snake_without_food();
++    test_apply_eats_food_and_grows();
++    test_apply_bites_and_drops_segments_as_food();
++    return 0;
++}
