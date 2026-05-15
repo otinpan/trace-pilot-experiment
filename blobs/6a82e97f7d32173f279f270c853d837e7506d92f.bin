@@ -1,0 +1,8 @@
+<environment_context>
+  <cwd>/home/hase/trace-pilot-experiment/atcoder/AHC063</cwd>
+  <shell>bash</shell>
+  <current_date>2026-05-15</current_date>
+  <timezone>Asia/Tokyo</timezone>
+</environment_context>
+
+README.mdに要件があります。各モジュールのunitテストをしたいです。まずcommon.hにある各構造体のテストを作れますか
