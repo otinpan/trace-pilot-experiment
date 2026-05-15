@@ -1,0 +1,12 @@
+===================================================================
+--- CTestCostData.txt (before)	snapshot
++++ CTestCostData.txt (after)	external
+@@ -1,4 +1,5 @@
+-common_test 6 0.000482216
+-stage_test 5 0.000727881
+-snake_test 1 0.00298428
++common_test 7 0.000528748
++stage_test 6 0.000585242
++snake_test 2 0.00220914
++state_test 1 0.00513742
+ ---
