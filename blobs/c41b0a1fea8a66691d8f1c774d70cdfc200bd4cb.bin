@@ -1,0 +1,597 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/tests/common_test.cpp
+```diff
+===================================================================
+--- common_test.cpp (before)	snapshot
++++ common_test.cpp (after)	create
+@@ -0,0 +1,70 @@
++#include <cassert>
++
++#include "common.h"
++
++void test_pos_constructor_and_equality() {
++    const Pos pos(2, 3);
++    const Pos same(2, 3);
++    const Pos different_i(1, 3);
++    const Pos different_j(2, 4);
++
++    assert(pos.i == 2);
++    assert(pos.j == 3);
++    assert(pos == same);
++    assert(!(pos != same));
++    assert(pos != different_i);
++    assert(pos != different_j);
++}
++
++void test_pos_addition() {
++    const Pos lhs(4, 5);
++    const Pos rhs(-2, 3);
++
++    const Pos result = lhs + rhs;
++    assert(result == Pos(2, 8));
++}
++
++void test_pos_subtraction() {
++    const Pos lhs(4, 5);
++    const Pos rhs(1, 7);
++
++    const Pos result = lhs - rhs;
++    assert(result == Pos(3, -2));
++}
++
++void test_segment_constructor() {
++    const Segment segment(Pos(6, 1), 4);
++
++    assert(segment.pos == Pos(6, 1));
++    assert(segment.color == 4);
++}
++
++void test_color_constants() {
++    assert(EMPTY == 0);
++    assert(OUT_OF_BOUND == -1);
++}
++
++void test_direction_tables() {
++    assert(DIRS.size() == 4);
++    assert(OUTPUT_DIR.size() == 4);
++
++    assert(DIRS[static_cast<int>(Direction::UP)] == Pos(-1, 0));
++    assert(DIRS[static_cast<int>(Direction::DOWN)] == Pos(1, 0));
++    assert(DIRS[static_cast<int>(Direction::LEFT)] == Pos(0, -1));
++    assert(DIRS[static_cast<int>(Direction::RIGHT)] == Pos(0, 1));
++
++    assert(OUTPUT_DIR[static_cast<int>(Direction::UP)] == 'U');
++    assert(OUTPUT_DIR[static_cast<int>(Direction::DOWN)] == 'D');
++    assert(OUTPUT_DIR[static_cast<int>(Direction::LEFT)] == 'L');
++    assert(OUTPUT_DIR[static_cast<int>(Direction::RIGHT)] == 'R');
++}
++
++int main() {
++    test_pos_constructor_and_equality();
++    test_pos_addition();
++    test_pos_subtraction();
++    test_segment_constructor();
++    test_color_constants();
++    test_direction_tables();
++    return 0;
++}
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/common_test.dir/compiler_depend.ts
+```diff
+===================================================================
+--- compiler_depend.ts (before)	snapshot
++++ compiler_depend.ts (after)	create
+@@ -0,0 +1,2 @@
++# CMAKE generated file: DO NOT EDIT!
++# Timestamp file for compiler generated dependencies management for common_test.
+
+```
+
+# Record 3: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/TargetDirectories.txt
+```diff
+===================================================================
+--- TargetDirectories.txt (before)	snapshot
++++ TargetDirectories.txt (after)	create
+@@ -0,0 +1,5 @@
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/main.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/common_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/edit_cache.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/rebuild_cache.dir
+
+```
+
+# Record 4: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/common_test.dir/link.txt
+```diff
+===================================================================
+--- link.txt (before)	snapshot
++++ link.txt (after)	create
+@@ -0,0 +1,1 @@
++/usr/bin/c++ CMakeFiles/common_test.dir/tests/common_test.cpp.o -o common_test 
+
+```
+
+# Record 5: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/Testing/Temporary/CTestCostData.txt
+```diff
+===================================================================
+--- CTestCostData.txt (before)	snapshot
++++ CTestCostData.txt (after)	external
+@@ -0,0 +1,2 @@
++common_test 1 0.00333459
++---
+
+```
+
+# Record 6: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/CMakeLists.txt
+```diff
+===================================================================
+--- CMakeLists.txt (before)	snapshot
++++ CMakeLists.txt (after)	external
+@@ -0,0 +1,25 @@
++cmake_minimum_required(VERSION 3.16)
++
++project(atcoder LANGUAGES CXX)
++
++set(CMAKE_CXX_STANDARD 17)
++set(CMAKE_CXX_STANDARD_REQUIRED ON)
++set(CMAKE_CXX_EXTENSIONS OFF)
++
++add_executable(main src/main.cpp)
++
++# Place the built executable in the repository's build directory.
++set_target_properties(main PROPERTIES
++    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
++)
++
++enable_testing()
++
++add_executable(common_test tests/common_test.cpp)
++target_include_directories(common_test PRIVATE "${CMAKE_SOURCE_DIR}/src")
++
++add_test(NAME common_test COMMAND common_test)
++
++set_target_properties(common_test PROPERTIES
++    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
++)
+
+```
+
+# Record 7: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/README.md
+```diff
+===================================================================
+--- README.md (before)	snapshot
++++ README.md (after)	idle
+@@ -1,5 +1,5 @@
+-// @trace-pilot 53e775ab1b7fdbc90c2e33e7940e59114d8cc722
++// @trace-pilot 3a2892d1b6a16a699672c8783d26adc44d88766a
+ # ウロボロス蛇シミュレーション問題 要件定義書
+ 
+ ## 1. 概要
+ 
+@@ -47,4 +47,401 @@
+ 
+ ```text
+ 0 <= i < N
+ 0 <= j < N
++```
++
++制約:
++
++| パラメータ | 範囲 |
++|---|---|
++| N | 8 ～ 16 |
++| C | 3 ～ 7 |
++
++---
++
++# 4. 蛇仕様
++
++## 4.1 蛇の構造
++
++長さ `k` の蛇は以下を持つ。
++
++### 座標列
++
++```text
++(i0,j0), (i1,j1), ..., (ik-1,jk-1)
++```
++
++### 色列
++
++```text
++c0, c1, ..., ck-1
++```
++
++---
++
++## 4.2 部位定義
++
++| インデックス | 部位 |
++|---|---|
++| 0 | 頭 |
++| 1 ～ k-2 | 胴体 |
++| k-1 | 尻尾 |
++
++---
++
++## 4.3 初期状態
++
++初期蛇:
++
++| 順番 | 座標 | 色 |
++|---|---|---|
++| 0 | (4,0) | 1 |
++| 1 | (3,0) | 1 |
++| 2 | (2,0) | 1 |
++| 3 | (1,0) | 1 |
++| 4 | (0,0) | 1 |
++
++初期長さ:
++
++```text
++5
++```
++
++---
++
++# 5. 餌仕様
++
++## 5.1 餌の属性
++
++各餌は以下を持つ。
++
++| 属性 | 内容 |
++|---|---|
++| 位置 | `(i,j)` |
++| 色 | `1 ～ C` |
++
++---
++
++## 5.2 餌数
++
++盤面上には:
++
++```text
++M - 5
++```
++
++個の餌が存在する。
++
++---
++
++# 6. ターン処理仕様
++
++1 ターンで以下を順番に処理する。
++
++---
++
++## 6.1 移動処理
++
++プレイヤーは方向 `d` を指定する。
++
++```text
++U D L R
++```
++
++### 移動後
++
++新しい頭:
++
++```text
++(i0', j0')
++```
++
++新しい蛇:
++
++```text
++(i0',j0'),
++(i0,j0),
++(i1,j1),
++...
++(i(k-2),j(k-2))
++```
++
++---
++
++## 6.2 禁止移動
++
++以下は禁止。
++
++### Uターン
++
++```text
++(i0',j0') == (i1,j1)
++```
++
++### 盤面外
++
++```text
++0 <= i < N
++0 <= j < N
++```
++
++を満たさない移動。
++
++---
++
++## 6.3 食事処理
++
++移動先に餌が存在する場合:
++
++- 蛇の長さ +1
++- 尻尾が伸びる
++- 新しい末尾色 = 餌色
++
++### 色列更新
++
++```text
++c0,c1,...,ck-1,c'
++```
++
++---
++
++## 6.4 噛みちぎり処理
++
++移動後に:
++
++```text
++head == body
++```
++
++となる場合発生。
++
++### 条件
++
++```text
++1 <= h <= k-2
++```
++
++### 処理内容
++
++蛇長:
++
++```text
++h + 1
++```
++
++に短縮。
++
++切断された部分は餌になる。
++
++---
++
++# 7. 入力仕様
++
++## 7.1 入力形式
++
++```text
++N M C
++d0 ... d(M-1)
++f00 ... f0(N-1)
++...
++f(N-1)0 ... f(N-1)(N-1)
++```
++
++---
++
++## 7.2 目標色列
++
++```text
++d0 ... d(M-1)
++```
++
++### 条件
++
++```text
++d0 = d1 = d2 = d3 = d4 = 1
++```
++
++---
++
++## 7.3 盤面情報
++
++```text
++f(i,j)
++```
++
++| 値 | 意味 |
++|---|---|
++| 0 | 餌なし |
++| 1～C | 色付き餌 |
++
++---
++
++# 8. 出力仕様
++
++## 8.1 出力形式
++
++各行に移動方向を出力。
++
++```text
++U
++D
++L
++R
++```
++
++---
++
++## 8.2 操作回数
++
++```text
++T <= 100000
++```
++
++---
++
++# 9. スコア仕様
++
++## 9.1 定義
++
++| 記号 | 意味 |
++|---|---|
++| T | 操作回数 |
++| k | 最終蛇長 |
++| E | 色不一致数 |
++
++---
++
++## 9.2 色誤差
++
++```text
++cp != dp
++```
++
++となる数。
++
++---
++
++## 9.3 スコア式
++
++```text
++Score = T + 10000 × (E + 2(M-k))
++```
++
++小さいほど高評価。
++
++---
++
++# 10. 制約
++
++| 項目 | 制約 |
++|---|---|
++| 最大ターン数 | 100000 |
++| N | 8 ～ 16 |
++| M | N²/4 ～ 3N²/4 |
++| C | 3 ～ 7 |
++
++---
++
++# 11. システム目的
++
++本システムは以下を目的とする。
++
++- 効率的な蛇移動戦略の探索
++- 色列最適化
++- 自己切断を利用した状態制御
++- 操作回数最小化
++
++---
++
++# 12. 想定されるアルゴリズム
++
++## 12.1 基本戦略
++
++- BFS
++- DFS
++- 貪欲法
++- Beam Search
++- 焼きなまし
++
++---
++
++## 12.2 重要な戦略
++
++### 餌取得順最適化
++
++目標色列に近づくよう取得。
++
++### 自己切断活用
++
++不要部分を切断。
++
++### 経路最適化
++
++移動コスト削減。
++
++---
++
++# 13. データ構造要件
++
++## 必須構造
++
++### Snake
++
++```cpp
++struct Snake {
++    vector<Segment> body;
++};
++```
++
++---
++
++### Segment
++
++```cpp
++struct Segment {
++    Pos pos;
++    int color;
++};
++```
++
++---
++
++### State
++
++```cpp
++struct State {
++    Snake snake;
++    vector<vector<int>> board;
++};
++```
++
++---
++
++# 14. シミュレーション要件
++
++シミュレータは以下を実装する必要がある。
++
++- 移動判定
++- 衝突判定
++- 餌取得
++- 自己切断
++- スコア計算
++- 状態更新
++
++---
++
++# 15. 開発上の注意点
++
++## パフォーマンス
++
++- 最大 100000 ターン
++- 高速状態更新が必要
++
++---
++
++## バグ要注意
++
++- Uターン判定
++- 尻尾共有状態
++- 自己切断時の餌再生成
++- 色列更新
+
+```
+
+README.mdの要件と `common.h` の内容を先に確認し、既存のテスト基盤があればそれに合わせて `common.h` の各構造体向けユニットテストを追加します。併せて、どこまでが public contract なのかを読み取ってから実装します。
+
+`common.h` はルートではなく `src/common.h` 配下でした。テストの組み込み方法も合わせて確認して、最小限の形で追加します。
+
+既存のテストフレームワークは入っていないので、今回は依存追加なしで `assert` ベースの小さなテスト実行ファイルを作るのが最も軽いです。`Pos`、`Segment`、`Direction` と定数配列の契約をそのまま固定する形で入れます。
+
+これから `CMakeLists.txt` にテストターゲットを追加し、`tests/common_test.cpp` を新規作成します。依存は増やさず、`common.h` の公開挙動だけを固定する内容にします。
+
+テストコードは追加しました。次に `common_test` をビルドして実行し、CMake の組み込み方に問題がないか確認します。
+
+`cmake --build` は configure と並列に走ったため、まだターゲット生成前に失敗しました。設定は通っているので、そのままビルドと実行確認をやり直します。
+
+ビルドはまだ完了待ちの状態でした。リンク完了を確認してから、実行ファイルを直接実行し、続けて `ctest` 側も通します。
+
+`common.h` 向けのユニットテストを追加しました。`Pos` の生成・加減算・比較、`Segment` の保持値、`EMPTY` / `OUT_OF_BOUND`、`Direction` と `DIRS` / `OUTPUT_DIR` の対応を固定しています。
+
+変更は [tests/common_test.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/tests/common_test.cpp:1) と [CMakeLists.txt](/home/hase/trace-pilot-experiment/atcoder/AHC063/CMakeLists.txt:1) です。`common_test` ターゲットと `ctest` 登録も入れました。
+
+検証は `cmake -S . -B build`、`cmake --build build --target common_test`、`ctest --test-dir build --output-on-failure` で実施し、通過しています。
+
+次は `stage.h` か `snake.h` のテストに進めます。
