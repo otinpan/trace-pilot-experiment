@@ -1,0 +1,17 @@
+===================================================================
+--- hill_climbing.cpp (before)	snapshot
++++ hill_climbing.cpp (after)	external
+@@ -1,5 +1,7 @@
+ #include"hill_climbing.h"
++#include<algorithm>
++#include<cmath>
+ #include"../timer.h"
+ 
+ HillClimbing::HillClimbing(const std::vector<Color>& ideal)
+   :Strategy(ideal)
+@@ -75,5 +77,4 @@
+ 
+ std::vector<char> HillClimbing::solveSearch(State& state,Logger& logger){
+   return {'a'};
+ }
+-
