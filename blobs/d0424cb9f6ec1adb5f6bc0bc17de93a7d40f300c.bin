@@ -1,0 +1,53 @@
+getTime() 単体なら common.h に置いても動きます。
+ただ、個人的には：
+Timer クラスを util.h / timer.h に分離
+がおすすめです。
+
+common.h に入れると
+例えば：
+C++#pragma once#include <chrono>inline double getTime() {    using namespace std::chrono;    static auto start =        high_resolution_clock::now();    auto now =        high_resolution_clock::now();    return duration<double>(now - start).count();}
+これは普通に使えます。
+
+inline が重要
+ヘッダに関数定義を書くなら：
+C++inline
+を付けます。
+
+ただし common.h が巨大化しやすい
+common.h は：
+PosDirectionColor
+など：
+本当に共通なもの
+だけにした方が整理しやすいです。
+
+おすすめ
+timer.h
+C++#pragma once#include <chrono>class Timer {public:    Timer() {        start_ =            std::chrono::high_resolution_clock::now();    }    double elapsed() const {        using namespace std::chrono;        auto now =            high_resolution_clock::now();        return duration<double>(            now - start_        ).count();    }private:    std::chrono::high_resolution_clock::time_point start_;};
+
+使い方
+C++#include "timer.h"Timer timer;while (timer.elapsed() < 1.95) {}
+
+なぜクラスが良い？
+複数Timer作れる
+C++Timer total;Timer local;
+
+start_time を隠蔽できる
+内部状態管理
+が綺麗。
+
+static 問題を避けられる
+getTime() の static start は：
+プログラム全体で1つ
+です。
+でも Timer クラスなら：
+各Timer独立
+になります。
+
+AHC上位勢でも多い
+かなり：
+C++Timer timer;
+形式が多いです。
+
+個人的おすすめ構成
+common.h    Pos    Direction    Colortimer.h    Timerlogger.hstate.hsnake.h...
+かなり綺麗です。
