@@ -1,0 +1,15 @@
+#include <chrono>
+
+const double TIME_LIMIT = 1.95;
+
+double getTime() {
+    using namespace std::chrono;
+
+    static auto start =
+        high_resolution_clock::now();
+
+    auto now =
+        high_resolution_clock::now();
+
+    return duration<double>(now - start).count();
+}
