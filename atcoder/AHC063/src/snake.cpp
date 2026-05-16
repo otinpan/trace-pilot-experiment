@@ -71,7 +71,7 @@ std::vector<Segment> Snake::bite(){
 
   // 餌追加
   std::vector<Segment> dropped;
-  for(int i=iter;i<body_.size();i++){
+  for(int i=iter+1;i<body_.size();i++){
     dropped.emplace_back(body_[i]);
   }
 

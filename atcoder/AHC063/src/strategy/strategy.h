@@ -22,6 +22,8 @@ class Strategy{
     Candidate createInitialCandidate(const State& state) const;
     Candidate createNextCandidate(const Candidate& current,Direction dir) const;
     Candidate createNextCandidateRandomly(const Candidate& current);
+
+    int countTotFood(const Candidate& cand);
     std::vector<Color> ideal_;
     int score(const State& state,size_t operation_count) const;
 

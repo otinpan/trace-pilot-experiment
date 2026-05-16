@@ -2,6 +2,7 @@
 #include"simulated_annealing.h"
 #include<algorithm>
 #include<cmath>
+#include<cassert>
 #include"../timer.h"
 
 // @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
@@ -10,11 +11,13 @@ SimulatedAnnealing::SimulatedAnnealing(
     ExperimentLogger& experiment_logger
 )
   :Strategy(ideal)
-// @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
+  // @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
   ,experiment_logger_(experiment_logger)
   ,rng_(0)
-  ,start_temp_(50000.0)
-  ,end_temp_(1.0)
+  // @trace-pilot d2354c8817ce16b96762184960760fb0ccfe23b4
+  //40000	10	92129	1.95002	2129	29	0
+  ,start_temp_(40000.0)
+  ,end_temp_(50.0)
 {
 
 }
@@ -51,6 +54,8 @@ std::vector<char> SimulatedAnnealing::solveRandomly(State& state,Logger& logger)
   int current_score=score(current.state,current.operations.size());
   int best_score=current_score;
 
+  int initial_counter=countTotFood(current);
+  logger.log("initial_counter: "+std::to_string(initial_counter));
   int accepted_step=0;
   while(timer.elapsed()<TIME_LIMIT){
     Candidate next=createNextCandidateRandomly(current);
@@ -67,11 +72,14 @@ std::vector<char> SimulatedAnnealing::solveRandomly(State& state,Logger& logger)
     accepted_step++;
     current=std::move(next);
     current_score=next_score;
-
+    int counter=countTotFood(current);
     logger.log("time: "+std::to_string(timer.elapsed()));
     logger.log("score: "+std::to_string(best_score));
     logger.log("m: "+std::to_string(ideal_.size())+", t: "+std::to_string(current.state.snake().size()));
     logger.log(current.state,accepted_step);
+    logger.log("current_counter: "+std::to_string(counter));
+
+    assert(counter==initial_counter);
 
     if(current_score<best_score){
       best=current;

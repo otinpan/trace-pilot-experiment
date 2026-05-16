@@ -37,6 +37,24 @@ Strategy::Candidate Strategy::createNextCandidateRandomly(
   return createNextCandidate(current,dir);
 }
 
+int Strategy::countTotFood(const Candidate& cand){
+  const Snake& snake=cand.state.snake();
+  const Stage& stage=cand.state.stage();
+
+  int snake_len=snake.size();
+  auto board=stage.food();
+
+  int res=snake_len;
+  for(const auto& row:board){
+    for(const auto& c:row){
+      if(c!=EMPTY){
+        res++;
+      }
+    }
+  }
+
+  return res;
+}
 
 
 std::vector<char> Strategy::solve(State& state,Logger& logger){
@@ -58,3 +76,4 @@ int Strategy::score(const State& state,size_t operation_count) const{
   }
   return static_cast<int>(operation_count)+10000*(error_count+2*(m-k));
 }
+

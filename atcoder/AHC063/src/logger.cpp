@@ -23,12 +23,14 @@ std::string Logger::renderBoard(const State& state) const{
   int n=stage.size();
 
   std::vector<std::string> board(n,std::string(n,'.'));
+  std::vector<std::string> food(n,std::string(n,'.'));
 
   for(int i=0;i<n;i++){
     for(int j=0;j<n;j++){
       Color c=stage.food()[i][j];
       if(c!=EMPTY){
         board[i][j]=char('0'+c);
+        food[i][j]=char('0'+c);
       }
     }
   }
@@ -45,6 +47,7 @@ std::string Logger::renderBoard(const State& state) const{
     s+=board[i];
     s+='\n';
   }
+
 
   s+="head: ("+std::to_string(snake.head().pos.i)+","+std::to_string(snake.head().pos.j)+")\n";
 

@@ -2,7 +2,6 @@
 #include<vector>
 
 #include"common.h"
-// @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
 #include"experiment_logger.h"
 #include"logger.h"
 #include"simulator.h"
@@ -32,7 +31,7 @@ int main() {
   }
 
   Logger logger("log.txt");
-// @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
+  // @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
   ExperimentLogger experiment_logger("experiment.csv");
 
   Snake snake(n);
@@ -40,8 +39,7 @@ int main() {
   
   State state(stage,snake);
 
-// @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
-  SimulatedAnnealing strategy(ideal,experiment_logger);
+  HillClimbing strategy(ideal);
 
   Simulator simulator(state,strategy,logger);
   std::vector<char> result=simulator.simulate();

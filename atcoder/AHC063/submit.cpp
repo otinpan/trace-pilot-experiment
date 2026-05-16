@@ -255,7 +255,7 @@ std::vector<Segment> Snake::bite(){
 
 
   std::vector<Segment> dropped;
-  for(int i=iter;i<body_.size();i++){
+  for(int i=iter+1;i<body_.size();i++){
     dropped.emplace_back(body_[i]);
   }
 
@@ -358,12 +358,14 @@ std::string Logger::renderBoard(const State& state) const{
   int n=stage.size();
 
   std::vector<std::string> board(n,std::string(n,'.'));
+  std::vector<std::string> food(n,std::string(n,'.'));
 
   for(int i=0;i<n;i++){
     for(int j=0;j<n;j++){
       Color c=stage.food()[i][j];
       if(c!=EMPTY){
         board[i][j]=char('0'+c);
+        food[i][j]=char('0'+c);
       }
     }
   }
@@ -380,6 +382,7 @@ std::string Logger::renderBoard(const State& state) const{
     s+=board[i];
     s+='\n';
   }
+
 
   s+="head: ("+std::to_string(snake.head().pos.i)+","+std::to_string(snake.head().pos.j)+")\n";
 
@@ -477,6 +480,8 @@ class Strategy{
     Candidate createInitialCandidate(const State& state) const;
     Candidate createNextCandidate(const Candidate& current,Direction dir) const;
     Candidate createNextCandidateRandomly(const Candidate& current);
+
+    int countTotFood(const Candidate& cand);
     std::vector<Color> ideal_;
     int score(const State& state,size_t operation_count) const;
 
@@ -522,6 +527,24 @@ Strategy::Candidate Strategy::createNextCandidateRandomly(
   return createNextCandidate(current,dir);
 }
 
+int Strategy::countTotFood(const Candidate& cand){
+  const Snake& snake=cand.state.snake();
+  const Stage& stage=cand.state.stage();
+
+  int snake_len=snake.size();
+  auto board=stage.food();
+
+  int res=snake_len;
+  for(const auto& row:board){
+    for(const auto& c:row){
+      if(c!=EMPTY){
+        res++;
+      }
+    }
+  }
+
+  return res;
+}
 
 
 std::vector<char> Strategy::solve(State& state,Logger& logger){
@@ -664,7 +687,6 @@ std::vector<char> HillClimbing::solveRandomly(State& state,Logger& logger){
   while(timer.elapsed()<TIME_LIMIT){
     Candidate next=createNextCandidateRandomly(current);
     const int new_score=score(next.state,next.operations.size());
-
     const double progress=timer.elapsed()/TIME_LIMIT;
     if(!shouldAccept(current_score,new_score,progress)){
       continue;
@@ -673,13 +695,13 @@ std::vector<char> HillClimbing::solveRandomly(State& state,Logger& logger){
     accepted_step++;
     current=std::move(next);
     current_score=new_score;
+    logger.log("time: "+std::to_string(timer.elapsed()));
+    logger.log("score: "+std::to_string(best_score));
+    logger.log(best.state,accepted_step);
 
     if(new_score<best_score){
       best=current;
       best_score=new_score;
-      logger.log("time: "+std::to_string(timer.elapsed()));
-      logger.log("score: "+std::to_string(best_score));
-      logger.log(best.state,accepted_step);
     }
   }
 
@@ -744,6 +766,7 @@ std::vector<char> HillClimbing::solveSearch(State& state,Logger& logger){
 class SimulatedAnnealing: public Strategy{
   public:
     SimulatedAnnealing(
+
         const std::vector<Color>& ideal,
         ExperimentLogger& experiment_logger
     );
@@ -752,9 +775,9 @@ class SimulatedAnnealing: public Strategy{
     std::vector<char> solve(State& state,Logger& logger) override;
 
   private:
-    Candidate createNextCandidateRandomly(const Candidate& current);
     std::vector<char> solveRandomly(State& state,Logger& logger);
     bool shouldAccept(int current_score,int new_score,double temperature);
+
 
     ExperimentLogger& experiment_logger_;
     std::mt19937 rng_;
@@ -768,29 +791,19 @@ SimulatedAnnealing::SimulatedAnnealing(
     ExperimentLogger& experiment_logger
 )
   :Strategy(ideal)
+
   ,experiment_logger_(experiment_logger)
   ,rng_(0)
-  ,start_temp_(15000.0)
-  ,end_temp_(1.0)
+
+
+  ,start_temp_(40000.0)
+  ,end_temp_(50.0)
 {
 
 }
 
 SimulatedAnnealing::~SimulatedAnnealing()=default;
 
-SimulatedAnnealing::Candidate SimulatedAnnealing::createNextCandidateRandomly(
-  const Candidate& current
-){
-  Direction dir;
-  while(true){
-    dir=static_cast<Direction>(rng_()%4);
-    if(current.state.snake().canMove(dir)){
-      break;
-    }
-  }
-
-  return createNextCandidate(current,dir);
-}
 
 bool SimulatedAnnealing::shouldAccept(
     int current_score,
@@ -821,6 +834,9 @@ std::vector<char> SimulatedAnnealing::solveRandomly(State& state,Logger& logger)
   int current_score=score(current.state,current.operations.size());
   int best_score=current_score;
 
+  int initial_counter=countTotFood(current);
+  logger.log("initial_counter: "+std::to_string(initial_counter));
+  int accepted_step=0;
   while(timer.elapsed()<TIME_LIMIT){
     Candidate next=createNextCandidateRandomly(current);
     const int next_score=score(next.state,next.operations.size());
@@ -833,21 +849,27 @@ std::vector<char> SimulatedAnnealing::solveRandomly(State& state,Logger& logger)
       continue;
     }
 
+    accepted_step++;
     current=std::move(next);
     current_score=next_score;
+    int counter=countTotFood(current);
+    logger.log("time: "+std::to_string(timer.elapsed()));
+    logger.log("score: "+std::to_string(best_score));
+    logger.log("m: "+std::to_string(ideal_.size())+", t: "+std::to_string(current.state.snake().size()));
+    logger.log(current.state,accepted_step);
+    logger.log("current_counter: "+std::to_string(counter));
+
+    assert(counter==initial_counter);
 
     if(current_score<best_score){
       best=current;
       best_score=current_score;
-      logger.log("time: "+std::to_string(timer.elapsed()));
-      logger.log("temp: "+std::to_string(temperature));
-      logger.log("score: "+std::to_string(best_score));
-      logger.log(best.state,best.operations.size());
     }
   }
 
   state=best.state;
   logger.log("final score: "+std::to_string(best_score));
+
   experiment_logger_.logSaResult(
       start_temp_,
       end_temp_,
@@ -919,6 +941,7 @@ int main() {
   }
 
   Logger logger("log.txt");
+
   ExperimentLogger experiment_logger("experiment.csv");
 
   Snake snake(n);
@@ -926,7 +949,7 @@ int main() {
 
   State state(stage,snake);
 
-  SimulatedAnnealing strategy(ideal,experiment_logger);
+  HillClimbing strategy(ideal);
 
   Simulator simulator(state,strategy,logger);
   std::vector<char> result=simulator.simulate();
