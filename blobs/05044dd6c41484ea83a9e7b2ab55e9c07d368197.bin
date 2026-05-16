@@ -1,0 +1,4 @@
+double temp =
+    start_temp
+    + (end_temp - start_temp)
+    * progress;
