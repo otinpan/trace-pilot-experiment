@@ -1,0 +1,25 @@
+#pragma once
+
+#include <chrono>
+
+class Timer {
+public:
+    Timer() {
+        start_ =
+            std::chrono::high_resolution_clock::now();
+    }
+
+    double elapsed() const {
+        using namespace std::chrono;
+
+        auto now =
+            high_resolution_clock::now();
+
+        return duration<double>(
+            now - start_
+        ).count();
+    }
+
+private:
+    std::chrono::high_resolution_clock::time_point start_;
+};
