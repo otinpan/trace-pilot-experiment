@@ -1,0 +1,28 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/simulated_annealing.cpp
+```diff
+===================================================================
+--- simulated_annealing.cpp (before)	snapshot
++++ simulated_annealing.cpp (after)	idle
+@@ -10,10 +10,10 @@
+ )
+   :Strategy(ideal)
+   ,debug_logger_(debug_logger)
+   ,rng_(0)
+-  ,start_temp_(15000.0)
+-  ,end_temp_(1.0)
++  ,start_temp_(200000.0)
++  ,end_temp_(1000.0)
+ {
+ 
+ }
+ 
+
+```
+
+温度だけを上げて挙動を見ます。まず `start_temp` を大きく上げ、終盤も完全凍結しすぎないよう `end_temp` も少し持たせてビルド確認します。
+
+定数だけ変えたので、そのままビルドを通します。必要なら続けて実行ログも見ます。
+
+`start_temp` と `end_temp` を上げました。[AHC063/src/strategy/simulated_annealing.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/simulated_annealing.cpp:10) で `15000 -> 200000`、`1 -> 1000` に変更しています。
+
+ビルドは `cmake --build AHC063/build -j2` で通っています。次はこの状態で一度実行して、`sa_log.txt` の `accept_rate` と `worse_accept_rate` が初期から中盤にかけてどの程度上がるかを見るのが次の確認です。
