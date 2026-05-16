@@ -1,0 +1,1 @@
+Implement a hill climbing search strategy for a snake game state to find the best sequence of moves within a time limit, returning the sequence of operations and logging progress.
