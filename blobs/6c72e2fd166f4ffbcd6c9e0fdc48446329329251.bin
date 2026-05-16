@@ -1,0 +1,355 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/hill_climbing.cpp
+```diff
+===================================================================
+--- hill_climbing.cpp (before)	snapshot
++++ hill_climbing.cpp (after)	external
+@@ -1,5 +1,7 @@
+ #include"hill_climbing.h"
++#include<algorithm>
++#include<cmath>
+ #include"../timer.h"
+ 
+ HillClimbing::HillClimbing(const std::vector<Color>& ideal)
+   :Strategy(ideal)
+@@ -75,5 +77,4 @@
+ 
+ std::vector<char> HillClimbing::solveSearch(State& state,Logger& logger){
+   return {'a'};
+ }
+-
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/Progress/count.txt
+```diff
+===================================================================
+--- count.txt (before)	snapshot
++++ count.txt (after)	external
+@@ -0,0 +1,1 @@
++24
+
+```
+
+# Record 3: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/log.txt
+```diff
+===================================================================
+--- log.txt (before)	snapshot
++++ log.txt (after)	external
+@@ -0,0 +1,299 @@
++turn = 0
++b.2.2...
++b.3..3.2
++b.2333..
++b..31..2
++b..2..13
++.232..3.
++.23.2.2.
++3..2....
++head: (4,0)
++
++start: time = 0.000000
++time: 0.000081
++score: 490004
++turn = 4
++..2.2...
++..3..3.2
++..2333..
++dbbb1..2
++bb.2..13
++.232..3.
++.23.2.2.
++3..2....
++head: (3,3)
++
++time: 0.000099
++score: 470005
++turn = 5
++..2.2...
++..3..3.2
++..2333..
++cbbb1..2
++db.b..13
++.232..3.
++.23.2.2.
++3..2....
++head: (4,3)
++
++time: 0.000145
++score: 460007
++turn = 7
++..2.2...
++..3..3.2
++..2333..
++.dbbb..2
++bc.bb.13
++.232..3.
++.23.2.2.
++3..2....
++head: (3,4)
++
++time: 0.000174
++score: 440009
++turn = 9
++..2.2...
++..3..3.2
++..233b..
++.bcdbb.2
++.d.bb.13
++.232..3.
++.23.2.2.
++3..2....
++head: (2,5)
++
++time: 0.000189
++score: 430010
++turn = 10
++..2.2...
++..3..b.2
++..233b..
++.dbcbb.2
++.d.db.13
++.232..3.
++.23.2.2.
++3..2....
++head: (1,5)
++
++time: 0.000216
++score: 410012
++turn = 12
++..2.bb..
++..3..b.2
++..233b..
++.cdddb.2
++...bc.13
++.232..3.
++.23.2.2.
++3..2....
++head: (0,4)
++
++time: 0.000244
++score: 400015
++turn = 15
++..2bbb..
++..3b.d.2
++..2b3c..
++...ddb.2
++...cd.13
++.232..3.
++.23.2.2.
++3..2....
++head: (2,3)
++
++time: 0.000284
++score: 390020
++turn = 20
++..2bdd..
++..3c.c.2
++..2d3d..
++...b.b.2
++...bbbb3
++.232..3.
++.23.2.2.
++3..2....
++head: (4,6)
++
++time: 0.000298
++score: 380021
++turn = 21
++..2ddc..
++..3b.d.2
++..2c3b..
++...d.d.2
++...bbbbb
++.232..3.
++.23.2.2.
++3..2....
++head: (4,7)
++
++time: 0.000313
++score: 370022
++turn = 22
++..2dcd..
++..3d.b.2
++..2b3d..
++...c.c.b
++...dbbbb
++.232..3.
++.23.2.2.
++3..2....
++head: (3,7)
++
++time: 0.000347
++score: 360026
++turn = 26
++..2dcc..
++..3b...b
++..2d3.bb
++...c..bb
++...ddbcd
++.232..3.
++.23.2.2.
++3..2....
++head: (1,7)
++
++time: 0.000404
++score: 340033
++turn = 33
++..2bbbdc
++..bb...b
++..2.3.dd
++......cd
++...dccdb
++.232..3.
++.23.2.2.
++3..2....
++head: (1,2)
++
++time: 0.000420
++score: 320034
++turn = 34
++..bbbdcb
++..bb...d
++..2.3.cd
++......db
++...cdccd
++.232..3.
++.23.2.2.
++3..2....
++head: (0,2)
++
++time: 0.044794
++score: 310074
++turn = 74
++.2..3132
++.2.....b
++.3..3.2b
++.......b
++.....dbb
++..3cdc3.
++..3ccbc.
++cdcccdd.
++head: (1,7)
++
++time: 0.044823
++score: 290075
++turn = 75
++.2..313b
++.2.....b
++.3..3.2b
++.......b
++.....cdb
++..3ccb3.
++..3cdcd.
++ccdcccd.
++head: (0,7)
++
++time: 0.044832
++score: 270076
++turn = 76
++.2..31bb
++.2.....b
++.3..3.2b
++.......b
++.....bcd
++..3ccc3.
++..3ccdd.
++dccddcc.
++head: (0,6)
++
++time: 0.044849
++score: 260077
++turn = 77
++.2..3bbb
++.2.....b
++.3..3.2b
++.......d
++.....cbc
++..3ccd3.
++..3dcdc.
++bdcccdc.
++head: (0,5)
++
++time: 0.044860
++score: 240078
++turn = 78
++.2..bbbb
++.2.....b
++.3..3.2d
++.......c
++.....dcb
++..3dcd3.
++..3cccc.
++dbdcccd.
++head: (0,4)
++
++time: 0.044882
++score: 230083
++turn = 83
++.bbbdcbc
++.2.bb..d
++.3..3.2d
++.......c
++.....cdc
++..3dbc3.
++..3cdcc.
++....ccd.
++head: (0,1)
++
++time: 0.044893
++score: 210084
++turn = 84
++.bbbcbcd
++.b.bd..d
++.3..3.2c
++.......c
++.....ccd
++..3cdc3.
++..3cbcd.
++....dcc.
++head: (1,1)
++
++time: 0.044923
++score: 200091
++turn = 91
++.cdddccc
++.bccc..c
++.3d.3.2d
++..bb...c
++..bb.bdc
++..b..d3.
++..3..cc.
++......d.
++head: (5,2)
++
++time: 0.044956
++score: 180099
++turn = 99
++.ccddbdc
++.cccc..c
++.bd.3.2d
++.bcc...d
++bbdd....
++bbc...3.
++dc3.....
++........
++head: (2,1)
++
++final score: 180099
+
+```
+
+評価の歪みと、空マスを跨ぐ探索不能の両方を直します。まず現状の戦略関連を読み切って、最小の修正で成立する形にまとめます。
+
+修正方針を固めました。評価関数に「候補手数」を渡せるようにした上で、`HillClimbing` は厳密 hill climbing ではなく「受理しつつ最良解を保持する」探索に変えます。
+
+ビルドが通るように必要なヘッダも合わせます。その後にコンパイルして挙動を見ます。
+
+ビルドは進行中です。通ったらサンプル入力で `log.txt` の変化まで確認します。
+
+コンパイルは通りました。次に `0000.txt` で実行して、改善ログが出るかを確認します。
+
+修正しました。評価関数に候補手数を反映するようにして、[`strategy.cpp`](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/strategy.cpp:10) / [`strategy.h`](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/strategy.h:18) に `score(state, operation_count)` を追加しました。これで `new_state` の評価時にも「1手増えるコスト」が入ります。
+
+同時に、[`hill_climbing.cpp`](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/hill_climbing.cpp:18) は厳密改善のみ受理する形をやめて、現在状態は確率的に受理しつつ、最良状態だけを別に保持する探索に変えました。これで空マスを跨ぐ準備手も進めるようになり、`log.txt` には改善が出たタイミングだけ記録されます。
+
+確認は通っています。`cmake --build build` は成功し、`tools/in/0000.txt` で実行すると `log.txt` に `score: 490004`, `470005` ... のような改善履歴が出て、標準出力にも操作列が出ることを確認しました。
