@@ -1,0 +1,448 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/src/experiment_logger.h
+```diff
+===================================================================
+--- experiment_logger.h (before)	snapshot
++++ experiment_logger.h (after)	create
+@@ -0,0 +1,21 @@
++#pragma once
++#include<fstream>
++#include<string>
++
++class ExperimentLogger{
++  public:
++    ExperimentLogger(const std::string& path);
++
++    void logSaResult(
++        double start_temp,
++        double end_temp,
++        int best_score,
++        double elapsed,
++        int operation_count,
++        int snake_size,
++        int seed
++    );
++
++  private:
++    std::ofstream ofs_;
++};
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/src/experiment_logger.cpp
+```diff
+===================================================================
+--- experiment_logger.cpp (before)	snapshot
++++ experiment_logger.cpp (after)	create
+@@ -0,0 +1,34 @@
++#include"experiment_logger.h"
++#include<filesystem>
++
++ExperimentLogger::ExperimentLogger(const std::string& path){
++  const bool exists=std::filesystem::exists(path);
++  const bool has_content=
++    exists && std::filesystem::is_regular_file(path) &&
++    std::filesystem::file_size(path)>0;
++
++  ofs_.open(path,std::ios::app);
++
++  if(!has_content){
++    ofs_<<"start_temp,end_temp,best_score,elapsed,operation_count,snake_size,seed\n";
++  }
++}
++
++void ExperimentLogger::logSaResult(
++    double start_temp,
++    double end_temp,
++    int best_score,
++    double elapsed,
++    int operation_count,
++    int snake_size,
++    int seed
++){
++  ofs_
++    <<start_temp<<","
++    <<end_temp<<","
++    <<best_score<<","
++    <<elapsed<<","
++    <<operation_count<<","
++    <<snake_size<<","
++    <<seed<<"\n";
++}
+
+```
+
+# Record 3: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/simulated_annealing.h
+```diff
+===================================================================
+--- simulated_annealing.h (before)	snapshot
++++ simulated_annealing.h (after)	external
+@@ -2,14 +2,16 @@
+ // 焼きなまし法
+ #pragma once
+ #include<random>
+ 
++#include"../experiment_logger.h"
+ #include"strategy.h"
+ 
+ class SimulatedAnnealing: public Strategy{
+   public:
+     SimulatedAnnealing(
+-        const std::vector<Color>& ideal
++        const std::vector<Color>& ideal,
++        ExperimentLogger& experiment_logger
+     );
+     ~SimulatedAnnealing() override;
+ 
+     std::vector<char> solve(State& state,Logger& logger) override;
+@@ -18,9 +20,9 @@
+     Candidate createNextCandidateRandomly(const Candidate& current);
+     std::vector<char> solveRandomly(State& state,Logger& logger);
+     bool shouldAccept(int current_score,int new_score,double temperature);
+ 
+-
++    ExperimentLogger& experiment_logger_;
+     std::mt19937 rng_;
+     double start_temp_;
+     double end_temp_;
+ };
+
+```
+
+# Record 4: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/src/main.cpp
+```diff
+===================================================================
+--- main.cpp (before)	snapshot
++++ main.cpp (after)	external
+@@ -1,8 +1,9 @@
+ #include<iostream>
+ #include<vector>
+ 
+ #include"common.h"
++#include"experiment_logger.h"
+ #include"logger.h"
+ #include"simulator.h"
+ #include"state.h"
+ #include"stage.h"
+@@ -29,15 +30,16 @@
+     }
+   }
+ 
+   Logger logger("log.txt");
++  ExperimentLogger experiment_logger("experiment.csv");
+ 
+   Snake snake(n);
+   Stage stage(n,food);
+   
+   State state(stage,snake);
+ 
+-  SimulatedAnnealing strategy(ideal);
++  SimulatedAnnealing strategy(ideal,experiment_logger);
+ 
+   Simulator simulator(state,strategy,logger);
+   std::vector<char> result=simulator.simulate();
+ 
+
+```
+
+# Record 5: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/CMakeLists.txt
+```diff
+===================================================================
+--- CMakeLists.txt (before)	snapshot
++++ CMakeLists.txt (after)	external
+@@ -11,8 +11,9 @@
+     src/snake.cpp
+     src/state.cpp
+     src/simulator.cpp
+     src/logger.cpp
++    src/experiment_logger.cpp
+     src/strategy/strategy.cpp
+     src/strategy/greedy.cpp
+     src/strategy/hill_climbing.cpp
+     src/strategy/simulated_annealing.cpp
+
+```
+
+# Record 6: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/simulated_annealing.cpp
+```diff
+===================================================================
+--- simulated_annealing.cpp (before)	snapshot
++++ simulated_annealing.cpp (after)	idle
+@@ -1,22 +1,25 @@
++// @trace-pilot e9e65d11e7593de7a47e0920c692b051eb3f1dc2
+ #include"simulated_annealing.h"
+ #include<algorithm>
+ #include<cmath>
+ #include"../timer.h"
+ 
+-SimulatedAnnealing::SimulatedAnnealing(const std::vector<Color>& ideal)
++SimulatedAnnealing::SimulatedAnnealing(
++    const std::vector<Color>& ideal,
++    ExperimentLogger& experiment_logger
++)
+   :Strategy(ideal)
++  ,experiment_logger_(experiment_logger)
+   ,rng_(0)
+   ,start_temp_(15000.0)
+   ,end_temp_(1.0)
+ {
+ 
+ }
+ 
+-// @trace-pilot e9e65d11e7593de7a47e0920c692b051eb3f1dc2
+ SimulatedAnnealing::~SimulatedAnnealing()=default;
+ 
+-// @trace-pilot e9e65d11e7593de7a47e0920c692b051eb3f1dc2
+ SimulatedAnnealing::Candidate SimulatedAnnealing::createNextCandidateRandomly(
+   const Candidate& current
+ ){
+   Direction dir;
+@@ -85,6 +88,15 @@
+   }
+ 
+   state=best.state;
+   logger.log("final score: "+std::to_string(best_score));
++  experiment_logger_.logSaResult(
++      start_temp_,
++      end_temp_,
++      best_score,
++      timer.elapsed(),
++      static_cast<int>(best.operations.size()),
++      static_cast<int>(best.state.snake().size()),
++      0
++  );
+   return best.operations;
+ }
+
+```
+
+# Record 7: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/scripts/gen_submit.py
+```diff
+===================================================================
+--- gen_submit.py (before)	snapshot
++++ gen_submit.py (after)	idle
+@@ -17,8 +17,10 @@
+     "src/state.h",
+     "src/state.cpp",
+     "src/logger.h",
+     "src/logger.cpp",
++    "src/experiment_logger.h",
++    "src/experiment_logger.cpp",
+     "src/timer.h",
+     "src/strategy/strategy.h",
+     "src/strategy/strategy.cpp",
+     "src/strategy/greedy.h",
+
+```
+
+# Record 8: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/CMakeRuleHashes.txt
+```diff
+===================================================================
+--- CMakeRuleHashes.txt (before)	snapshot
++++ CMakeRuleHashes.txt (after)	create
+@@ -0,0 +1,2 @@
++# Hashes of file build rules.
++12554f5a450e1ae00accd69c7a309648 CMakeFiles/submit_cpp
+
+```
+
+# Record 9: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/TargetDirectories.txt
+```diff
+===================================================================
+--- TargetDirectories.txt (before)	snapshot
++++ TargetDirectories.txt (after)	create
+@@ -0,0 +1,9 @@
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/main.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/common_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/stage_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/snake_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/state_test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/submit_cpp.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/test.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/edit_cache.dir
++/home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/rebuild_cache.dir
+
+```
+
+# Record 10: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/build/CMakeFiles/main.dir/link.txt
+```diff
+===================================================================
+--- link.txt (before)	snapshot
++++ link.txt (after)	create
+@@ -0,0 +1,1 @@
++/usr/bin/c++ CMakeFiles/main.dir/src/main.cpp.o CMakeFiles/main.dir/src/stage.cpp.o CMakeFiles/main.dir/src/snake.cpp.o CMakeFiles/main.dir/src/state.cpp.o CMakeFiles/main.dir/src/simulator.cpp.o CMakeFiles/main.dir/src/logger.cpp.o CMakeFiles/main.dir/src/experiment_logger.cpp.o CMakeFiles/main.dir/src/strategy/strategy.cpp.o CMakeFiles/main.dir/src/strategy/greedy.cpp.o CMakeFiles/main.dir/src/strategy/hill_climbing.cpp.o CMakeFiles/main.dir/src/strategy/simulated_annealing.cpp.o -o main 
+
+```
+
+# Record 11: file:///home/hase/trace-pilot-experiment/atcoder/AHC063/submit.cpp
+```diff
+===================================================================
+--- submit.cpp (before)	snapshot
++++ submit.cpp (after)	external
+@@ -7,8 +7,9 @@
+ #include <vector>
+ #include<cassert>
+ #include<fstream>
+ #include<string>
++#include<filesystem>
+ #include <chrono>
+ #include<random>
+ #include<algorithm>
+ #include<cmath>
+@@ -384,8 +385,60 @@
+ 
+   return s;
+ }
+ /* END src/logger.cpp */
++/* BEGIN src/experiment_logger.h */
++class ExperimentLogger{
++  public:
++    ExperimentLogger(const std::string& path);
++
++    void logSaResult(
++        double start_temp,
++        double end_temp,
++        int best_score,
++        double elapsed,
++        int operation_count,
++        int snake_size,
++        int seed
++    );
++
++  private:
++    std::ofstream ofs_;
++};
++/* END src/experiment_logger.h */
++/* BEGIN src/experiment_logger.cpp */
++ExperimentLogger::ExperimentLogger(const std::string& path){
++  const bool exists=std::filesystem::exists(path);
++  const bool has_content=
++    exists && std::filesystem::is_regular_file(path) &&
++    std::filesystem::file_size(path)>0;
++
++  ofs_.open(path,std::ios::app);
++
++  if(!has_content){
++    ofs_<<"start_temp,end_temp,best_score,elapsed,operation_count,snake_size,seed\n";
++  }
++}
++
++void ExperimentLogger::logSaResult(
++    double start_temp,
++    double end_temp,
++    int best_score,
++    double elapsed,
++    int operation_count,
++    int snake_size,
++    int seed
++){
++  ofs_
++    <<start_temp<<","
++    <<end_temp<<","
++    <<best_score<<","
++    <<elapsed<<","
++    <<operation_count<<","
++    <<snake_size<<","
++    <<seed<<"\n";
++}
++/* END src/experiment_logger.cpp */
+ /* BEGIN src/timer.h */
+ class Timer {
+ public:
+     Timer() {
+@@ -488,9 +541,8 @@
+       error_count++;
+     }
+   }
+   return static_cast<int>(operation_count)+10000*(error_count+2*(m-k));
+-
+ }
+ /* END src/strategy/strategy.cpp */
+ /* BEGIN src/strategy/greedy.h */
+ class Greedy: public Strategy{
+@@ -690,9 +742,12 @@
+ /* END src/strategy/hill_climbing.cpp */
+ /* BEGIN src/strategy/simulated_annealing.h */
+ class SimulatedAnnealing: public Strategy{
+   public:
+-    SimulatedAnnealing(const std::vector<Color>& ideal);
++    SimulatedAnnealing(
++        const std::vector<Color>& ideal,
++        ExperimentLogger& experiment_logger
++    );
+     ~SimulatedAnnealing() override;
+ 
+     std::vector<char> solve(State& state,Logger& logger) override;
+ 
+@@ -700,16 +755,21 @@
+     Candidate createNextCandidateRandomly(const Candidate& current);
+     std::vector<char> solveRandomly(State& state,Logger& logger);
+     bool shouldAccept(int current_score,int new_score,double temperature);
+ 
++    ExperimentLogger& experiment_logger_;
+     std::mt19937 rng_;
+     double start_temp_;
+     double end_temp_;
+ };
+ /* END src/strategy/simulated_annealing.h */
+ /* BEGIN src/strategy/simulated_annealing.cpp */
+-SimulatedAnnealing::SimulatedAnnealing(const std::vector<Color>& ideal)
++SimulatedAnnealing::SimulatedAnnealing(
++    const std::vector<Color>& ideal,
++    ExperimentLogger& experiment_logger
++)
+   :Strategy(ideal)
++  ,experiment_logger_(experiment_logger)
+   ,rng_(0)
+   ,start_temp_(15000.0)
+   ,end_temp_(1.0)
+ {
+@@ -787,8 +847,17 @@
+   }
+ 
+   state=best.state;
+   logger.log("final score: "+std::to_string(best_score));
++  experiment_logger_.logSaResult(
++      start_temp_,
++      end_temp_,
++      best_score,
++      timer.elapsed(),
++      static_cast<int>(best.operations.size()),
++      static_cast<int>(best.state.snake().size()),
++      0
++  );
+   return best.operations;
+ }
+ /* END src/strategy/simulated_annealing.cpp */
+ /* BEGIN src/simulator.h */
+@@ -849,15 +918,16 @@
+     }
+   }
+ 
+   Logger logger("log.txt");
++  ExperimentLogger experiment_logger("experiment.csv");
+ 
+   Snake snake(n);
+   Stage stage(n,food);
+ 
+   State state(stage,snake);
+ 
+-  SimulatedAnnealing strategy(ideal);
++  SimulatedAnnealing strategy(ideal,experiment_logger);
+ 
+   Simulator simulator(state,strategy,logger);
+   std::vector<char> result=simulator.simulate();
+ 
+
+```
+
+実験結果を `experiment.csv` に 1 実行 1 行で追記する形にします。専用ロガーを追加して、`SimulatedAnnealing` の終了時に温度と最終スコアを記録します。
+
+`ExperimentLogger` を追加して、SA の終了時に `experiment.csv` へ追記します。提出コード生成も壊さないよう、ソース一覧にも入れます。
+
+実装は入りました。ビルドと `submit.cpp` 再生成まで確認します。
+
+`experiment.csv` へ追記する仕組みを追加しました。新しく [AHC063/src/experiment_logger.h](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/experiment_logger.h:1) と [AHC063/src/experiment_logger.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/experiment_logger.cpp:1) を作り、ファイルが空ならヘッダ行を書き、以後は `std::ios::app` で 1 実行 1 行ずつ追記します。
+
+`main` では [AHC063/src/main.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/main.cpp:5) と [AHC063/src/main.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/main.cpp:33) で `ExperimentLogger experiment_logger("experiment.csv");` を作り、[AHC063/src/main.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/main.cpp:39) で `SimulatedAnnealing` に渡すようにしました。`SimulatedAnnealing` 側は終了時に [AHC063/src/strategy/simulated_annealing.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/simulated_annealing.cpp:81) から `start_temp,end_temp,best_score,elapsed,operation_count,snake_size,seed` を書き出します。
+
+ビルドと提出用生成は通っています。`cmake --build AHC063/build -j2` と `cmake --build AHC063/build --target submit_cpp` を確認済みです。次に実行すると `AHC063/experiment.csv` に結果が蓄積されます。
