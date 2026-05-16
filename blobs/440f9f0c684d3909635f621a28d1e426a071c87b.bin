@@ -1,0 +1,60 @@
+===================================================================
+--- hill_climbing.cpp (before)	snapshot
++++ hill_climbing.cpp (after)	manual
+@@ -96,4 +96,55 @@
+   logger.log("final score: "+std::to_string(best_score));
+   return operation_row_;
+ }
+ 
++std::vector<char> HillClimbing::solveSearch(State& state,Logger& logger){
++  Timer timer;
++  logger.log("start: time = "+std::to_string(timer.elapsed()));
++
++  Candidate current=createInitialCandidate(state);
++  Candidate best=current;
++  int best_score=score(best.state,best.operations.size());
++
++  while(timer.elapsed()<TIME_LIMIT){
++    bool found=false;
++    Candidate best_next=current;
++    int best_next_score=0;
++
++    for(Direction dir : {
++        Direction::UP,
++        Direction::DOWN,
++        Direction::LEFT,
++        Direction::RIGHT
++    }){
++      if(!current.state.snake().canMove(dir)){
++        continue;
++      }
++
++      Candidate next=createNextCandidate(current,dir);
++      const int next_score=score(next.state,next.operations.size());
++      if(!found || next_score<best_next_score){
++        found=true;
++        best_next=std::move(next);
++        best_next_score=next_score;
++      }
++    }
++
++    if(!found){
++      break;
++    }
++
++    current=std::move(best_next);
++    if(best_next_score<best_score){
++      best=current;
++      best_score=best_next_score;
++      logger.log("time: "+std::to_string(timer.elapsed()));
++      logger.log("score: "+std::to_string(best_score));
++      logger.log(best.state,best.operations.size());
++    }
++  }
++
++  state=best.state;
++  operation_row_=best.operations;
++  logger.log("final score: "+std::to_string(best_score));
++  return operation_row_;
++}
+\ No newline at end of file
