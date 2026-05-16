@@ -1,0 +1,13 @@
+===================================================================
+--- hill_climbing.cpp (before)	snapshot
++++ hill_climbing.cpp (after)	idle
+@@ -96,8 +96,9 @@
+   logger.log("final score: "+std::to_string(best_score));
+   return operation_row_;
+ }
+ 
++
+ std::vector<char> HillClimbing::solveSearch(State& state,Logger& logger){
+   Timer timer;
+   logger.log("start: time = "+std::to_string(timer.elapsed()));
+ 
