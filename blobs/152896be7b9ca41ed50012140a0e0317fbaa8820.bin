@@ -1,0 +1,4 @@
+Timer timer;
+
+while (timer.elapsed() < 1.95) {
+}
