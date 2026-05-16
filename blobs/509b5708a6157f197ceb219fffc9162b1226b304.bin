@@ -1,0 +1,93 @@
+===================================================================
+--- simulated_annealing.cpp (before)	snapshot
++++ simulated_annealing.cpp (after)	idle
+@@ -1,9 +1,88 @@
+ #include"simulated_annealing.h"
++#include<algorithm>
++#include<cmath>
++#include"../timer.h"
+ 
+ SimulatedAnnealing::SimulatedAnnealing(const std::vector<Color>& ideal)
+   :Strategy(ideal)
++  ,rng_(0)
++  ,start_temp_(15000.0)
++  ,end_temp_(1.0)
+ {
+-  
++
+ }
+ 
++SimulatedAnnealing::~SimulatedAnnealing()=default;
+ 
++SimulatedAnnealing::Candidate SimulatedAnnealing::createNextCandidateRandomly(
++  const Candidate& current
++){
++  Direction dir;
++  while(true){
++    dir=static_cast<Direction>(rng_()%4);
++    if(current.state.snake().canMove(dir)){
++      break;
++    }
++  }
++
++  return createNextCandidate(current,dir);
++}
++
++bool SimulatedAnnealing::shouldAccept(
++    int current_score,
++    int new_score,
++    double temperature
++){
++  if(new_score<=current_score){
++    return true;
++  }
++
++  const double safe_temperature=std::max(1e-6,temperature);
++  const double probability=std::exp(
++      static_cast<double>(current_score-new_score)/safe_temperature
++  );
++  return std::generate_canonical<double,10>(rng_)<probability;
++}
++
++std::vector<char> SimulatedAnnealing::solve(State& state,Logger& logger){
++  return solveRandomly(state,logger);
++}
++
++std::vector<char> SimulatedAnnealing::solveRandomly(State& state,Logger& logger){
++  Timer timer;
++  logger.log("start: time = "+std::to_string(timer.elapsed()));
++
++  Candidate current=createInitialCandidate(state);
++  Candidate best=current;
++  int current_score=score(current.state,current.operations.size());
++  int best_score=current_score;
++
++  while(timer.elapsed()<TIME_LIMIT){
++    Candidate next=createNextCandidateRandomly(current);
++    const int next_score=score(next.state,next.operations.size());
++
++    const double progress=timer.elapsed()/TIME_LIMIT;
++    const double temperature=
++      start_temp_+(end_temp_-start_temp_)*progress;
++
++    if(!shouldAccept(current_score,next_score,temperature)){
++      continue;
++    }
++
++    current=std::move(next);
++    current_score=next_score;
++
++    if(current_score<best_score){
++      best=current;
++      best_score=current_score;
++      logger.log("time: "+std::to_string(timer.elapsed()));
++      logger.log("temp: "+std::to_string(temperature));
++      logger.log("score: "+std::to_string(best_score));
++      logger.log(best.state,best.operations.size());
++    }
++  }
++
++  state=best.state;
++  logger.log("final score: "+std::to_string(best_score));
++  return best.operations;
++}
