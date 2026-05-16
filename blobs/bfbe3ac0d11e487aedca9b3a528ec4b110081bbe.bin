@@ -1,0 +1,25 @@
+===================================================================
+--- experiment_logger.h (before)	snapshot
++++ experiment_logger.h (after)	create
+@@ -0,0 +1,21 @@
++#pragma once
++#include<fstream>
++#include<string>
++
++class ExperimentLogger{
++  public:
++    ExperimentLogger(const std::string& path);
++
++    void logSaResult(
++        double start_temp,
++        double end_temp,
++        int best_score,
++        double elapsed,
++        int operation_count,
++        int snake_size,
++        int seed
++    );
++
++  private:
++    std::ofstream ofs_;
++};
