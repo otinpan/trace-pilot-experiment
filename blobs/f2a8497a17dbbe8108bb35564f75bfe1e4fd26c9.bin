@@ -1,0 +1,15 @@
+#pragma once
+
+#include <chrono>
+
+inline double getTime() {
+    using namespace std::chrono;
+
+    static auto start =
+        high_resolution_clock::now();
+
+    auto now =
+        high_resolution_clock::now();
+
+    return duration<double>(now - start).count();
+}
