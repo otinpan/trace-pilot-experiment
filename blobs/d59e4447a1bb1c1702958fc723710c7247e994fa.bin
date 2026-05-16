@@ -1,0 +1,6 @@
+===================================================================
+--- CMakeRuleHashes.txt (before)	snapshot
++++ CMakeRuleHashes.txt (after)	create
+@@ -0,0 +1,2 @@
++# Hashes of file build rules.
++12554f5a450e1ae00accd69c7a309648 CMakeFiles/submit_cpp
