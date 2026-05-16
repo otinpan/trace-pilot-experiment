@@ -1,0 +1,36 @@
+struct STATE {
+};
+
+// 状態の初期化
+void init (STATE& state) {
+}
+
+// 状態遷移
+void modify (STATE& state) {
+}
+
+// 状態のスコア計算
+int calc_score (STATE& state) {
+}
+
+// 山登り法
+void mountain() {
+    STATE state;
+    init(state);
+    double start_time; // 開始時刻
+    while (true) { // 時間の許す限り回す
+        double now_time; // 現在時刻
+        if (now_time - start_time > TIME_LIMIT) break;
+
+        STATE new_state = state;
+        modify(new_state);
+        int new_score = calc_score(new_state);
+        int pre_score = calc_score(state);
+
+        if (new_score > pre_score) { // スコア最大化の場合
+            state = new_state;
+        }
+    }
+}
+
+このように時間を表すのはどうやるのですか
