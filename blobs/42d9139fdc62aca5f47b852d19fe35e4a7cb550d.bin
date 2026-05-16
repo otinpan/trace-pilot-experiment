@@ -1,0 +1,179 @@
+# Record 1: /home/hase/trace-pilot-experiment/atcoder/AHC063/log.txt
+```diff
+===================================================================
+--- log.txt (before)	snapshot
++++ log.txt (after)	external
+@@ -0,0 +1,169 @@
++turn = 0
++b.2.2...
++b.3..3.2
++b.2333..
++b..31..2
++b..2..13
++.232..3.
++.23.2.2.
++3..2....
++head: (4,0)
++
++start: time = 0.000000
++time: 0.000071
++score: 480002
++turn = 2
++..2.2...
++c.3..3.2
++b.2333..
++b..31..2
++b..2..13
++bb32..3.
++.23.2.2.
++3..2....
++head: (5,1)
++
++time: 0.000104
++score: 460003
++turn = 3
++..2.2...
++c.3..3.2
++c.2333..
++b..31..2
++b..2..13
++bb32..3.
++.b3.2.2.
++3..2....
++head: (6,1)
++
++time: 0.000137
++score: 440004
++turn = 4
++..2.2...
++d.3..3.2
++c.2333..
++c..31..2
++b..2..13
++bb32..3.
++.bb.2.2.
++3..2....
++head: (6,2)
++
++time: 0.000169
++score: 420005
++turn = 5
++..2.2...
++d.3..3.2
++d.2333..
++c..31..2
++c..2..13
++bbb2..3.
++.bb.2.2.
++3..2....
++head: (5,2)
++
++time: 0.000201
++score: 400006
++turn = 6
++..2.2...
++c.3..3.2
++d.2333..
++d..31..2
++c..2..13
++cbbb..3.
++.bb.2.2.
++3..2....
++head: (5,3)
++
++time: 0.000222
++score: 380007
++turn = 7
++..2.2...
++c.3..3.2
++c.2333..
++d..31..2
++d..b..13
++ccbb..3.
++.bb.2.2.
++3..2....
++head: (4,3)
++
++time: 0.000255
++score: 370008
++turn = 8
++..2.2...
++d.3..3.2
++c.2333..
++c..b1..2
++d..b..13
++dcbb..3.
++.cb.2.2.
++3..2....
++head: (3,3)
++
++time: 0.000289
++score: 350009
++turn = 9
++..2.2...
++d.3..3.2
++d.2b33..
++c..b1..2
++c..b..13
++ddbb..3.
++.cc.2.2.
++3..2....
++head: (2,3)
++
++time: 0.000325
++score: 330010
++turn = 10
++..2.2...
++c.3..3.2
++d.bb33..
++d..b1..2
++c..b..13
++cdcb..3.
++.dc.2.2.
++3..2....
++head: (2,2)
++
++time: 0.000348
++score: 310011
++turn = 11
++..2.2...
++d.b..3.2
++c.bb33..
++d..b1..2
++d..b..13
++cccc..3.
++.dd.2.2.
++3..2....
++head: (1,2)
++
++time: 0.000364
++score: 300012
++turn = 12
++..b.2...
++c.b..3.2
++d.bb33..
++c..b1..2
++d..c..13
++dcdc..3.
++.cd.2.2.
++3..2....
++head: (0,2)
++
++time: 0.000498
++score: 280021
++turn = 21
++.dc.2...
++.dc..3.2
++.cdd33..
++.c.c1..2
++.b.d..13
++.bdc..3.
++.b..2.2.
++bb.2....
++head: (7,0)
++
++final score: 280021
+
+```
+
+A log file showing the turn-by-turn progression of the game state, displaying the board's character grid, the position of the 'head', elapsed time at each turn, and the current score, ultimately showing the final score after multiple turns.
