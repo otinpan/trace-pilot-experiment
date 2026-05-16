@@ -1,0 +1,2 @@
+double progress =
+    now_time / TIME_LIMIT;
