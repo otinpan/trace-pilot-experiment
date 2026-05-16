@@ -1,0 +1,30 @@
+===================================================================
+--- main.cpp (before)	snapshot
++++ main.cpp (after)	external
+@@ -8,8 +8,9 @@
+ #include"stage.h"
+ #include"snake.h"
+ #include"strategy/greedy.h"
+ #include"strategy/hill_climbing.h"
++#include"strategy/simulated_annealing.h"
+ 
+ int main() {
+   int n,m,c;
+   std::cin>>n>>m>>c;
+@@ -34,9 +35,9 @@
+   Stage stage(n,food);
+   
+   State state(stage,snake);
+ 
+-  HillClimbing strategy(ideal);
++  SimulatedAnnealing strategy(ideal);
+ 
+   Simulator simulator(state,strategy,logger);
+   std::vector<char> result=simulator.simulate();
+ 
+@@ -44,5 +45,4 @@
+     std::cout<<res<<'\n';
+   }
+   return 0;
+ }
+-

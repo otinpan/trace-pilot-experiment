@@ -1,0 +1,14 @@
+===================================================================
+--- gen_submit.py (before)	snapshot
++++ gen_submit.py (after)	external
+@@ -24,8 +24,10 @@
+     "src/strategy/greedy.h",
+     "src/strategy/greedy.cpp",
+     "src/strategy/hill_climbing.h",
+     "src/strategy/hill_climbing.cpp",
++    "src/strategy/simulated_annealing.h",
++    "src/strategy/simulated_annealing.cpp",
+     "src/simulator.h",
+     "src/simulator.cpp",
+     "src/main.cpp",
+ ]

@@ -1,0 +1,13 @@
+===================================================================
+--- CMakeLists.txt (before)	snapshot
++++ CMakeLists.txt (after)	external
+@@ -14,8 +14,9 @@
+     src/logger.cpp
+     src/strategy/strategy.cpp
+     src/strategy/greedy.cpp
+     src/strategy/hill_climbing.cpp
++    src/strategy/simulated_annealing.cpp
+ )
+ 
+ add_executable(main
+     src/main.cpp
