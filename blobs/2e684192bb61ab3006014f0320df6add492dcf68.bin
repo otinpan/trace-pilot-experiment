@@ -1,0 +1,60 @@
+C++ では普通：
+C++std::chrono
+を使います。
+AHC でもかなり典型です。
+
+一番よくある書き方
+C++#include <chrono>const double TIME_LIMIT = 1.95;double getTime() {    using namespace std::chrono;    static auto start =        high_resolution_clock::now();    auto now =        high_resolution_clock::now();    return duration<double>(now - start).count();}
+
+使い方
+C++void mountain() {    STATE state;    init(state);    while (true) {        double now_time = getTime();        if (now_time > TIME_LIMIT) {            break;        }        STATE new_state = state;        modify(new_state);        int new_score =            calc_score(new_state);        int pre_score =            calc_score(state);        if (new_score > pre_score) {            state = new_state;        }    }}
+
+duration<double>
+C++duration<double>(now - start).count()
+は：
+秒
+です。
+例えば：
+1.234567
+みたいに返ります。
+
+static start の意味
+C++static auto start = ...
+なので：
+最初の1回だけ記録
+されます。
+つまり：
+プログラム開始時刻
+っぽく使えます。
+
+AHCで超典型
+かなり：
+C++double getTime()
+関数を作ります。
+
+より高速な版
+Linux系では：
+C++#include <sys/time.h>double getTime() {    timeval tv;    gettimeofday(&tv, nullptr);    return tv.tv_sec         + tv.tv_usec * 1e-6;}
+もあります。
+
+でも chrono 推奨
+最近は：
+C++std::chrono
+が普通。
+
+焼きなましでは超重要
+例えば：
+C++double progress =    now_time / TIME_LIMIT;
+で：
+温度を徐々に下げる
+します。
+
+例
+C++double temp =    start_temp    + (end_temp - start_temp)    * progress;
+
+AHCでかなりよくあるテンプレ
+C++#include <chrono>class Timer {public:    Timer() {        start_ =            std::chrono::high_resolution_clock::now();    }    double elapsed() const {        using namespace std::chrono;        auto now =            high_resolution_clock::now();        return duration<double>(now - start_).count();    }private:    std::chrono::high_resolution_clock::time_point start_;};
+
+使い方
+C++Timer timer;while (timer.elapsed() < 1.95) {}
+かなり綺麗です。
