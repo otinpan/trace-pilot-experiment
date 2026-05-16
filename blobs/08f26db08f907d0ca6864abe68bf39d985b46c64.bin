@@ -1,0 +1,157 @@
+===================================================================
+--- submit.cpp (before)	snapshot
++++ submit.cpp (after)	external
+@@ -7,8 +7,9 @@
+ #include <vector>
+ #include<cassert>
+ #include<fstream>
+ #include<string>
++#include<filesystem>
+ #include <chrono>
+ #include<random>
+ #include<algorithm>
+ #include<cmath>
+@@ -384,8 +385,60 @@
+ 
+   return s;
+ }
+ /* END src/logger.cpp */
++/* BEGIN src/experiment_logger.h */
++class ExperimentLogger{
++  public:
++    ExperimentLogger(const std::string& path);
++
++    void logSaResult(
++        double start_temp,
++        double end_temp,
++        int best_score,
++        double elapsed,
++        int operation_count,
++        int snake_size,
++        int seed
++    );
++
++  private:
++    std::ofstream ofs_;
++};
++/* END src/experiment_logger.h */
++/* BEGIN src/experiment_logger.cpp */
++ExperimentLogger::ExperimentLogger(const std::string& path){
++  const bool exists=std::filesystem::exists(path);
++  const bool has_content=
++    exists && std::filesystem::is_regular_file(path) &&
++    std::filesystem::file_size(path)>0;
++
++  ofs_.open(path,std::ios::app);
++
++  if(!has_content){
++    ofs_<<"start_temp,end_temp,best_score,elapsed,operation_count,snake_size,seed\n";
++  }
++}
++
++void ExperimentLogger::logSaResult(
++    double start_temp,
++    double end_temp,
++    int best_score,
++    double elapsed,
++    int operation_count,
++    int snake_size,
++    int seed
++){
++  ofs_
++    <<start_temp<<","
++    <<end_temp<<","
++    <<best_score<<","
++    <<elapsed<<","
++    <<operation_count<<","
++    <<snake_size<<","
++    <<seed<<"\n";
++}
++/* END src/experiment_logger.cpp */
+ /* BEGIN src/timer.h */
+ class Timer {
+ public:
+     Timer() {
+@@ -488,9 +541,8 @@
+       error_count++;
+     }
+   }
+   return static_cast<int>(operation_count)+10000*(error_count+2*(m-k));
+-
+ }
+ /* END src/strategy/strategy.cpp */
+ /* BEGIN src/strategy/greedy.h */
+ class Greedy: public Strategy{
+@@ -690,9 +742,12 @@
+ /* END src/strategy/hill_climbing.cpp */
+ /* BEGIN src/strategy/simulated_annealing.h */
+ class SimulatedAnnealing: public Strategy{
+   public:
+-    SimulatedAnnealing(const std::vector<Color>& ideal);
++    SimulatedAnnealing(
++        const std::vector<Color>& ideal,
++        ExperimentLogger& experiment_logger
++    );
+     ~SimulatedAnnealing() override;
+ 
+     std::vector<char> solve(State& state,Logger& logger) override;
+ 
+@@ -700,16 +755,21 @@
+     Candidate createNextCandidateRandomly(const Candidate& current);
+     std::vector<char> solveRandomly(State& state,Logger& logger);
+     bool shouldAccept(int current_score,int new_score,double temperature);
+ 
++    ExperimentLogger& experiment_logger_;
+     std::mt19937 rng_;
+     double start_temp_;
+     double end_temp_;
+ };
+ /* END src/strategy/simulated_annealing.h */
+ /* BEGIN src/strategy/simulated_annealing.cpp */
+-SimulatedAnnealing::SimulatedAnnealing(const std::vector<Color>& ideal)
++SimulatedAnnealing::SimulatedAnnealing(
++    const std::vector<Color>& ideal,
++    ExperimentLogger& experiment_logger
++)
+   :Strategy(ideal)
++  ,experiment_logger_(experiment_logger)
+   ,rng_(0)
+   ,start_temp_(15000.0)
+   ,end_temp_(1.0)
+ {
+@@ -787,8 +847,17 @@
+   }
+ 
+   state=best.state;
+   logger.log("final score: "+std::to_string(best_score));
++  experiment_logger_.logSaResult(
++      start_temp_,
++      end_temp_,
++      best_score,
++      timer.elapsed(),
++      static_cast<int>(best.operations.size()),
++      static_cast<int>(best.state.snake().size()),
++      0
++  );
+   return best.operations;
+ }
+ /* END src/strategy/simulated_annealing.cpp */
+ /* BEGIN src/simulator.h */
+@@ -849,15 +918,16 @@
+     }
+   }
+ 
+   Logger logger("log.txt");
++  ExperimentLogger experiment_logger("experiment.csv");
+ 
+   Snake snake(n);
+   Stage stage(n,food);
+ 
+   State state(stage,snake);
+ 
+-  SimulatedAnnealing strategy(ideal);
++  SimulatedAnnealing strategy(ideal,experiment_logger);
+ 
+   Simulator simulator(state,strategy,logger);
+   std::vector<char> result=simulator.simulate();
+ 
