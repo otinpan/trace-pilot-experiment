@@ -1,0 +1,32 @@
+===================================================================
+--- simulated_annealing.h (before)	snapshot
++++ simulated_annealing.h (after)	external
+@@ -2,14 +2,16 @@
+ // 焼きなまし法
+ #pragma once
+ #include<random>
+ 
++#include"../experiment_logger.h"
+ #include"strategy.h"
+ 
+ class SimulatedAnnealing: public Strategy{
+   public:
+     SimulatedAnnealing(
+-        const std::vector<Color>& ideal
++        const std::vector<Color>& ideal,
++        ExperimentLogger& experiment_logger
+     );
+     ~SimulatedAnnealing() override;
+ 
+     std::vector<char> solve(State& state,Logger& logger) override;
+@@ -18,9 +20,9 @@
+     Candidate createNextCandidateRandomly(const Candidate& current);
+     std::vector<char> solveRandomly(State& state,Logger& logger);
+     bool shouldAccept(int current_score,int new_score,double temperature);
+ 
+-
++    ExperimentLogger& experiment_logger_;
+     std::mt19937 rng_;
+     double start_temp_;
+     double end_temp_;
+ };
