@@ -1,0 +1,14 @@
+===================================================================
+--- gen_submit.py (before)	snapshot
++++ gen_submit.py (after)	idle
+@@ -17,8 +17,10 @@
+     "src/state.h",
+     "src/state.cpp",
+     "src/logger.h",
+     "src/logger.cpp",
++    "src/experiment_logger.h",
++    "src/experiment_logger.cpp",
+     "src/timer.h",
+     "src/strategy/strategy.h",
+     "src/strategy/strategy.cpp",
+     "src/strategy/greedy.h",

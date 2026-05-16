@@ -1,0 +1,31 @@
+===================================================================
+--- main.cpp (before)	snapshot
++++ main.cpp (after)	external
+@@ -1,8 +1,9 @@
+ #include<iostream>
+ #include<vector>
+ 
+ #include"common.h"
++#include"experiment_logger.h"
+ #include"logger.h"
+ #include"simulator.h"
+ #include"state.h"
+ #include"stage.h"
+@@ -29,15 +30,16 @@
+     }
+   }
+ 
+   Logger logger("log.txt");
++  ExperimentLogger experiment_logger("experiment.csv");
+ 
+   Snake snake(n);
+   Stage stage(n,food);
+   
+   State state(stage,snake);
+ 
+-  SimulatedAnnealing strategy(ideal);
++  SimulatedAnnealing strategy(ideal,experiment_logger);
+ 
+   Simulator simulator(state,strategy,logger);
+   std::vector<char> result=simulator.simulate();
+ 

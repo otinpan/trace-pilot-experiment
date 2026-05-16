@@ -1,0 +1,48 @@
+===================================================================
+--- simulated_annealing.cpp (before)	snapshot
++++ simulated_annealing.cpp (after)	idle
+@@ -1,22 +1,25 @@
++// @trace-pilot e9e65d11e7593de7a47e0920c692b051eb3f1dc2
+ #include"simulated_annealing.h"
+ #include<algorithm>
+ #include<cmath>
+ #include"../timer.h"
+ 
+-SimulatedAnnealing::SimulatedAnnealing(const std::vector<Color>& ideal)
++SimulatedAnnealing::SimulatedAnnealing(
++    const std::vector<Color>& ideal,
++    ExperimentLogger& experiment_logger
++)
+   :Strategy(ideal)
++  ,experiment_logger_(experiment_logger)
+   ,rng_(0)
+   ,start_temp_(15000.0)
+   ,end_temp_(1.0)
+ {
+ 
+ }
+ 
+-// @trace-pilot e9e65d11e7593de7a47e0920c692b051eb3f1dc2
+ SimulatedAnnealing::~SimulatedAnnealing()=default;
+ 
+-// @trace-pilot e9e65d11e7593de7a47e0920c692b051eb3f1dc2
+ SimulatedAnnealing::Candidate SimulatedAnnealing::createNextCandidateRandomly(
+   const Candidate& current
+ ){
+   Direction dir;
+@@ -85,6 +88,15 @@
+   }
+ 
+   state=best.state;
+   logger.log("final score: "+std::to_string(best_score));
++  experiment_logger_.logSaResult(
++      start_temp_,
++      end_temp_,
++      best_score,
++      timer.elapsed(),
++      static_cast<int>(best.operations.size()),
++      static_cast<int>(best.state.snake().size()),
++      0
++  );
+   return best.operations;
+ }

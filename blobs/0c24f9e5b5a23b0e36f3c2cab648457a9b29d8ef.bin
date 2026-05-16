@@ -1,0 +1,13 @@
+===================================================================
+--- CMakeLists.txt (before)	snapshot
++++ CMakeLists.txt (after)	external
+@@ -11,8 +11,9 @@
+     src/snake.cpp
+     src/state.cpp
+     src/simulator.cpp
+     src/logger.cpp
++    src/experiment_logger.cpp
+     src/strategy/strategy.cpp
+     src/strategy/greedy.cpp
+     src/strategy/hill_climbing.cpp
+     src/strategy/simulated_annealing.cpp
