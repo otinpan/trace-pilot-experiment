@@ -8,11 +8,19 @@
 #include<cassert>
 #include<fstream>
 #include<string>
+#include<filesystem>
+#include <chrono>
+#include<random>
+#include<algorithm>
+#include<cmath>
 
 /* BEGIN src/common.h */
 using Color=int;
 constexpr Color EMPTY=0;
 constexpr Color OUT_OF_BOUND=-1;
+
+const int MAX_SIMULATION=100000;
+const double TIME_LIMIT=1.95;
 
 struct Pos{
   int i,j;
@@ -378,34 +386,503 @@ std::string Logger::renderBoard(const State& state) const{
   return s;
 }
 /* END src/logger.cpp */
+/* BEGIN src/experiment_logger.h */
+class ExperimentLogger{
+  public:
+    ExperimentLogger(const std::string& path);
+
+    void logSaResult(
+        double start_temp,
+        double end_temp,
+        int best_score,
+        double elapsed,
+        int operation_count,
+        int snake_size,
+        int seed
+    );
+
+  private:
+    std::ofstream ofs_;
+};
+/* END src/experiment_logger.h */
+/* BEGIN src/experiment_logger.cpp */
+ExperimentLogger::ExperimentLogger(const std::string& path){
+  const bool exists=std::filesystem::exists(path);
+  const bool has_content=
+    exists && std::filesystem::is_regular_file(path) &&
+    std::filesystem::file_size(path)>0;
+
+  ofs_.open(path,std::ios::app);
+
+  if(!has_content){
+    ofs_<<"start_temp,end_temp,best_score,elapsed,operation_count,snake_size,seed\n";
+  }
+}
+
+void ExperimentLogger::logSaResult(
+    double start_temp,
+    double end_temp,
+    int best_score,
+    double elapsed,
+    int operation_count,
+    int snake_size,
+    int seed
+){
+  ofs_
+    <<start_temp<<","
+    <<end_temp<<","
+    <<best_score<<","
+    <<elapsed<<","
+    <<operation_count<<","
+    <<snake_size<<","
+    <<seed<<"\n";
+}
+/* END src/experiment_logger.cpp */
+/* BEGIN src/timer.h */
+class Timer {
+public:
+    Timer() {
+        start_ =
+            std::chrono::high_resolution_clock::now();
+    }
+
+    double elapsed() const {
+        using namespace std::chrono;
+
+        auto now =
+            high_resolution_clock::now();
+
+        return duration<double>(
+            now - start_
+        ).count();
+    }
+
+private:
+    std::chrono::high_resolution_clock::time_point start_;
+};
+/* END src/timer.h */
+/* BEGIN src/strategy/strategy.h */
+class Strategy{
+  public:
+    Strategy(const std::vector<Color>& ideal);
+    virtual ~Strategy();
+
+    virtual std::vector<char> solve(State& state,Logger& logger);
+
+  protected:
+    struct Candidate{
+      State state;
+      std::vector<char> operations;
+    };
+    Candidate createInitialCandidate(const State& state) const;
+    Candidate createNextCandidate(const Candidate& current,Direction dir) const;
+    Candidate createNextCandidateRandomly(const Candidate& current);
+    std::vector<Color> ideal_;
+    int score(const State& state,size_t operation_count) const;
+
+    std::mt19937 rng_;
+
+};
+/* END src/strategy/strategy.h */
+/* BEGIN src/strategy/strategy.cpp */
+Strategy::Strategy(const std::vector<Color>& ideal)
+  :ideal_(ideal)
+  ,rng_(0)
+{
+
+}
+
+Strategy::~Strategy() = default;
+
+Strategy::Candidate Strategy::createInitialCandidate(const State& state) const{
+  return Strategy::Candidate{state,{}};
+}
+
+Strategy::Candidate Strategy::createNextCandidate(
+    const Strategy::Candidate& current,
+    Direction dir
+) const{
+  Strategy::Candidate next=current;
+  next.state.apply(dir);
+  next.operations.emplace_back(OUTPUT_DIR[(int)dir]);
+  return next;
+}
+
+Strategy::Candidate Strategy::createNextCandidateRandomly(
+  const Candidate& current
+){
+  Direction dir;
+  while(true){
+    dir=static_cast<Direction>(rng_()%4);
+    if(current.state.snake().canMove(dir)){
+      break;
+    }
+  }
+
+  return createNextCandidate(current,dir);
+}
+
+
+
+std::vector<char> Strategy::solve(State& state,Logger& logger){
+  (void)state;
+  (void)logger;
+  return {};
+}
+
+int Strategy::score(const State& state,size_t operation_count) const{
+  int error_count=0;
+
+  const int m=ideal_.size();
+  const int k=state.snake().size();
+
+  for(int i=0;i<k;i++){
+    if(state.snake().body()[i].color!=ideal_[i]){
+      error_count++;
+    }
+  }
+  return static_cast<int>(operation_count)+10000*(error_count+2*(m-k));
+}
+/* END src/strategy/strategy.cpp */
+/* BEGIN src/strategy/greedy.h */
+class Greedy: public Strategy{
+  public:
+    Greedy(const std::vector<Color>& ideal);
+    ~Greedy() override;
+
+    std::vector<char> solve(State& state,Logger& logger) override;
+};
+/* END src/strategy/greedy.h */
+/* BEGIN src/strategy/greedy.cpp */
+Greedy::Greedy(const std::vector<Color>& ideal)
+  :Strategy(ideal)
+{
+
+}
+
+Greedy::~Greedy() = default;
+
+std::vector<char> Greedy::solve(State& state,Logger& logger){
+  std::vector<char> operation_row;
+  Direction dir=Direction::UP;
+  for(int i=0;i<MAX_SIMULATION;i++){
+    bool found=false;
+    for(Direction d:{
+        Direction::UP,
+        Direction::DOWN,
+        Direction::LEFT,
+        Direction::RIGHT
+        }){
+      if(state.snake().canMove(d)){
+        dir=d;
+        found=true;
+        break;
+      }
+    }
+
+    if(!found){
+      logger.log("can not move!");
+      break;
+    }
+
+    bool success=state.apply(dir);
+
+    if(!success){
+      logger.log("can not move!");
+      break;
+    }
+
+    operation_row.emplace_back(OUTPUT_DIR[(int)dir]);
+
+    logger.log(state,i+1);
+
+    if(state.snake().size()==ideal_.size()){
+      logger.log("score: "+std::to_string(score(state,operation_row.size())));
+      return operation_row;
+    }
+
+  }
+
+  logger.log("reach max simulation: "+std::to_string(score(state,operation_row.size())));
+  return operation_row;
+}
+/* END src/strategy/greedy.cpp */
+/* BEGIN src/strategy/hill_climbing.h */
+class HillClimbing: public Strategy{
+  public:
+    HillClimbing(const std::vector<Color>& ideal);
+    ~HillClimbing() override;
+
+    std::vector<char> solve(State& state,Logger& logger) override;
+  private:
+    std::vector<char> solveRandomly(State& state,Logger& logger);
+    std::vector<char> solveSearch(State& state,Logger& logger);
+
+    bool shouldAccept(int current_score,int new_score,double progress);
+
+};
+/* END src/strategy/hill_climbing.h */
+/* BEGIN src/strategy/hill_climbing.cpp */
+HillClimbing::HillClimbing(const std::vector<Color>& ideal)
+  :Strategy(ideal)
+{
+
+}
+
+HillClimbing::~HillClimbing()=default;
+
+
+
+bool HillClimbing::shouldAccept(int current_score,int new_score,double progress){
+  if(new_score<=current_score){
+    return true;
+  }
+
+  const double temperature=std::max(1e-6,1.0-progress);
+  const double acceptance_threshold=std::exp(
+      static_cast<double>(current_score-new_score)/(15000.0*temperature)
+  );
+  return std::generate_canonical<double,10>(rng_)<acceptance_threshold;
+}
+
+std::vector<char> HillClimbing::solve(State& state,Logger& logger){
+  return solveSearch(state,logger);
+
+}
+
+std::vector<char> HillClimbing::solveRandomly(State& state,Logger& logger){
+  Timer timer;
+  logger.log("start: time = "+std::to_string(timer.elapsed()));
+
+  Candidate current=createInitialCandidate(state);
+  Candidate best=current;
+  int current_score=score(current.state,current.operations.size());
+  int best_score=current_score;
+  int accepted_step=0;
+
+
+  while(timer.elapsed()<TIME_LIMIT){
+    Candidate next=createNextCandidateRandomly(current);
+    const int new_score=score(next.state,next.operations.size());
+
+    const double progress=timer.elapsed()/TIME_LIMIT;
+    if(!shouldAccept(current_score,new_score,progress)){
+      continue;
+    }
+
+    accepted_step++;
+    current=std::move(next);
+    current_score=new_score;
+
+    if(new_score<best_score){
+      best=current;
+      best_score=new_score;
+      logger.log("time: "+std::to_string(timer.elapsed()));
+      logger.log("score: "+std::to_string(best_score));
+      logger.log(best.state,accepted_step);
+    }
+  }
+
+  state=best.state;
+  logger.log("final score: "+std::to_string(best_score));
+  return best.operations;
+}
+
+
+std::vector<char> HillClimbing::solveSearch(State& state,Logger& logger){
+  Timer timer;
+  logger.log("start: time = "+std::to_string(timer.elapsed()));
+
+  Candidate current=createInitialCandidate(state);
+  Candidate best=current;
+  int best_score=score(best.state,best.operations.size());
+
+  while(timer.elapsed()<TIME_LIMIT){
+    bool found=false;
+    Candidate best_next=current;
+    int best_next_score=0;
+
+    for(Direction dir : {
+        Direction::UP,
+        Direction::DOWN,
+        Direction::LEFT,
+        Direction::RIGHT
+    }){
+      if(!current.state.snake().canMove(dir)){
+        continue;
+      }
+
+      Candidate next=createNextCandidate(current,dir);
+      const int next_score=score(next.state,next.operations.size());
+      if(!found || next_score<best_next_score){
+        found=true;
+        best_next=std::move(next);
+        best_next_score=next_score;
+      }
+    }
+
+    if(!found){
+      break;
+    }
+
+    current=std::move(best_next);
+    if(best_next_score<best_score){
+      best=current;
+      best_score=best_next_score;
+      logger.log("time: "+std::to_string(timer.elapsed()));
+      logger.log("score: "+std::to_string(best_score));
+      logger.log(best.state,best.operations.size());
+    }
+  }
+
+  state=best.state;
+  logger.log("final score: "+std::to_string(best_score));
+  return best.operations;
+}
+/* END src/strategy/hill_climbing.cpp */
+/* BEGIN src/strategy/simulated_annealing.h */
+class SimulatedAnnealing: public Strategy{
+  public:
+    SimulatedAnnealing(
+        const std::vector<Color>& ideal,
+        ExperimentLogger& experiment_logger
+    );
+    ~SimulatedAnnealing() override;
+
+    std::vector<char> solve(State& state,Logger& logger) override;
+
+  private:
+    Candidate createNextCandidateRandomly(const Candidate& current);
+    std::vector<char> solveRandomly(State& state,Logger& logger);
+    bool shouldAccept(int current_score,int new_score,double temperature);
+
+    ExperimentLogger& experiment_logger_;
+    std::mt19937 rng_;
+    double start_temp_;
+    double end_temp_;
+};
+/* END src/strategy/simulated_annealing.h */
+/* BEGIN src/strategy/simulated_annealing.cpp */
+SimulatedAnnealing::SimulatedAnnealing(
+    const std::vector<Color>& ideal,
+    ExperimentLogger& experiment_logger
+)
+  :Strategy(ideal)
+  ,experiment_logger_(experiment_logger)
+  ,rng_(0)
+  ,start_temp_(15000.0)
+  ,end_temp_(1.0)
+{
+
+}
+
+SimulatedAnnealing::~SimulatedAnnealing()=default;
+
+SimulatedAnnealing::Candidate SimulatedAnnealing::createNextCandidateRandomly(
+  const Candidate& current
+){
+  Direction dir;
+  while(true){
+    dir=static_cast<Direction>(rng_()%4);
+    if(current.state.snake().canMove(dir)){
+      break;
+    }
+  }
+
+  return createNextCandidate(current,dir);
+}
+
+bool SimulatedAnnealing::shouldAccept(
+    int current_score,
+    int new_score,
+    double temperature
+){
+  if(new_score<=current_score){
+    return true;
+  }
+
+  const double safe_temperature=std::max(1e-6,temperature);
+  const double probability=std::exp(
+      static_cast<double>(current_score-new_score)/safe_temperature
+  );
+  return std::generate_canonical<double,10>(rng_)<probability;
+}
+
+std::vector<char> SimulatedAnnealing::solve(State& state,Logger& logger){
+  return solveRandomly(state,logger);
+}
+
+std::vector<char> SimulatedAnnealing::solveRandomly(State& state,Logger& logger){
+  Timer timer;
+  logger.log("start: time = "+std::to_string(timer.elapsed()));
+
+  Candidate current=createInitialCandidate(state);
+  Candidate best=current;
+  int current_score=score(current.state,current.operations.size());
+  int best_score=current_score;
+
+  while(timer.elapsed()<TIME_LIMIT){
+    Candidate next=createNextCandidateRandomly(current);
+    const int next_score=score(next.state,next.operations.size());
+
+    const double progress=timer.elapsed()/TIME_LIMIT;
+    const double temperature=
+      start_temp_+(end_temp_-start_temp_)*progress;
+
+    if(!shouldAccept(current_score,next_score,temperature)){
+      continue;
+    }
+
+    current=std::move(next);
+    current_score=next_score;
+
+    if(current_score<best_score){
+      best=current;
+      best_score=current_score;
+      logger.log("time: "+std::to_string(timer.elapsed()));
+      logger.log("temp: "+std::to_string(temperature));
+      logger.log("score: "+std::to_string(best_score));
+      logger.log(best.state,best.operations.size());
+    }
+  }
+
+  state=best.state;
+  logger.log("final score: "+std::to_string(best_score));
+  experiment_logger_.logSaResult(
+      start_temp_,
+      end_temp_,
+      best_score,
+      timer.elapsed(),
+      static_cast<int>(best.operations.size()),
+      static_cast<int>(best.state.snake().size()),
+      0
+  );
+  return best.operations;
+}
+/* END src/strategy/simulated_annealing.cpp */
 /* BEGIN src/simulator.h */
 class Simulator{
   public:
-    Simulator(State state,Logger& logger,const std::vector<Color> d);
+    Simulator(
+        State state,
+        Strategy& strategy,
+        Logger& logger
+        );
     ~Simulator();
 
+    std::vector<char> simulate();
 
-    Direction decide();
-
-
-    void solve();
-
-
-    int score();
-
-    const std::vector<char>& operation_row() const{return operation_row_;}
   private:
     State state_;
+    Strategy& strategy_;
     Logger& logger_;
-    std::vector<char> operation_row_;
-    std::vector<Color> ideal_snake_;
 };
 /* END src/simulator.h */
 /* BEGIN src/simulator.cpp */
-Simulator::Simulator(State state,Logger& logger,const std::vector<Color> d)
+Simulator::Simulator(State state, Strategy& strategy, Logger& logger)
   :state_(std::move(state))
+  ,strategy_(strategy)
   ,logger_(logger)
-  ,ideal_snake_(d)
 {
 
 }
@@ -414,62 +891,12 @@ Simulator::~Simulator(){
 
 }
 
-Direction Simulator::decide(){
-  for(Direction dir:{
-      Direction::UP,
-      Direction::DOWN,
-      Direction::LEFT,
-      Direction::RIGHT
-  }){
 
-    if(state_.snake().canMove(dir)){
-      return dir;
-    }
-  }
-
-  return Direction::UP;
-}
-
-void Simulator::solve(){
-  const int MAX_SIMULATION=100000;
-
+std::vector<char> Simulator::simulate(){
   logger_.log(state_,0);
+  std::vector<char> result = strategy_.solve(state_, logger_);
 
-  for(int i=0;i<MAX_SIMULATION;i++){
-    Direction dir=decide();
-
-    bool success=state_.apply(dir);
-
-    if(!success){
-      logger_.log("can not move!");
-      break;
-    }
-
-    operation_row_.emplace_back(OUTPUT_DIR[(int)dir]);
-
-    logger_.log(state_,i+1);
-
-    if(state_.snake().size()==ideal_snake_.size()){
-      logger_.log("score: "+std::to_string(score()));
-      return;
-    }
-  }
-
-  logger_.log("max simulation: "+std::to_string(score()));
-}
-
-int Simulator::score(){
-  int error_count=0;
-
-  const int m=ideal_snake_.size();
-  const int k=state_.snake().size();
-
-  for(int i=0;i<k;i++){
-    if(state_.snake().body()[i].color!=ideal_snake_[i]){
-      error_count++;
-    }
-  }
-  return operation_row_.size()+10000*(error_count+2*(m-k));
+  return result;
 }
 /* END src/simulator.cpp */
 /* BEGIN src/main.cpp */
@@ -492,16 +919,17 @@ int main() {
   }
 
   Logger logger("log.txt");
+  ExperimentLogger experiment_logger("experiment.csv");
 
   Snake snake(n);
   Stage stage(n,food);
 
   State state(stage,snake);
 
-  Simulator simulator(state,logger,ideal);
-  simulator.solve();
+  SimulatedAnnealing strategy(ideal,experiment_logger);
 
-  std::vector<char> result=simulator.operation_row();
+  Simulator simulator(state,strategy,logger);
+  std::vector<char> result=simulator.simulate();
 
   for(const auto& res:result){
     std::cout<<res<<'\n';

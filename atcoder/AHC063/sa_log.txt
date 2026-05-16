@@ -1,0 +1,66 @@
+start_temp: 200000.000000
+end_temp: 1000.000000
+time: 0.200005
+temp: 179589.337324
+current_score: 342184
+best_score: -79960
+accept_rate: 0.903994
+worse_accept_rate: 0.651970
+
+time: 0.400060
+temp: 159178.446052
+current_score: 430439
+best_score: -79960
+accept_rate: 0.889663
+worse_accept_rate: 0.598225
+
+time: 0.600068
+temp: 138762.504569
+current_score: 153560
+best_score: -79960
+accept_rate: 0.863906
+worse_accept_rate: 0.534983
+
+time: 0.800075
+temp: 118351.432769
+current_score: 425148
+best_score: -79960
+accept_rate: 0.811769
+worse_accept_rate: 0.447347
+
+time: 1.000080
+temp: 97940.605076
+current_score: 424068
+best_score: -79960
+accept_rate: 0.714858
+worse_accept_rate: 0.302079
+
+time: 1.200093
+temp: 77530.149155
+current_score: 440336
+best_score: -79960
+accept_rate: 0.447107
+worse_accept_rate: 0.129688
+
+time: 1.400094
+temp: 57118.628942
+current_score: 243470
+best_score: -79960
+accept_rate: 0.205832
+worse_accept_rate: 0.044035
+
+time: 1.600100
+temp: 36707.755632
+current_score: 103930
+best_score: -79960
+accept_rate: 0.028851
+worse_accept_rate: 0.004756
+
+time: 1.800102
+temp: 16297.341756
+current_score: 103930
+best_score: -79960
+accept_rate: 0.000000
+worse_accept_rate: 0.000000
+
+final score: -79960

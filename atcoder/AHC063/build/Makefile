@@ -204,6 +204,30 @@ submit_cpp/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/submit_cpp.dir/build.make CMakeFiles/submit_cpp.dir/build
 .PHONY : submit_cpp/fast
 
+src/experiment_logger.o: src/experiment_logger.cpp.o
+.PHONY : src/experiment_logger.o
+
+# target to build an object file
+src/experiment_logger.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/experiment_logger.cpp.o
+.PHONY : src/experiment_logger.cpp.o
+
+src/experiment_logger.i: src/experiment_logger.cpp.i
+.PHONY : src/experiment_logger.i
+
+# target to preprocess a source file
+src/experiment_logger.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/experiment_logger.cpp.i
+.PHONY : src/experiment_logger.cpp.i
+
+src/experiment_logger.s: src/experiment_logger.cpp.s
+.PHONY : src/experiment_logger.s
+
+# target to generate assembly for a file
+src/experiment_logger.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/experiment_logger.cpp.s
+.PHONY : src/experiment_logger.cpp.s
+
 src/logger.o: src/logger.cpp.o
 .PHONY : src/logger.o
 
@@ -366,6 +390,102 @@ src/state.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/state.cpp.s
 .PHONY : src/state.cpp.s
 
+src/strategy/greedy.o: src/strategy/greedy.cpp.o
+.PHONY : src/strategy/greedy.o
+
+# target to build an object file
+src/strategy/greedy.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/greedy.cpp.o
+.PHONY : src/strategy/greedy.cpp.o
+
+src/strategy/greedy.i: src/strategy/greedy.cpp.i
+.PHONY : src/strategy/greedy.i
+
+# target to preprocess a source file
+src/strategy/greedy.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/greedy.cpp.i
+.PHONY : src/strategy/greedy.cpp.i
+
+src/strategy/greedy.s: src/strategy/greedy.cpp.s
+.PHONY : src/strategy/greedy.s
+
+# target to generate assembly for a file
+src/strategy/greedy.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/greedy.cpp.s
+.PHONY : src/strategy/greedy.cpp.s
+
+src/strategy/hill_climbing.o: src/strategy/hill_climbing.cpp.o
+.PHONY : src/strategy/hill_climbing.o
+
+# target to build an object file
+src/strategy/hill_climbing.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/hill_climbing.cpp.o
+.PHONY : src/strategy/hill_climbing.cpp.o
+
+src/strategy/hill_climbing.i: src/strategy/hill_climbing.cpp.i
+.PHONY : src/strategy/hill_climbing.i
+
+# target to preprocess a source file
+src/strategy/hill_climbing.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/hill_climbing.cpp.i
+.PHONY : src/strategy/hill_climbing.cpp.i
+
+src/strategy/hill_climbing.s: src/strategy/hill_climbing.cpp.s
+.PHONY : src/strategy/hill_climbing.s
+
+# target to generate assembly for a file
+src/strategy/hill_climbing.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/hill_climbing.cpp.s
+.PHONY : src/strategy/hill_climbing.cpp.s
+
+src/strategy/simulated_annealing.o: src/strategy/simulated_annealing.cpp.o
+.PHONY : src/strategy/simulated_annealing.o
+
+# target to build an object file
+src/strategy/simulated_annealing.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/simulated_annealing.cpp.o
+.PHONY : src/strategy/simulated_annealing.cpp.o
+
+src/strategy/simulated_annealing.i: src/strategy/simulated_annealing.cpp.i
+.PHONY : src/strategy/simulated_annealing.i
+
+# target to preprocess a source file
+src/strategy/simulated_annealing.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/simulated_annealing.cpp.i
+.PHONY : src/strategy/simulated_annealing.cpp.i
+
+src/strategy/simulated_annealing.s: src/strategy/simulated_annealing.cpp.s
+.PHONY : src/strategy/simulated_annealing.s
+
+# target to generate assembly for a file
+src/strategy/simulated_annealing.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/simulated_annealing.cpp.s
+.PHONY : src/strategy/simulated_annealing.cpp.s
+
+src/strategy/strategy.o: src/strategy/strategy.cpp.o
+.PHONY : src/strategy/strategy.o
+
+# target to build an object file
+src/strategy/strategy.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/strategy.cpp.o
+.PHONY : src/strategy/strategy.cpp.o
+
+src/strategy/strategy.i: src/strategy/strategy.cpp.i
+.PHONY : src/strategy/strategy.i
+
+# target to preprocess a source file
+src/strategy/strategy.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/strategy.cpp.i
+.PHONY : src/strategy/strategy.cpp.i
+
+src/strategy/strategy.s: src/strategy/strategy.cpp.s
+.PHONY : src/strategy/strategy.s
+
+# target to generate assembly for a file
+src/strategy/strategy.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/strategy.cpp.s
+.PHONY : src/strategy/strategy.cpp.s
+
 tests/common_test.o: tests/common_test.cpp.o
 .PHONY : tests/common_test.o
 
@@ -477,6 +597,9 @@ help:
 	@echo "... snake_test"
 	@echo "... stage_test"
 	@echo "... state_test"
+	@echo "... src/experiment_logger.o"
+	@echo "... src/experiment_logger.i"
+	@echo "... src/experiment_logger.s"
 	@echo "... src/logger.o"
 	@echo "... src/logger.i"
 	@echo "... src/logger.s"
@@ -495,6 +618,18 @@ help:
 	@echo "... src/state.o"
 	@echo "... src/state.i"
 	@echo "... src/state.s"
+	@echo "... src/strategy/greedy.o"
+	@echo "... src/strategy/greedy.i"
+	@echo "... src/strategy/greedy.s"
+	@echo "... src/strategy/hill_climbing.o"
+	@echo "... src/strategy/hill_climbing.i"
+	@echo "... src/strategy/hill_climbing.s"
+	@echo "... src/strategy/simulated_annealing.o"
+	@echo "... src/strategy/simulated_annealing.i"
+	@echo "... src/strategy/simulated_annealing.s"
+	@echo "... src/strategy/strategy.o"
+	@echo "... src/strategy/strategy.i"
+	@echo "... src/strategy/strategy.s"
 	@echo "... tests/common_test.o"
 	@echo "... tests/common_test.i"
 	@echo "... tests/common_test.s"

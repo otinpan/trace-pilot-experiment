@@ -8,6 +8,9 @@ using Color=int;
 constexpr Color EMPTY=0;
 constexpr Color OUT_OF_BOUND=-1;
 
+const int MAX_SIMULATION=100000;
+const double TIME_LIMIT=1.95;
+
 struct Pos{
   int i,j;
 
@@ -67,3 +70,4 @@ const std::array<char, 4> OUTPUT_DIR = {
     'L',
     'R',
 };
+

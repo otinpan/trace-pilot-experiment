@@ -1,17 +1,17 @@
-Start testing: May 15 21:21 JST
+Start testing: May 16 14:58 JST
 ----------------------------------------------------------
 1/4 Testing: common_test
 1/4 Test: common_test
 Command: "/home/hase/trace-pilot-experiment/atcoder/AHC063/build/common_test"
 Directory: /home/hase/trace-pilot-experiment/atcoder/AHC063/build
-"common_test" start time: May 15 21:21 JST
+"common_test" start time: May 16 14:58 JST
 Output:
 ----------------------------------------------------------
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"common_test" end time: May 15 21:21 JST
+"common_test" end time: May 16 14:58 JST
 "common_test" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -19,14 +19,14 @@ Test Passed.
 2/4 Test: stage_test
 Command: "/home/hase/trace-pilot-experiment/atcoder/AHC063/build/stage_test"
 Directory: /home/hase/trace-pilot-experiment/atcoder/AHC063/build
-"stage_test" start time: May 15 21:21 JST
+"stage_test" start time: May 16 14:58 JST
 Output:
 ----------------------------------------------------------
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"stage_test" end time: May 15 21:21 JST
+"stage_test" end time: May 16 14:58 JST
 "stage_test" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -34,14 +34,14 @@ Test Passed.
 3/4 Test: snake_test
 Command: "/home/hase/trace-pilot-experiment/atcoder/AHC063/build/snake_test"
 Directory: /home/hase/trace-pilot-experiment/atcoder/AHC063/build
-"snake_test" start time: May 15 21:21 JST
+"snake_test" start time: May 16 14:58 JST
 Output:
 ----------------------------------------------------------
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"snake_test" end time: May 15 21:21 JST
+"snake_test" end time: May 16 14:58 JST
 "snake_test" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -49,15 +49,15 @@ Test Passed.
 4/4 Test: state_test
 Command: "/home/hase/trace-pilot-experiment/atcoder/AHC063/build/state_test"
 Directory: /home/hase/trace-pilot-experiment/atcoder/AHC063/build
-"state_test" start time: May 15 21:21 JST
+"state_test" start time: May 16 14:58 JST
 Output:
 ----------------------------------------------------------
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"state_test" end time: May 15 21:21 JST
+"state_test" end time: May 16 14:58 JST
 "state_test" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: May 15 21:21 JST
+End testing: May 16 14:58 JST

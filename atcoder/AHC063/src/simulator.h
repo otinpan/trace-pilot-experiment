@@ -5,25 +5,21 @@
 #include"common.h"
 #include"logger.h"
 #include"state.h"
+#include"strategy/strategy.h"
 
 class Simulator{
   public:
-    Simulator(State state,Logger& logger,const std::vector<Color> d);
+    Simulator(
+        State state,
+        Strategy& strategy,
+        Logger& logger
+        );
     ~Simulator();
 
-    // 次のステップの方向決定
-    Direction decide();
+    std::vector<char> simulate();
 
-    // 答えを求める
-    void solve();
-
-    // score計算
-    int score();
-
-    const std::vector<char>& operation_row() const{return operation_row_;}
   private:
     State state_;
+    Strategy& strategy_;
     Logger& logger_;
-    std::vector<char> operation_row_;
-    std::vector<Color> ideal_snake_;
 };

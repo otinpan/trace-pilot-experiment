@@ -12,12 +12,19 @@ set(SOURCES
     src/state.cpp
     src/simulator.cpp
     src/logger.cpp
+    src/experiment_logger.cpp
+    src/strategy/strategy.cpp
+    src/strategy/greedy.cpp
+    src/strategy/hill_climbing.cpp
+    src/strategy/simulated_annealing.cpp
 )
 
 add_executable(main
     src/main.cpp
     ${SOURCES}
 )
+
+target_include_directories(main PRIVATE "${CMAKE_SOURCE_DIR}/src")
 
 
 # Place the built executable in the repository's build directory.

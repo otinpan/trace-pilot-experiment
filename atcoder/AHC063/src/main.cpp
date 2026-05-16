@@ -2,11 +2,16 @@
 #include<vector>
 
 #include"common.h"
+// @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
+#include"experiment_logger.h"
 #include"logger.h"
 #include"simulator.h"
 #include"state.h"
 #include"stage.h"
 #include"snake.h"
+#include"strategy/greedy.h"
+#include"strategy/hill_climbing.h"
+#include"strategy/simulated_annealing.h"
 
 int main() {
   int n,m,c;
@@ -27,20 +32,22 @@ int main() {
   }
 
   Logger logger("log.txt");
+// @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
+  ExperimentLogger experiment_logger("experiment.csv");
 
   Snake snake(n);
   Stage stage(n,food);
   
   State state(stage,snake);
 
-  Simulator simulator(state,logger,ideal);
-  simulator.solve();
+// @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
+  SimulatedAnnealing strategy(ideal,experiment_logger);
 
-  std::vector<char> result=simulator.operation_row();
+  Simulator simulator(state,strategy,logger);
+  std::vector<char> result=simulator.simulate();
 
   for(const auto& res:result){
     std::cout<<res<<'\n';
   }
   return 0;
 }
-

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/home/hase/trace-pilot-experiment/atcoder/AHC063/src
 
 CXX_FLAGS = -std=c++17
 
