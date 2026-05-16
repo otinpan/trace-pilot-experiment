@@ -1,0 +1,16 @@
+===================================================================
+--- simulated_annealing.cpp (before)	snapshot
++++ simulated_annealing.cpp (after)	idle
+@@ -10,10 +10,10 @@
+ )
+   :Strategy(ideal)
+   ,debug_logger_(debug_logger)
+   ,rng_(0)
+-  ,start_temp_(15000.0)
+-  ,end_temp_(1.0)
++  ,start_temp_(200000.0)
++  ,end_temp_(1000.0)
+ {
+ 
+ }
+ 
