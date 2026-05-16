@@ -1,0 +1,1 @@
+Improve the hill climbing algorithm for a snake puzzle solver to better find the locally optimal solution by exploring all valid moves (up, down, left, right) and updating the current state and best score accordingly, including logging progress and final results.
