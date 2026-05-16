@@ -1,0 +1,28 @@
+void mountain() {
+
+    STATE state;
+    init(state);
+
+    while (true) {
+
+        double now_time = getTime();
+
+        if (now_time > TIME_LIMIT) {
+            break;
+        }
+
+        STATE new_state = state;
+
+        modify(new_state);
+
+        int new_score =
+            calc_score(new_state);
+
+        int pre_score =
+            calc_score(state);
+
+        if (new_score > pre_score) {
+            state = new_state;
+        }
+    }
+}
