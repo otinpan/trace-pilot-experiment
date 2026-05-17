@@ -17,6 +17,7 @@ set(SOURCES
     src/strategy/greedy.cpp
     src/strategy/hill_climbing.cpp
     src/strategy/simulated_annealing.cpp
+    src/strategy/beam_search.cpp
 )
 
 add_executable(main

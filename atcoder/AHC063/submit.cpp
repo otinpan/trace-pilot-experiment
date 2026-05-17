@@ -290,6 +290,7 @@ State::~State(){
 
 }
 
+
 bool State::apply(Direction dir){
   const Pos next_head=snake_.head().pos+DIRS[(int)dir];
 
@@ -299,16 +300,20 @@ bool State::apply(Direction dir){
   }
 
 
+
   if(!snake_.canMove(dir)){
     return false;
   }
+
 
 
   Color food=stage_.removeFood(next_head);
   assert(food!=OUT_OF_BOUND);
 
 
+
   const Segment old_segment=snake_.move(dir);
+
 
 
   if(food!=EMPTY){
@@ -316,7 +321,9 @@ bool State::apply(Direction dir){
   }
 
 
+
   const std::vector<Segment> dropped=snake_.bite();
+
   stage_.addFoods(dropped);
 
   return true;
@@ -404,12 +411,29 @@ class ExperimentLogger{
         int seed
     );
 
+    void logBeamResult(
+        int beam_width,
+        int best_score
+    );
+
+
   private:
+    enum class Format{
+      SimulatedAnnealing,
+      BeamSearch
+    };
+
     std::ofstream ofs_;
+    Format format_;
 };
 /* END src/experiment_logger.h */
 /* BEGIN src/experiment_logger.cpp */
 ExperimentLogger::ExperimentLogger(const std::string& path){
+  const std::string stem=std::filesystem::path(path).stem().string();
+  format_=(stem=="beam_experiment")
+    ? Format::BeamSearch
+    : Format::SimulatedAnnealing;
+
   const bool exists=std::filesystem::exists(path);
   const bool has_content=
     exists && std::filesystem::is_regular_file(path) &&
@@ -418,7 +442,11 @@ ExperimentLogger::ExperimentLogger(const std::string& path){
   ofs_.open(path,std::ios::app);
 
   if(!has_content){
-    ofs_<<"start_temp,end_temp,best_score,elapsed,operation_count,snake_size,seed\n";
+    if(format_==Format::BeamSearch){
+      ofs_<<"beam_width,best_score\n";
+    }else{
+      ofs_<<"start_temp,end_temp,best_score,elapsed,operation_count,snake_size,seed\n";
+    }
   }
 }
 
@@ -439,6 +467,15 @@ void ExperimentLogger::logSaResult(
     <<operation_count<<","
     <<snake_size<<","
     <<seed<<"\n";
+}
+
+void ExperimentLogger::logBeamResult(
+    int beam_width,
+    int best_score
+){
+  ofs_
+    <<beam_width<<","
+    <<best_score<<"\n";
 }
 /* END src/experiment_logger.cpp */
 /* BEGIN src/timer.h */
@@ -796,8 +833,9 @@ SimulatedAnnealing::SimulatedAnnealing(
   ,rng_(0)
 
 
+
   ,start_temp_(40000.0)
-  ,end_temp_(50.0)
+  ,end_temp_(10.0)
 {
 
 }
@@ -882,6 +920,106 @@ std::vector<char> SimulatedAnnealing::solveRandomly(State& state,Logger& logger)
   return best.operations;
 }
 /* END src/strategy/simulated_annealing.cpp */
+/* BEGIN src/strategy/beam_search.h */
+/*
+beamwidthが小さい
+軽い
+高速
+局所解に弱い
+
+beamwidth が大きい
+重い
+未来を広く見られる
+*/
+
+
+class BeamSearch: public Strategy{
+  public:
+    BeamSearch(const std::vector<Color>& ideal,ExperimentLogger& experiment_logger);
+    ~BeamSearch() override;
+
+    std::vector<char> solve(State& state,Logger& logger) override;
+
+    void setBeamWidth(int width){beam_width_=width;}
+    int getBeamWidth() const{return beam_width_;}
+  private:
+    ExperimentLogger& experiment_logger_;
+    int beam_width_;
+};
+/* END src/strategy/beam_search.h */
+/* BEGIN src/strategy/beam_search.cpp */
+BeamSearch::BeamSearch(const std::vector<Color>& ideal,ExperimentLogger& experiment_logger)
+  :Strategy(ideal)
+  ,experiment_logger_(experiment_logger)
+  ,beam_width_(10)
+{
+
+}
+
+
+BeamSearch::~BeamSearch()=default;
+
+
+std::vector<char> BeamSearch::solve(State& state,Logger& logger){
+  Timer timer;
+  std::vector<std::pair<int,Candidate>> beam;
+  Candidate init_cand=createInitialCandidate(state);
+  int init_score=score(state,init_cand.operations.size());
+  beam.emplace_back(std::make_pair(init_score,init_cand));
+
+  int step=0;
+  std::vector<std::pair<int,Candidate>> next_cands;
+  int init_counter=countTotFood(init_cand);
+  while(timer.elapsed()<TIME_LIMIT){
+    next_cands.clear();
+    step++;
+    for(const auto& b:beam){
+      for(Direction dir:{
+        Direction::UP,
+        Direction::RIGHT,
+        Direction::DOWN,
+        Direction::LEFT
+      }){
+        if(!b.second.state.snake().canMove(dir)){
+          continue;
+        }
+        Candidate next_cand=createNextCandidate(b.second,dir);
+        int next_score=score(next_cand.state,next_cand.operations.size());
+        next_cands.emplace_back(std::make_pair(next_score,next_cand));
+      }
+    }
+
+    std::sort(next_cands.begin(),next_cands.end(),
+        [](const auto& a,const auto& b){
+        return a.first<b.first;
+    });
+
+    if(next_cands.size()>static_cast<size_t>(beam_width_)){
+      next_cands.erase(next_cands.begin()+beam_width_,next_cands.end());
+    }
+
+    logger.log("next cands size: "+std::to_string(next_cands.size())+'\n');
+    for(const auto& c:next_cands){
+      int counter=countTotFood(c.second);
+      logger.log("time: "+std::to_string(timer.elapsed()));
+      logger.log("score: "+std::to_string(c.first));
+      logger.log("m: "+std::to_string(ideal_.size())+", t: "+std::to_string(c.second.state.snake().size()));
+      logger.log(c.second.state,step);
+      logger.log("current_counter: "+std::to_string(counter));
+      assert(init_counter==counter);
+    }
+
+    beam=next_cands;
+  }
+
+  Candidate& best=beam[0].second;
+  int best_score=beam[0].first;
+
+  logger.log("final score: "+std::to_string(best_score));
+  experiment_logger_.logBeamResult(beam_width_,best_score);
+  return best.operations;
+}
+/* END src/strategy/beam_search.cpp */
 /* BEGIN src/simulator.h */
 class Simulator{
   public:
@@ -942,14 +1080,15 @@ int main() {
 
   Logger logger("log.txt");
 
-  ExperimentLogger experiment_logger("experiment.csv");
+  ExperimentLogger sa_logger("sa_experiment.csv");
+  ExperimentLogger beam_logger("beam_experiment0011.csv");
 
   Snake snake(n);
   Stage stage(n,food);
 
   State state(stage,snake);
 
-  HillClimbing strategy(ideal);
+  BeamSearch strategy(ideal,beam_logger);
 
   Simulator simulator(state,strategy,logger);
   std::vector<char> result=simulator.simulate();

@@ -205,6 +205,17 @@ CMakeFiles/main.dir/src/main.cpp.o: \
  /usr/include/c++/12/bits/stl_numeric.h /usr/include/c++/12/bit \
  /usr/include/c++/12/pstl/glue_numeric_defs.h \
  /usr/include/c++/12/pstl/execution_defs.h \
+ /home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/../timer.h \
+ /usr/include/c++/12/chrono /usr/include/c++/12/bits/chrono.h \
+ /usr/include/c++/12/ratio /usr/include/c++/12/ctime \
+ /usr/include/c++/12/bits/parse_numbers.h \
  /home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/greedy.h \
  /home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/hill_climbing.h \
- /home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/simulated_annealing.h
+ /home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/simulated_annealing.h \
+ /home/hase/trace-pilot-experiment/atcoder/AHC063/src/strategy/beam_search.h \
+ /usr/include/c++/12/cassert /usr/include/assert.h \
+ /usr/include/c++/12/algorithm /usr/include/c++/12/bits/stl_algo.h \
+ /usr/include/c++/12/bits/algorithmfwd.h \
+ /usr/include/c++/12/bits/stl_heap.h \
+ /usr/include/c++/12/bits/stl_tempbuf.h \
+ /usr/include/c++/12/pstl/glue_algorithm_defs.h

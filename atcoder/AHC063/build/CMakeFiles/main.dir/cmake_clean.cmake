@@ -13,6 +13,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/main.dir/src/stage.cpp.o.d"
   "CMakeFiles/main.dir/src/state.cpp.o"
   "CMakeFiles/main.dir/src/state.cpp.o.d"
+  "CMakeFiles/main.dir/src/strategy/beam_search.cpp.o"
+  "CMakeFiles/main.dir/src/strategy/beam_search.cpp.o.d"
   "CMakeFiles/main.dir/src/strategy/greedy.cpp.o"
   "CMakeFiles/main.dir/src/strategy/greedy.cpp.o.d"
   "CMakeFiles/main.dir/src/strategy/hill_climbing.cpp.o"

@@ -390,6 +390,30 @@ src/state.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/state_test.dir/build.make CMakeFiles/state_test.dir/src/state.cpp.s
 .PHONY : src/state.cpp.s
 
+src/strategy/beam_search.o: src/strategy/beam_search.cpp.o
+.PHONY : src/strategy/beam_search.o
+
+# target to build an object file
+src/strategy/beam_search.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/beam_search.cpp.o
+.PHONY : src/strategy/beam_search.cpp.o
+
+src/strategy/beam_search.i: src/strategy/beam_search.cpp.i
+.PHONY : src/strategy/beam_search.i
+
+# target to preprocess a source file
+src/strategy/beam_search.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/beam_search.cpp.i
+.PHONY : src/strategy/beam_search.cpp.i
+
+src/strategy/beam_search.s: src/strategy/beam_search.cpp.s
+.PHONY : src/strategy/beam_search.s
+
+# target to generate assembly for a file
+src/strategy/beam_search.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/strategy/beam_search.cpp.s
+.PHONY : src/strategy/beam_search.cpp.s
+
 src/strategy/greedy.o: src/strategy/greedy.cpp.o
 .PHONY : src/strategy/greedy.o
 
@@ -618,6 +642,9 @@ help:
 	@echo "... src/state.o"
 	@echo "... src/state.i"
 	@echo "... src/state.s"
+	@echo "... src/strategy/beam_search.o"
+	@echo "... src/strategy/beam_search.i"
+	@echo "... src/strategy/beam_search.s"
 	@echo "... src/strategy/greedy.o"
 	@echo "... src/strategy/greedy.i"
 	@echo "... src/strategy/greedy.s"

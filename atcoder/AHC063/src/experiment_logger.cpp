@@ -3,6 +3,11 @@
 #include<filesystem>
 
 ExperimentLogger::ExperimentLogger(const std::string& path){
+  const std::string stem=std::filesystem::path(path).stem().string();
+  format_=(stem=="beam_experiment")
+    ? Format::BeamSearch
+    : Format::SimulatedAnnealing;
+
   const bool exists=std::filesystem::exists(path);
   const bool has_content=
     exists && std::filesystem::is_regular_file(path) &&
@@ -11,7 +16,11 @@ ExperimentLogger::ExperimentLogger(const std::string& path){
   ofs_.open(path,std::ios::app);
 
   if(!has_content){
-    ofs_<<"start_temp,end_temp,best_score,elapsed,operation_count,snake_size,seed\n";
+    if(format_==Format::BeamSearch){
+      ofs_<<"beam_width,best_score\n";
+    }else{
+      ofs_<<"start_temp,end_temp,best_score,elapsed,operation_count,snake_size,seed\n";
+    }
   }
 }
 
@@ -32,4 +41,13 @@ void ExperimentLogger::logSaResult(
     <<operation_count<<","
     <<snake_size<<","
     <<seed<<"\n";
+}
+
+void ExperimentLogger::logBeamResult(
+    int beam_width,
+    int best_score
+){
+  ofs_
+    <<beam_width<<","
+    <<best_score<<"\n";
 }

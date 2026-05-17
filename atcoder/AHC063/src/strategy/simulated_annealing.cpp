@@ -3,7 +3,6 @@
 #include<algorithm>
 #include<cmath>
 #include<cassert>
-#include"../timer.h"
 
 // @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
 SimulatedAnnealing::SimulatedAnnealing(
@@ -16,8 +15,9 @@ SimulatedAnnealing::SimulatedAnnealing(
   ,rng_(0)
   // @trace-pilot d2354c8817ce16b96762184960760fb0ccfe23b4
   //40000	10	92129	1.95002	2129	29	0
+  // in/0000.txtでスコアが高いものを選んだ
   ,start_temp_(40000.0)
-  ,end_temp_(50.0)
+  ,end_temp_(10.0)
 {
 
 }

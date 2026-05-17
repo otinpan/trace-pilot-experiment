@@ -17,6 +17,18 @@ class ExperimentLogger{
         int seed
     );
 
+    void logBeamResult(
+        int beam_width,
+        int best_score
+    );
+
+
   private:
+    enum class Format{
+      SimulatedAnnealing,
+      BeamSearch
+    };
+
     std::ofstream ofs_;
+    Format format_;
 };

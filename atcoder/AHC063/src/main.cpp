@@ -11,6 +11,7 @@
 #include"strategy/greedy.h"
 #include"strategy/hill_climbing.h"
 #include"strategy/simulated_annealing.h"
+#include"strategy/beam_search.h"
 
 int main() {
   int n,m,c;
@@ -32,14 +33,15 @@ int main() {
 
   Logger logger("log.txt");
   // @trace-pilot c041b61f1898609dde303ca4926e67b605ec94da
-  ExperimentLogger experiment_logger("experiment.csv");
+  ExperimentLogger sa_logger("sa_experiment.csv");
+  ExperimentLogger beam_logger("beam_experiment0011.csv");
 
   Snake snake(n);
   Stage stage(n,food);
   
   State state(stage,snake);
 
-  HillClimbing strategy(ideal);
+  BeamSearch strategy(ideal,beam_logger);
 
   Simulator simulator(state,strategy,logger);
   std::vector<char> result=simulator.simulate();

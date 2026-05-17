@@ -29,6 +29,8 @@ SOURCE_ORDER = [
     "src/strategy/hill_climbing.cpp",
     "src/strategy/simulated_annealing.h",
     "src/strategy/simulated_annealing.cpp",
+    "src/strategy/beam_search.h",
+    "src/strategy/beam_search.cpp",
     "src/simulator.h",
     "src/simulator.cpp",
     "src/main.cpp",
