@@ -1,3 +1,0 @@
-/home/hase/trace-pilot-experiment/atcoder/AHC062/build-cmake-check/CMakeFiles/ahc062.dir
-/home/hase/trace-pilot-experiment/atcoder/AHC062/build-cmake-check/CMakeFiles/edit_cache.dir
-/home/hase/trace-pilot-experiment/atcoder/AHC062/build-cmake-check/CMakeFiles/rebuild_cache.dir

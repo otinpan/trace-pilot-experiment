@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/snake_test.dir/tests/snake_test.cpp.o CMakeFiles/snake_test.dir/src/snake.cpp.o -o snake_test 
