@@ -1,0 +1,1 @@
+Fix a bug in the C++ code where the variable name is incorrect in the function that decides the zigzag vertical solving strategy; change 'is_vertical' to 'is_vertical_' to match the variable naming convention or correct variable used.
