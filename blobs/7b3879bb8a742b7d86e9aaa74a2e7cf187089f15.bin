@@ -1,0 +1,5 @@
+cout << "0x"
+     << setw(4)
+     << setfill('0')
+     << hex
+     << 255;
