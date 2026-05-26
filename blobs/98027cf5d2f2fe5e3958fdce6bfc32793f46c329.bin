@@ -1,0 +1,145 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/greedy.cpp
+```diff
+===================================================================
+--- greedy.cpp (before)	snapshot
++++ greedy.cpp (after)	idle
+@@ -15,8 +15,25 @@
+ std::vector<Pos> Greedy::solve_zigzag(State& state,Logger& logger){
+   std::vector<Pos> result;
+   logger.log(state);
+   result.emplace_back(state.pos());
++  for(int i=0;i<map_size;i++){
++    Direction dir=i%2==0 ? Direction::RIGHT : Direction::LEFT;
++    for(int j=0;j<map_size-1;j++){
++      if(!state.apply(dir)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++    }
++
++    if(i!=map_size-1){
++      if(!state.apply(Direction::DOWN)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++    }
+   }
+ 
+   return result;
+ }
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/log.txt
+```diff
+===================================================================
+--- log.txt (before)	snapshot
++++ log.txt (after)	external
+@@ -1,37 +1,64 @@
+ start
+ turn = 0
+ pos = (0,0)
+ score = 0
+-1     2     3     4     5     6     7     8     9     
++1     2     3     
++4     5     6     
++7     8     9     
++
+ turn = 1
+ pos = (0,1)
+ score = 2
+--1    2     3     4     5     6     7     8     9     
++-1    2     3     
++4     5     6     
++7     8     9     
++
+ turn = 2
+ pos = (0,2)
+ score = 8
+--1    -1    3     4     5     6     7     8     9     
++-1    -1    3     
++4     5     6     
++7     8     9     
++
+ turn = 3
+ pos = (1,2)
+ score = 26
+--1    -1    -1    4     5     6     7     8     9     
++-1    -1    -1    
++4     5     6     
++7     8     9     
++
+ turn = 4
+ pos = (1,1)
+ score = 46
+--1    -1    -1    4     5     -1    7     8     9     
++-1    -1    -1    
++4     5     -1    
++7     8     9     
++
+ turn = 5
+ pos = (1,0)
+ score = 66
+--1    -1    -1    4     -1    -1    7     8     9     
++-1    -1    -1    
++4     -1    -1    
++7     8     9     
++
+ turn = 6
+ pos = (2,0)
+ score = 108
+--1    -1    -1    -1    -1    -1    7     8     9     
++-1    -1    -1    
++-1    -1    -1    
++7     8     9     
++
+ turn = 7
+ pos = (2,1)
+ score = 164
+--1    -1    -1    -1    -1    -1    -1    8     9     
++-1    -1    -1    
++-1    -1    -1    
++-1    8     9     
++
+ turn = 8
+ pos = (2,2)
+ score = 236
+--1    -1    -1    -1    -1    -1    -1    -1    9     
++-1    -1    -1    
++-1    -1    -1    
++-1    -1    9     
++
+
+```
+
+`solve_zigzag` を仕様通り `N^2` 座標だけ返す形に直します。あわせて未使用変数も消して、`apply` 失敗時に壊れた座標列を増やさないようにします。
+
+修正は入れました。次にビルドして、少なくとも小さい入力で座標数と重複が崩れていないか確認します。
+
+ビルドは通りました。最後に `3x3` の簡単な入力で、出力が9行のジグザグ経路になっているか実行確認します。
+
+直しました。
+
+[greedy.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/greedy.cpp:15) の `solve_zigzag` を、各行で横に `N-1` 回進み、最終行以外だけ `DOWN` する形に変更しました。これで出力数は `N^2` 個になり、`apply()` が失敗した場合も重複座標を追加しません。未使用だった `score` / `turn` も削除しました。
+
+確認済みです。
+
+```text
+cmake --build build
+```
+
+成功しました。`3x3` 入力では以下のジグザグ経路になりました。
+
+```text
+0 0
+0 1
+0 2
+1 2
+1 1
+1 0
+2 0
+2 1
+2 2
+```
