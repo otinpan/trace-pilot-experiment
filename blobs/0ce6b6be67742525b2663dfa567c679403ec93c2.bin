@@ -1,0 +1,1 @@
+Generate a step-by-step log of game states over multiple turns for a grid-based scoring game, showing the turn number, current position, cumulative score, and the state of a 3x3 grid (represented as a list of 9 values) after each move.
