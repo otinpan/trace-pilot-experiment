@@ -1,0 +1,6 @@
+cout << "0x"
+     << uppercase
+     << setw(3)
+     << setfill('0')
+     << hex
+     << x;
