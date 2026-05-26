@@ -1,0 +1,17 @@
+-  int score=0;
+-  int turn=0;
+-    for(int j=0;j<map_size;j++){
+-      if(j==0||j==map_size-1){
+-        dir=Direction::DOWN;
++    for(int j=0;j<map_size-1;j++){
++      if(!state.apply(dir)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++    }
++
++    if(i!=map_size-1){
++      if(!state.apply(Direction::DOWN)){
++        return result;
+-      state.apply(dir);
