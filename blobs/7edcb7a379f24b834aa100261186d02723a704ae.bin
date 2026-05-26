@@ -1,0 +1,1 @@
+cout << setw(5) << setfill('0') << 23 << endl;
