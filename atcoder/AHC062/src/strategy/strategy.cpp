@@ -9,7 +9,7 @@ Strategy::Strategy()
 Strategy::~Strategy()=default;
 
 
-std::vector<std::pair<char,char>> Strategy::solve(State& state,Logger& logger){
+std::vector<Pos> Strategy::solve(State& state,Logger& logger){
   (void)state;
   (void)logger;
   return{};

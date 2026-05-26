@@ -2,6 +2,7 @@
 #include<iostream>
 #include<vector>
 #include<random>
+#include<cassert>
 
 #include"../common.h"
 #include"../state.h"
@@ -13,7 +14,7 @@ class Strategy{
     Strategy();
     virtual ~Strategy();
 
-    virtual std::vector<std::pair<char,char>> solve(State& state,Logger& logger);
+    virtual std::vector<Pos> solve(State& state,Logger& logger);
 
   protected:
     std::mt19937 rng_;

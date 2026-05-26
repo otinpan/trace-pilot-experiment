@@ -12,8 +12,9 @@ Simulator::~Simulator(){
 
 }
 
-std::vector<std::pair<char,char>> Simulator::simulate(){
-  std::vector<std::pair<char,char>> result=strategy_.solve(state_,logger_);
+std::vector<Pos> Simulator::simulate(){
+  logger_.log("start");
+  std::vector<Pos> result=strategy_.solve(state_,logger_);
 
   return result;
 }

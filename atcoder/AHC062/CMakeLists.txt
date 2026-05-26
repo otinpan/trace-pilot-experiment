@@ -9,10 +9,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(ahc062
     src/main.cpp
     src/logger.cpp
-    src/map.cpp
     src/simulator.cpp
     src/state.cpp
     src/strategy/strategy.cpp
+    src/strategy/greedy.cpp
 )
 
 target_include_directories(ahc062 PRIVATE
@@ -32,5 +32,21 @@ target_include_directories(common_test PRIVATE
 )
 
 set_target_properties(common_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
+)
+
+add_executable(greedy_test
+    tests/greedy_test.cpp
+    src/logger.cpp
+    src/state.cpp
+    src/strategy/strategy.cpp
+    src/strategy/greedy.cpp
+)
+
+target_include_directories(greedy_test PRIVATE
+    "${CMAKE_SOURCE_DIR}/src"
+)
+
+set_target_properties(greedy_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
 )

@@ -4,6 +4,7 @@
 #include<array>
 
 extern int map_size;
+const double TIME_LIMIT=2.95;
 
 struct Pos{
   int i,j;

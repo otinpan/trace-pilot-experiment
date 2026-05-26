@@ -17,7 +17,7 @@ class Simulator{
     );
     ~Simulator();
 
-    std::vector<std::pair<char,char>> simulate();
+    std::vector<Pos> simulate();
 
   private:
     State state_;
