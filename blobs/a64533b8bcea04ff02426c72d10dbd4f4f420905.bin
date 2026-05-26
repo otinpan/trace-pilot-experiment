@@ -1,0 +1,30 @@
+はい。
+C++では setw() と setfill() を使うことで、整数の桁数を揃えて表示できます。
+例えば：
+C++#include <iostream>#include <iomanip>using namespace std;int main() {    cout << setw(5) << 1   << endl;    cout << setw(5) << 23  << endl;    cout << setw(5) << 456 << endl;}
+出力：
+    1   23  456
+右寄せで幅5になります。
+
+0埋めしたい場合
+C++cout << setw(5) << setfill('0') << 23 << endl;
+出力：
+00023
+
+左寄せ
+C++cout << left << setw(5) << 23 << endl;
+出力：
+23
+
+表形式でよく使う例
+C++for (int i = 0; i < 10; i++) {    cout << setw(3) << i;}
+出力：
+  0  1  2  3  4  5  6  7  8  9
+
+hexと組み合わせ
+C++cout << "0x"     << setw(4)     << setfill('0')     << hex     << 255;
+出力：
+0x00ff
+
+よく使う manipulators
+manipulator意味setw(n)幅を n にするsetfill(c)空きを c で埋めるleft左寄せright右寄せhex16進数dec10進数oct8進数
