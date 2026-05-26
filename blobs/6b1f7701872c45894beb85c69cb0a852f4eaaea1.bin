@@ -1,0 +1,14 @@
+===================================================================
+--- greedy.cpp (before)	snapshot
++++ greedy.cpp (after)	idle
+@@ -9,9 +9,9 @@
+ 
+ Greedy::~Greedy()=default;
+ 
+ std::vector<Pos> Greedy::solve(State& state,Logger& logger){
+-  if(is_vertical)return solve_zigzag_vertical(state,logger);
++  if(is_vertical_)return solve_zigzag_vertical(state,logger);
+   return solve_zigzag(state,logger); 
+ }
+ 
+ std::vector<Pos> Greedy::solve_zigzag(State& state,Logger& logger){
