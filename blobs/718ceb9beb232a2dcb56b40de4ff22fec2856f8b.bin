@@ -1,0 +1,23 @@
+はい。setw と setfill を使うと、0x000 のように桁数を固定できます。
+例えば「16進数部分を3桁固定」にするなら：
+C++#include <iostream>#include <iomanip>using namespace std;int main() {    int x = 5;    cout << "0x"         << setw(3)         << setfill('0')         << hex         << x         << endl;}
+出力：
+0x005
+
+例
+C++0   -> 0x0005   -> 0x00515  -> 0x00f255 -> 0x0ff400 -> 0x190
+
+大文字版
+C++cout << "0x"     << uppercase     << setw(3)     << setfill('0')     << hex     << x;
+出力：
+0x0FF
+
+4桁固定なら
+C++setw(4)
+0x0005
+
+よくある罠
+setw() は「次の1回の出力」にしか効きません。
+なので：
+C++cout << setw(3) << x << y;
+だと x にしか適用されません。
