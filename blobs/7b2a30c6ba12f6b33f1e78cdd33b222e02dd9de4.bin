@@ -1,0 +1,15 @@
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+    int x = 5;
+
+    cout << "0x"
+         << setw(3)
+         << setfill('0')
+         << hex
+         << x
+         << endl;
+}
