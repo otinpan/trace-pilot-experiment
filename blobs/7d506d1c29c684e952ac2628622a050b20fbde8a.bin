@@ -1,0 +1,1 @@
+## `logger.cpp`でkingdomを見やすく表示するために`setw`を使用
