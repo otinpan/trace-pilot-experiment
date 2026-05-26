@@ -1,0 +1,1 @@
+cout << left << setw(5) << 23 << endl;
