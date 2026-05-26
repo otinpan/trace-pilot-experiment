@@ -1,0 +1,2 @@
+-    Greedy(bool is_vertical);
++    Greedy(bool is_vertical=false);

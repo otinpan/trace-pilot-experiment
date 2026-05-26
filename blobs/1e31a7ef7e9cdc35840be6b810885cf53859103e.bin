@@ -1,0 +1,23 @@
+-  Logger logger("log.txt");
++  Logger horizontal_logger("horizontal.log");
++  Logger vertical_logger("vertical.log");
++
++  State horizontal_state(g);
++  State vertical_state(g);
+ 
+-  State state(g);
++  Greedy horizontal_strategy(false);
++  Greedy vertical_strategy(true);
++
++  horizontal_logger.log("start");
++  std::vector<Pos> horizontal_result=horizontal_strategy.solve(horizontal_state,horizontal_logger);
+ 
+-  Greedy strategy;
++  vertical_logger.log("start");
++  std::vector<Pos> vertical_result=vertical_strategy.solve(vertical_state,vertical_logger);
+ 
+-  Simulator simulator(state,strategy,logger);
+-  std::vector<Pos> result=simulator.simulate();
++  std::vector<Pos> result=horizontal_state.score()>=vertical_state.score()
++    ? horizontal_result
++    : vertical_result;
