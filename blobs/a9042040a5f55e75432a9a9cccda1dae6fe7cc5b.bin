@@ -1,0 +1,62 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/greedy.h
+```diff
+===================================================================
+--- greedy.h (before)	snapshot
++++ greedy.h (after)	idle
+@@ -2,9 +2,9 @@
+ #include"strategy.h"
+ 
+ class Greedy: public Strategy{
+   public:
+-    Greedy(bool is_vertical);
++    Greedy(bool is_vertical=false);
+     ~Greedy() override;
+ 
+     std::vector<Pos> solve(State& state,Logger& logger) override;
+   private:
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/submit.cpp
+```diff
+===================================================================
+--- submit.cpp (before)	snapshot
++++ submit.cpp (after)	external
+@@ -230,9 +230,9 @@
+ /* END src/strategy/strategy.cpp */
+ /* BEGIN src/strategy/greedy.h */
+ class Greedy: public Strategy{
+   public:
+-    Greedy(bool is_vertical);
++    Greedy(bool is_vertical=false);
+     ~Greedy() override;
+ 
+     std::vector<Pos> solve(State& state,Logger& logger) override;
+   private:
+
+```
+
+実装に入ります。`Greedy` に方向設定を持たせて、`main` で横・縦それぞれ別ログに流し、最終出力はスコアの高い経路にします。
+
+既に `Greedy(bool is_vertical)` と `is_vertical_` は入っていました。今は `main` が古い `Greedy strategy;` のままなので、ここを横・縦の2戦略比較に差し替え、提出用 `submit.cpp` も同じ形に同期します。
+
+比較には `Simulator` を使わず `solve()` を直接呼びます。`Simulator` は `State` を内部に持っていて、実行後スコアを外から見られないためです。ログの `start` は各ログへ明示的に書きます。
+
+`src/main.cpp` は差し替えました。続けて `submit.cpp` の Greedy 定義と main も同じ内容へ更新します。
+
+既存テストや他の呼び出しが `Greedy greedy;` の形でも壊れにくいように、コンストラクタ引数にはデフォルト値を付けます。今回の比較処理では明示的に `false` と `true` を渡します。
+
+実装しました。テストとビルドは実行していません。
+
+変更内容:
+- `Greedy(bool is_vertical=false)` にして、`false` が横方向、`true` が縦方向。
+- `main` で横方向・縦方向の `Greedy` をそれぞれ別の `State` で実行。
+- ログは `horizontal.log` と `vertical.log` に分離。
+- `horizontal_state.score()` と `vertical_state.score()` を比較して、スコアが高い方の経路を出力。
+- `submit.cpp` も同じ内容に同期。
+
+主な変更ファイル:
+- [src/main.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/main.cpp)
+- [src/strategy/greedy.h](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/greedy.h)
+- [src/strategy/greedy.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/greedy.cpp)
+- [submit.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/submit.cpp)
