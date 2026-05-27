@@ -1,0 +1,76 @@
+# Intent
+## `logger.cpp`でkingdomを見やすく表示するために`setw`を使用
+問題で与えられるグリッドはN*N=400まで取る。そのため、そのまま表示すると列が一致しなくなってしまう。
+```
+100 2 12 22 ...
+1 23 3 223 ...
+...
+```
+みたいな感じで。そこで左寄せして表示することにした。
+8f2e4730893b09b981c8b335523fe8bf5c3af762
+
+## `greedy.cpp`の`solve_zigzag`をCodexに修正してもらった
+ @trace-pilot 8df6e90bf6b89471b82eaeda517c4f1aa2bc3e1f
+`greedy`を実装したところで実行したら、止まらなくなった。そこでCodexに`greedy`の`solve_zigzag`を修正してもらった。その結果、ジグザグに動くようになった。
+8f2e4730893b09b981c8b335523fe8bf5c3af762
+
+## `greedy.cpp`で縦方向と横方向にジグザグ動く2パターンでよい方を採用
+`greedy.cpp`で縦方向と横方向にジグザグ動く2パターンを作成。2つとも試して、スコアの良い方を実際に採用したい。これをCodexに実装してもらった。
+8f2e4730893b09b981c8b335523fe8bf5c3af762
+
+
+## `surroung.cpp`で外周移動をdfsで探索する`dfs`関数を修正してもらった
+// @trace-pilot 0232a54618a1e1d058f6147882aad590716ac605
+(0,0)から出発するとき、横or縦に移動する2通りの方法がある。横に移動した場合(0,N-1)まで移動することになる。さらにその状態から1つ移動して(1,199)にすると、その状態から移動できる方向も2通りできる。このように各位置から2通りの移動方法がある。
+```
+(0,0)
+
+├── (0,N-1)
+│   │
+│   └── (1,N-1)
+│       │
+│       ├── (1,0)
+│       │   │
+│       │   └── (2,0)
+│       │       │
+│       │       ├── (2,N-1)
+│       │       └── (N-1,0)
+│       │
+│       └── (N-1,N-1)
+
+└── (N-1,0)
+    │
+    └── (N-1,1)
+        │
+        ├── (0,1)
+        │   │
+        │   └── (0,2)
+        │
+        └── (N-1,N-1)
+```
+
+* 端まで一直線にすすむ
+* 1マス曲がる
+
+を繰り返す。これを`depth_`だけ行う。このスコアが最も高いものを採用する。
+
+## `surround`の`solve`をCodexに実装してもらった
+@trace-pilot 1eadc07aa10d0526a249473eac1c1a4fd6cd7882
+`dfs`は完成した。`dfs`では深さ優先で`depth_`分探索したときの最大スコアを返すだけだった。そのため、次に移動する方向は返さない。`solve`を実装する前に、`SearchResult`を作り、スコアと方向を返すようにしてもらった。また`solve`を実装して、最大スコアの方向に名いっぱい進み、ターンするようにしてもらった。
+
+
+## `turn_back`で`solve_horizontal`をCodexに修正させた
+[2way line](https://zenn.dev/yoto1980yen/articles/f4867e91ead7f1#2.-%E3%83%95%E3%82%A7%E3%83%BC%E3%82%BA%E5%88%86%E5%89%B2)をもとに実装した。しかし、境界値でバグが出たため、Codexに修正させた。
+@trace-pilot 5604e62321fc0b2c541d210fe6e249bbb803c1c6
+
+## `turn_back`で未訪問のマスがあったため、Codexに修正させた
+上を直した後、実行したら
+```
+ Running `target/release/vis in/0000.txt /home/hase/trace-pilot-experiment/atcoder/AHC062/out.txt`
+Not finished
+Score = 0
+Generated:
+  output: /home/hase/trace-pilot-experiment/atcoder/AHC062/out.txt
+  visualizer: /home/hase/trace-pilot-experiment/atcoder/AHC062/tools/vis.html
+```
+と出た。これをCodexに見せて修正してもらった。(198,0),(198,1),(199,0)に通っていなかったらしい。左下に達したら、例外的に左斜め下に移動ようになった。
