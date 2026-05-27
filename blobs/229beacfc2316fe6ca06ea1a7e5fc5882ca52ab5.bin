@@ -1,0 +1,11 @@
+===================================================================
+--- strategy.cpp (before)	snapshot
++++ strategy.cpp (after)	idle
+@@ -34,6 +34,6 @@
+     pos=next;
+     turn++;
+     score+=(long long)turn*state.kingdom()[pos.i][pos.j];
+   }
+-  return 0;
++  return score;
+ }

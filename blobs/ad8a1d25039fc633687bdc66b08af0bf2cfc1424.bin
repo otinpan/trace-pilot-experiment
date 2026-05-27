@@ -1,0 +1,71 @@
+===================================================================
+--- main.cpp (before)	snapshot
++++ main.cpp (after)	idle
+@@ -4,8 +4,9 @@
+ #include"logger.h"
+ #include"state.h"
+ #include"strategy/strategy.h"
+ #include"strategy/greedy.h"
++#include"strategy/sorround.h"
+ #include"simulator.h"
+ int map_size = 0;
+ 
+ int main(){
+@@ -23,25 +24,54 @@
+   }
+ 
+   Logger horizontal_logger("horizontal.log");
+   Logger vertical_logger("vertical.log");
++  Logger sorround_clockwise_logger("sorround_clockwise.log");
++  Logger sorround_counter_clockwise_logger("sorround_counter_clockwise.log");
+ 
+   State horizontal_state(g);
+   State vertical_state(g);
++  State sorround_clockwise_state(g);
++  State sorround_counter_clockwise_state(g);
+ 
+   Greedy horizontal_strategy(false);
+   Greedy vertical_strategy(true);
++  Sorround sorround_clockwise_strategy(true);
++  Sorround sorround_counter_clockwise_strategy(false);
+ 
+   horizontal_logger.log("start");
+   std::vector<Pos> horizontal_result=horizontal_strategy.solve(horizontal_state,horizontal_logger);
+ 
+   vertical_logger.log("start");
+   std::vector<Pos> vertical_result=vertical_strategy.solve(vertical_state,vertical_logger);
+ 
+-  std::vector<Pos> result=horizontal_state.score()>=vertical_state.score()
+-    ? horizontal_result
+-    : vertical_result;
++  sorround_clockwise_logger.log("start");
++  std::vector<Pos> sorround_clockwise_result=sorround_clockwise_strategy.solve(
++    sorround_clockwise_state,
++    sorround_clockwise_logger
++  );
+ 
++  sorround_counter_clockwise_logger.log("start");
++  std::vector<Pos> sorround_counter_clockwise_result=sorround_counter_clockwise_strategy.solve(
++    sorround_counter_clockwise_state,
++    sorround_counter_clockwise_logger
++  );
++
++  std::vector<Pos> result=horizontal_result;
++  long long best_score=horizontal_state.score();
++  if(vertical_state.score()>best_score){
++    best_score=vertical_state.score();
++    result=vertical_result;
++  }
++  if(sorround_clockwise_state.score()>best_score){
++    best_score=sorround_clockwise_state.score();
++    result=sorround_clockwise_result;
++  }
++  if(sorround_counter_clockwise_state.score()>best_score){
++    best_score=sorround_counter_clockwise_state.score();
++    result=sorround_counter_clockwise_result;
++  }
++
+   for(const auto& res:result){
+     std::cout<<res.i<<" "<<res.j<<'\n';
+   }
+ 
