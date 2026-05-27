@@ -1,0 +1,14 @@
+-  return solve_horizontal(state,logger);
++  State horizontal_state=state;
++  State vertical_state=state;
++
++  std::vector<Pos> horizontal=solve_horizontal(horizontal_state,logger);
++  std::vector<Pos> vertical=solve_vertical(vertical_state,logger);
++
++  if(vertical_state.score()>horizontal_state.score()){
++    state=vertical_state;
++    return vertical;
++  }
++
++  state=horizontal_state;
++  return horizontal;

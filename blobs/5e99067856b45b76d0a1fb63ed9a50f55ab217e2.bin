@@ -1,0 +1,112 @@
+-  (void)state;
+-  (void)logger;
+-  return {};
++  std::vector<Pos> res;
++  res.emplace_back(state.pos());
++
++  int left=state.kingdom()[1][0];
++  int right=state.kingdom()[1][1];
++  Pos next=left>right ? Pos(1,1) : Pos(1,0);
++  Direction dir=get_direction(state.pos(),next);
++  if(!state.apply(dir)){
++    return res;
++  }
++  res.emplace_back(state.pos());
++  for(int j=0;j<map_size;j+=2){
++    while(true){
++      Pos now=state.pos();
++      int i=j%4==0 ? now.i+1 : now.i-1;
++      assert(i>=1&&i<map_size-1);
++      int left=state.kingdom()[i][j];
++      int right=state.kingdom()[i][j+1];
++      Pos next=left>right ? Pos(i,j+1) : Pos(i,j);
++
++      if(i==map_size-2&&j%4==0){
++        next=Pos(i,j+1);
++      }
++      if(i==1&&j%4!=0){
++        next=Pos(i,j+1);
++      }
++      Direction dir=get_direction(now,next);
++      if(!state.apply(dir)){
++        return res;
++      }
++      res.emplace_back(state.pos());
++
++      if(state.pos().i==map_size-2||state.pos().i==1){
++        break;
++      }
++    }
++    if(j+2>=map_size){
++      break;
++    }
++    int i=j%4==0 ? map_size-2 : 1;
++    Pos next=Pos(i,j+2);
++    Direction dir=get_direction(state.pos(),next);
++    if(!state.apply(dir)){
++      return res;
++    }
++    res.emplace_back(state.pos());
++  }
++
++  if(state.pos()==Pos(1,map_size-1)){
++    for(const Pos& next:{
++      Pos(0,map_size-2),
++      Pos(0,map_size-1),
++      Pos(1,map_size-2)
++    }){
++      Direction dir=get_direction(state.pos(),next);
++      if(!state.apply(dir)){
++        return res;
++      }
++      res.emplace_back(state.pos());
++    }
++  }else if(state.pos()==Pos(map_size-2,map_size-1)){
++    for(const Pos& next:{
++      Pos(map_size-1,map_size-2),
++      Pos(map_size-1,map_size-1),
++      Pos(map_size-2,map_size-2)
++    }){
++      Direction dir=get_direction(state.pos(),next);
++      if(!state.apply(dir)){
++        return res;
++      }
++      res.emplace_back(state.pos());
++    }
++  }
++
++  for(int j=map_size-2;j>=0;j-=2){
++    while(true){
++      Pos now=state.pos();
++      int i=j%4==0 ? now.i-1 : now.i+1;
++      assert(i>=0&&i<map_size);
++      Pos next=state.kingdom()[i][j]!=-1 ? Pos(i,j) : Pos(i,j+1);
++      if(i==0||i==map_size-1){
++        next=Pos(i,j+1);
++      }
++
++      Direction dir=get_direction(now,next);
++      if(!state.apply(dir)){
++        return res;
++      }
++      res.emplace_back(state.pos());
++      if(state.pos().i==0||state.pos().i==map_size-1){
++        break;
++      }
++    }
++
++    if(j==0){
++      break;
++    }
++    while(true){
++      if(!state.apply(Direction::LEFT)){
++        return res;
++      }
++      res.emplace_back(state.pos());
++      if(state.pos().j==j-2){
++        break;
++      }
++    }
++  }
++  logger.log("score: "+std::to_string(state.score()));
++  return res;
