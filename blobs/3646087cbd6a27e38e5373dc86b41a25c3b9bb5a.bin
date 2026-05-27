@@ -1,0 +1,121 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/turn_back.cpp
+```diff
+===================================================================
+--- turn_back.cpp (before)	snapshot
++++ turn_back.cpp (after)	idle
+@@ -12,9 +12,11 @@
+   return solve_horizontal(state,logger);
+ }
+ 
+ std::vector<Pos> TurnBack::solve_vertical(State& state,Logger& logger){
+-
++  (void)state;
++  (void)logger;
++  return {};
+ }
+ 
+ std::vector<Pos> TurnBack::solve_horizontal(State& state,Logger& logger){
+   std::vector<Pos> res;
+@@ -23,9 +25,11 @@
+   int up=state.kingdom()[0][1];
+   int down=state.kingdom()[1][1];
+   Pos next=up>down ? Pos(1,1) : Pos(0,1);
+   Direction dir=get_direction(state.pos(),next);
+-  state.apply(dir);
++  if(!state.apply(dir)){
++    return res;
++  }
+   res.emplace_back(state.pos());
+   for(int i=0;i<map_size;i+=2){
+     while(true){
+       Pos now=state.pos();
+@@ -34,26 +38,33 @@
+       int up=state.kingdom()[i][j];
+       int down=state.kingdom()[i+1][j];
+       Pos next=up>down ? Pos(i+1,j) : Pos(i,j);
+ 
+-      if(j==map_size-2&&j%4!=0){
++      if(j==map_size-2&&i%4==0){
+         next=Pos(i+1,j);
+       }
+-      if(j==1&&j%4==0){
++      if(j==1&&i%4!=0){
+         next=Pos(i+1,j);
+       }
+       Direction dir=get_direction(now,next);
+-      state.apply(dir);
++      if(!state.apply(dir)){
++        return res;
++      }
+       res.emplace_back(state.pos());
+ 
+       if(state.pos().j==map_size-2||state.pos().j==1){
+         break;
+       }
+     }
++    if(i+2>=map_size){
++      break;
++    }
+     int j=i%4==0 ? map_size-2 : 1;
+     Pos next=Pos(i+2,j);
+     Direction dir=get_direction(state.pos(),next);
+-    state.apply(dir);
++    if(!state.apply(dir)){
++      return res;
++    }
+     res.emplace_back(state.pos());
+   }
+   
+   for(int i=map_size-2;i>=0;i-=2){
+@@ -66,22 +77,28 @@
+         next=Pos(i+1,j);
+       }
+ 
+       Direction dir=get_direction(now,next);
+-      state.apply(dir);
++      if(!state.apply(dir)){
++        return res;
++      }
+       res.emplace_back(state.pos());
+       if(state.pos().j==0||state.pos().j==map_size-1){
+         break;
+       }
+     }
+ 
++    if(i==0){
++      break;
++    }
+     while(true){
+-      state.apply(Direction::UP);
++      if(!state.apply(Direction::UP)){
++        return res;
++      }
+       res.emplace_back(state.pos());
+       if(state.pos().i==i-2){
+         break;
+       }
+     }
+   }
+   return res;
+ }
+-
+
+```
+
+もう一度、`turn_back` 全体の経路として破綻が残っていないか見直します。ビルドとテストは今回も実行しません。
+
+前回の変更が現在のファイルには残っていない状態でした。さらに見直すと、前回指摘した最後の盤外移動以外に、端で下段へ寄せる条件が `j%4` になっていて、左端では次の 2 行ブロックへ降りられないケースがあります。そこも合わせて直します。
+
+修正を入れました。ビルド・テストではなく、ファイル内容だけ確認して、意図した箇所が入っているか見ます。
+
+修正し直しました。今回は前回分に加えて、端で下段へ寄せる条件も直しています。
+
+変更点は [src/strategy/turn_back.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/turn_back.cpp:15) です。
+
+- `solve_vertical` の未定義動作を回避して `return {};` を追加
+- 行きの端処理を `j%4` ではなく `i%4` 判定に修正
+- 最後の 2 行ペアで `i+2` に降りて盤外へ出るのを防止
+- 帰りの `i==0` で `-2` 行目まで上がろうとする無限ループを防止
+- 全 `state.apply(...)` の失敗を確認するように修正
+
+指示どおり、テストとビルドは実行していません。`submit.cpp` への反映もまだしていません。
