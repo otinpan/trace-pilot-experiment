@@ -1,0 +1,53 @@
++std::pair<Pos,Pos> solve_next_block(
++  const Direction& pre_dir,
++  const Pos& pre_left_top,
++  const Pos& pre_right_bottom
++);
++
++Direction solve_turn_direction(
++  Pos& pos,
++  const Pos& left_top,
++  const Pos& right_bottom,
++  const Direction pre_dir
++);
++
++  (void)pre_dir;
+-    if(dir==pre_dir)continue;
+ 
++    bool can_turn=false;
++    for(Direction next_dir:{
++      Direction::UP,
++      Direction::DOWN,
++      Direction::RIGHT,
++      Direction::LEFT
++    }){
++      if(next_dir==dir)continue;
++
++      Pos turn_next=n_pos+DIRS[static_cast<int>(next_dir)];
++      if(turn_next.is_on_block(left_top,right_bottom)){
++        can_turn=true;
++        break;
++      }
++    }
++
++    long long candidate=line_score;
++    if(!can_turn){
++      if(candidate>best){
++        best=candidate;
++      }
++      continue;
++    }
++
+ 
+-    return line_score+dfs(
++    candidate=line_score+dfs(
++
++    if(candidate>best){
++      best=candidate;
++    }
++
++  return best;
++      return std::make_pair(pre_left_top,pre_right_bottom);
+-}
++  return Direction::UP;
++}
