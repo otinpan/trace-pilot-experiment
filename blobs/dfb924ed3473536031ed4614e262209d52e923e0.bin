@@ -1,0 +1,26 @@
+# Record 1: /home/hase/trace-pilot-experiment/atcoder/AHC062/src/common.h
+```diff
+===================================================================
+--- common.h (before)	snapshot
++++ common.h (after)	idle
+@@ -65,5 +65,16 @@
+   Pos(-1,-1)
+ };
+ 
+ 
++inline Direction get_direction(const Pos& from,const Pos& to){
++  Pos diff=to-from;
++  for(int i=0;i<static_cast<int>(DIRS.size());i++){
++    if(DIRS[i]==diff){
++      return static_cast<Direction>(i);
++    }
++  }
++  assert(false);
++  return Direction::UP;
++}
++
+ // @trace-pilot 19373a4389b9655ebc3fee5d236a93c428b42892
+
+```
+
+The generated code defines an inline function get_direction that takes two Pos objects 'from' and 'to', calculates the difference vector, and iterates over a predefined list DIRS of direction vectors. It returns the Direction enum corresponding to the matching direction vector between 'from' and 'to', asserting false if no matching direction is found.
