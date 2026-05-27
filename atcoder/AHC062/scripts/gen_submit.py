@@ -19,6 +19,9 @@ SOURCE_ORDER = [
     "src/strategy/strategy.cpp",
     "src/strategy/greedy.h",
     "src/strategy/greedy.cpp",
+    "src/strategy/surround.h",
+    "src/strategy/surround.cpp",
+    "src/simulator.h",
     "src/simulator.cpp",
     "src/main.cpp",
 ]

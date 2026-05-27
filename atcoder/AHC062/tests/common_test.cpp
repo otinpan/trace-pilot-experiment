@@ -13,6 +13,13 @@ void test_is_on_map() {
   assert(!Pos(0, 200).is_on_map());
 }
 
+void test_is_on_block(){
+  assert(Pos(0,0).is_on_block(Pos(0,0),Pos(2,2)));
+  assert(!Pos(2,1).is_on_block(Pos(0,0),Pos(2,3)));
+  assert(!Pos(1,2).is_on_block(Pos(0,0),Pos(3,2)));
+  assert(Pos(7,7).is_on_block(Pos(6,6),Pos(8,8)));
+}
+
 void test_pos_addition() {
   const Pos lhs(10, 20);
   const Pos rhs(-3, 5);
@@ -49,6 +56,7 @@ void test_direction_tables() {
 
 int main() {
   test_is_on_map();
+  test_is_on_block();
   test_pos_addition();
   test_pos_subtraction();
   test_segment_constructor();

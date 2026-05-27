@@ -32,7 +32,13 @@ struct Pos{
   bool is_on_map() const{
     return i>=0 && i<map_size && j>=0 && j<map_size;
   }
+
+  bool is_on_block(const Pos& left_top,const Pos& right_bottom) const{
+    return i>=left_top.i && i<right_bottom.i
+      && j>=left_top.j && j<right_bottom.j;
+  }
 };
+
 
 
 enum class Direction{
@@ -56,3 +62,5 @@ const std::array<Pos,8> DIRS={
   Pos(0,-1),
   Pos(-1,-1)
 };
+
+

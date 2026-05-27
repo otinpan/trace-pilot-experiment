@@ -13,6 +13,7 @@ add_executable(ahc062
     src/state.cpp
     src/strategy/strategy.cpp
     src/strategy/greedy.cpp
+    src/strategy/surround.cpp
 )
 
 target_include_directories(ahc062 PRIVATE
@@ -41,6 +42,7 @@ add_executable(greedy_test
     src/state.cpp
     src/strategy/strategy.cpp
     src/strategy/greedy.cpp
+    src/strategy/surround.cpp
 )
 
 target_include_directories(greedy_test PRIVATE
@@ -48,5 +50,21 @@ target_include_directories(greedy_test PRIVATE
 )
 
 set_target_properties(greedy_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
+)
+
+add_executable(surround_test
+    tests/surround_test.cpp
+    src/logger.cpp
+    src/state.cpp
+    src/strategy/strategy.cpp
+    src/strategy/surround.cpp
+)
+
+target_include_directories(surround_test PRIVATE
+    "${CMAKE_SOURCE_DIR}/src"
+)
+
+set_target_properties(surround_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build"
 )
