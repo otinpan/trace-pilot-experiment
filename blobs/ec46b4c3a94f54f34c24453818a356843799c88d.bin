@@ -1,0 +1,147 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/sorround.cpp
+```diff
+===================================================================
+--- sorround.cpp (before)	snapshot
++++ sorround.cpp (after)	idle
+@@ -1,6 +1,19 @@
+ #include"sorround.h"
+ 
++std::pair<Pos,Pos> solve_next_block(
++  const Direction& pre_dir,
++  const Pos& pre_left_top,
++  const Pos& pre_right_bottom
++);
++
++Direction solve_turn_direction(
++  Pos& pos,
++  const Pos& left_top,
++  const Pos& right_bottom,
++  const Direction pre_dir
++);
++
+ Surround::Surround()
+   :Strategy()
+   ,depth_(3)
+ {
+@@ -23,8 +36,9 @@
+   Direction pre_dir,
+   int turn,
+   int n_depth
+ ){
++  (void)pre_dir;
+   if(n_depth==depth_){
+     return 0;
+   }
+ 
+@@ -34,9 +48,8 @@
+     Direction::DOWN,
+     Direction::RIGHT,
+     Direction::LEFT
+   }){
+-    if(dir==pre_dir)continue;
+     Pos next=pos+DIRS[static_cast<int>(dir)];
+     if(!next.is_on_block(left_top,right_bottom)){
+       continue;
+     }
+@@ -52,8 +65,32 @@
+       dir,
+       n_turn
+     );
+ 
++    bool can_turn=false;
++    for(Direction next_dir:{
++      Direction::UP,
++      Direction::DOWN,
++      Direction::RIGHT,
++      Direction::LEFT
++    }){
++      if(next_dir==dir)continue;
++
++      Pos turn_next=n_pos+DIRS[static_cast<int>(next_dir)];
++      if(turn_next.is_on_block(left_top,right_bottom)){
++        can_turn=true;
++        break;
++      }
++    }
++
++    long long candidate=line_score;
++    if(!can_turn){
++      if(candidate>best){
++        best=candidate;
++      }
++      continue;
++    }
++
+     // 曲がる
+     Direction turn_dir=solve_turn_direction(
+       n_pos,
+       left_top,
+@@ -71,9 +108,9 @@
+       left_top,
+       right_bottom
+     );
+ 
+-    return line_score+dfs(
++    candidate=line_score+dfs(
+       state,
+       logger,
+       n_pos,
+       next_block.first,
+@@ -81,9 +118,15 @@
+       turn_dir,
+       n_turn,
+       n_depth+1
+     );
++
++    if(candidate>best){
++      best=candidate;
++    }
+   }
++
++  return best;
+ }
+ 
+ std::pair<Pos,Pos> solve_next_block(
+   const Direction& pre_dir,
+@@ -100,8 +143,9 @@
+     case Direction::LEFT:
+       return std::make_pair(pre_left_top,pre_right_bottom+Pos(0,-1));
+     default:
+       assert(0);
++      return std::make_pair(pre_left_top,pre_right_bottom);
+   }
+ }
+ 
+ Direction solve_turn_direction(
+@@ -127,5 +171,6 @@
+     return dir;
+   }
+ 
+   assert(0);
+-}
+\ No newline at end of file
++  return Direction::UP;
++}
+
+```
+
+`dfs` が意図通りに分岐評価できるように、探索ロジックとその前提になる直進判定を直します。ビルドとテストは実行しません。
+
+`strategy.cpp` 側はすでに直っている状態でした。`sorround.cpp` の現在行に合わせて、そちらを分けて修正します。
+
+`dfs` の即returnをなくして、全候補の最大値を返す形にしました。ビルド・テストは指示通り実行していません。
+
+`dfs` を修正しました。対象は [src/strategy/sorround.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/sorround.cpp:17) です。
+
+直した点:
+
+- `for` 内の即 `return` をやめて、全方向を評価して `best` を返すように変更
+- `best` を実際に更新するように変更
+- 動ける方向がない場合も `return best;` するように変更
+- 直進後に曲がれない終端ケースでは、その `line_score` だけで候補評価するように変更
+- `solve_turn_direction()` / `solve_next_block()` の前方宣言を追加
+- `solve_next_block()` と `solve_turn_direction()` の assert 後に fallback return を追加
+
+指示どおり、ビルドとテストは実行していません。
+
+補足: `solve()` はまだ `return` がない未完成状態なので、全体として使えるようにするには次にそこを実装する必要があります。
