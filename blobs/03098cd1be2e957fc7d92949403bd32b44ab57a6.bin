@@ -1,0 +1,104 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/sorround.cpp
+```diff
+===================================================================
+--- sorround.cpp (before)	snapshot
++++ sorround.cpp (after)	idle
+@@ -15,8 +15,10 @@
+   const Pos& right_bottom,
+   const Direction pre_dir
+ );
+ 
++Direction opposite_direction(Direction dir);
++
+ Surround::Surround()
+   :Strategy()
+   ,depth_(3)
+ {
+@@ -67,9 +69,9 @@
+       Direction::DOWN,
+       Direction::RIGHT,
+       Direction::LEFT
+     }){
+-      if(dir==search.first_dir)continue;
++      if(dir==opposite_direction(search.first_dir))continue;
+ 
+       Pos next=state.pos()+DIRS[static_cast<int>(dir)];
+       if(next.is_on_block(left_top,right_bottom)){
+         turn_dir=dir;
+@@ -148,9 +150,9 @@
+       Direction::DOWN,
+       Direction::RIGHT,
+       Direction::LEFT
+     }){
+-      if(next_dir==dir)continue;
++      if(next_dir==opposite_direction(dir))continue;
+ 
+       Pos turn_next=n_pos+DIRS[static_cast<int>(next_dir)];
+       if(turn_next.is_on_block(left_top,right_bottom)){
+         can_turn=true;
+@@ -248,9 +250,9 @@
+     Pos next=pos+DIRS[(int)dir];
+     if(!next.is_on_block(left_top,right_bottom)){
+       continue;
+     }
+-    if(pre_dir==dir){
++    if(dir==opposite_direction(pre_dir)){
+       continue;
+     }
+     pos=next;
+     return dir;
+@@ -259,4 +261,20 @@
+   assert(0);
+ // @trace-pilot 0232a54618a1e1d058f6147882aad590716ac605
+   return Direction::UP;
+ }
++
++Direction opposite_direction(Direction dir){
++  switch(dir){
++    case Direction::UP:
++      return Direction::DOWN;
++    case Direction::DOWN:
++      return Direction::UP;
++    case Direction::RIGHT:
++      return Direction::LEFT;
++    case Direction::LEFT:
++      return Direction::RIGHT;
++    default:
++      assert(0);
++      return Direction::UP;
++  }
++}
+
+```
+
+`dfs` の戻り値に「最初に採用する方向」を含める形に変えて、`solve()` 側でその方向に1辺ぶん実際に進めるようにします。ビルド・テストは実行しません。
+
+実装していて、曲がる方向の扱いにもう一つ重要な問題が見えました。直進後に禁止すべきなのは「同じ方向」ではなく「来た方向へ戻る逆方向」なので、そこも合わせて直します。
+
+やりました。ビルド・テストは実行していません。
+
+変更内容は主に [src/strategy/sorround.h](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/sorround.h:10) と [src/strategy/sorround.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/sorround.cpp:26) です。
+
+`dfs` の戻り値を `long long` から以下の形に変えました。
+
+```cpp
+struct SearchResult{
+  long long score;
+  Direction first_dir;
+  bool found;
+};
+```
+
+これで `dfs()` は「最大スコア」と「その最大スコアを得るために最初に進む方向」を返します。
+
+`solve()` はその `first_dir` を使って、
+
+1. `dfs()` で次に進む方向を決める
+2. その方向へ範囲外にぶつかる直前まで `state.apply()` で進む
+3. 角で曲がれるなら1歩曲がる
+4. 曲がった方向に応じて矩形範囲を縮める
+5. 動けなくなるまで繰り返す
+
+という形にしました。
+
+また、直進後に曲がるとき「同じ方向」ではなく「来た方向の逆方向」を禁止しないと戻ってしまうので、`opposite_direction()` を追加してそこも直しています。
