@@ -1,0 +1,26 @@
++
++  if(state.pos()==Pos(map_size-1,1)){
++    for(const Pos& next:{
++      Pos(map_size-2,0),
++      Pos(map_size-1,0),
++      Pos(map_size-2,1)
++    }){
++      Direction dir=get_direction(state.pos(),next);
++      if(!state.apply(dir)){
++        return res;
++      }
++      res.emplace_back(state.pos());
++    }
++  }else if(state.pos()==Pos(map_size-1,map_size-2)){
++    for(const Pos& next:{
++      Pos(map_size-2,map_size-1),
++      Pos(map_size-1,map_size-1),
++      Pos(map_size-2,map_size-2)
++    }){
++      Direction dir=get_direction(state.pos(),next);
++      if(!state.apply(dir)){
++        return res;
++      }
++      res.emplace_back(state.pos());
++    }
++  }
