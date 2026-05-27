@@ -1,0 +1,50 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/turn_back.cpp
+```diff
+===================================================================
+--- turn_back.cpp (before)	snapshot
++++ turn_back.cpp (after)	idle
+@@ -8,9 +8,21 @@
+ 
+ TurnBack::~TurnBack()=default;
+ 
+ std::vector<Pos> TurnBack::solve(State& state,Logger& logger){
+-  return solve_horizontal(state,logger);
++  State horizontal_state=state;
++  State vertical_state=state;
++
++  std::vector<Pos> horizontal=solve_horizontal(horizontal_state,logger);
++  std::vector<Pos> vertical=solve_vertical(vertical_state,logger);
++
++  if(vertical_state.score()>horizontal_state.score()){
++    state=vertical_state;
++    return vertical;
++  }
++
++  state=horizontal_state;
++  return horizontal;
+ }
+ 
+ std::vector<Pos> TurnBack::solve_vertical(State& state,Logger& logger){
+   std::vector<Pos> res;
+
+```
+
+`solve_vertical` を横方向版の転置として実装します。行きは列ペアを比較して小さい方を先に踏み、上下端を帰り道として空ける形にします。
+
+手元のファイル内容が少し変わっていてパッチの一致に失敗しました。現在の `solve_vertical` 周辺を読み直してから当て直します。
+
+`solve_vertical` だけ実装しても `solve()` が横方向しか呼ばないので、縦方向が実際に使われません。横・縦をそれぞれ別 `State` で作って、スコアが高い方を採用するようにも直します。
+
+実装を入れ終えました。ビルドやテスト実行はせず、差分の確認だけします。
+
+`vertical` も実装しました。対象は [src/strategy/turn_back.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/turn_back.cpp:27) です。
+
+やったことは以下です。
+
+- `solve_vertical` を横方向版の転置として実装
+- 行きは列ペアを見比べて小さい方を先に訪問
+- 帰り道確保のため、行きでは上下端を空ける
+- 最終列ペアの端 3 マスを拾ってから帰り処理へ入る
+- `solve()` で横方向・縦方向を両方試し、スコアが高い方を採用
+
+指示どおり、ビルドとテストは実行していません。`submit.cpp` への反映もまだしていません。
