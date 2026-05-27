@@ -1,0 +1,99 @@
++  std::vector<Pos> result;
+-  Timer timer;
+-  
++  result.emplace_back(state.pos());
++
++  Pos left_top(0,0);
++  Pos right_bottom(map_size,map_size);
++  Direction pre_dir=Direction::UP;
++
++  while(true){
++    SearchResult search=dfs(
++      state,
++      logger,
++      state.pos(),
++      left_top,
++      right_bottom,
++      pre_dir,
++      state.turn(),
++      0
++    );
++    if(!search.found){
++      break;
++    }
++
++    while(true){
++      Pos next=state.pos()+DIRS[static_cast<int>(search.first_dir)];
++      if(!next.is_on_block(left_top,right_bottom)){
++        break;
++      }
++      if(!state.apply(search.first_dir)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++    }
++
++    bool can_turn=false;
++    Direction turn_dir=Direction::UP;
++    for(Direction dir:{
++      Direction::UP,
++      Direction::DOWN,
++      Direction::RIGHT,
++      Direction::LEFT
++    }){
++      if(dir==search.first_dir)continue;
++
++      Pos next=state.pos()+DIRS[static_cast<int>(dir)];
++      if(next.is_on_block(left_top,right_bottom)){
++        turn_dir=dir;
++        can_turn=true;
++        break;
++      }
++    }
++
++    if(!can_turn){
++      break;
++    }
++
++    if(!state.apply(turn_dir)){
++      return result;
++    }
++    result.emplace_back(state.pos());
++    logger.log(state);
++
++    std::pair<Pos,Pos> next_block=solve_next_block(
++      turn_dir,
++      left_top,
++      right_bottom
++    );
++    left_top=next_block.first;
++    right_bottom=next_block.second;
++    pre_dir=turn_dir;
++  }
++
++  return result;
+ 
+-long long Surround::dfs(
++Surround::SearchResult Surround::dfs(
+-    return 0;
++    return SearchResult{0,Direction::UP,false};
+ 
+-  long long best=0;
++  SearchResult best{0,Direction::UP,false};
+-      if(candidate>best){
+-        best=candidate;
++      if(!best.found || candidate>best.score){
++        best=SearchResult{candidate,dir,true};
+-    candidate=line_score+dfs(
++    SearchResult child=dfs(
+ 
++    candidate=line_score;
++    if(child.found){
++      candidate+=child.score;
++    }
++
+-    if(candidate>best){
+-      best=candidate;
++    if(!best.found || candidate>best.score){
++      best=SearchResult{candidate,dir,true};

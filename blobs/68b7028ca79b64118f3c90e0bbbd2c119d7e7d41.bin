@@ -1,0 +1,11 @@
++    struct SearchResult{
++      long long score;
++      Direction first_dir;
++      bool found;
++    };
++
+-    long long dfs(
++    SearchResult dfs(
+ 
+-};
++};
