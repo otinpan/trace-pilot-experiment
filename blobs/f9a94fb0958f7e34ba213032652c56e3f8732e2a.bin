@@ -1,0 +1,5 @@
+===================================================================
+--- link.txt (before)	snapshot
++++ link.txt (after)	create
+@@ -0,0 +1,1 @@
++/usr/bin/c++ -g CMakeFiles/sorround_test.dir/tests/sorround_test.cpp.o CMakeFiles/sorround_test.dir/src/logger.cpp.o CMakeFiles/sorround_test.dir/src/state.cpp.o CMakeFiles/sorround_test.dir/src/strategy/strategy.cpp.o CMakeFiles/sorround_test.dir/src/strategy/sorround.cpp.o -o sorround_test 
