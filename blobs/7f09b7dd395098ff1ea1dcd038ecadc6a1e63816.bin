@@ -1,0 +1,37 @@
+-
++  (void)state;
++  (void)logger;
++  return {};
+-  state.apply(dir);
++  if(!state.apply(dir)){
++    return res;
++  }
+ 
+-      if(j==map_size-2&&j%4!=0){
++      if(j==map_size-2&&i%4==0){
+-      if(j==1&&j%4==0){
++      if(j==1&&i%4!=0){
+-      state.apply(dir);
++      if(!state.apply(dir)){
++        return res;
++      }
++    if(i+2>=map_size){
++      break;
++    }
+-    state.apply(dir);
++    if(!state.apply(dir)){
++      return res;
++    }
+-      state.apply(dir);
++      if(!state.apply(dir)){
++        return res;
++      }
+ 
++    if(i==0){
++      break;
++    }
+-      state.apply(Direction::UP);
++      if(!state.apply(Direction::UP)){
++        return res;
++      }
+-
