@@ -1,0 +1,26 @@
++Direction opposite_direction(Direction dir);
++
+-      if(dir==search.first_dir)continue;
++      if(dir==opposite_direction(search.first_dir))continue;
+ 
+-      if(next_dir==dir)continue;
++      if(next_dir==opposite_direction(dir))continue;
+ 
+-    if(pre_dir==dir){
++    if(dir==opposite_direction(pre_dir)){
++
++Direction opposite_direction(Direction dir){
++  switch(dir){
++    case Direction::UP:
++      return Direction::DOWN;
++    case Direction::DOWN:
++      return Direction::UP;
++    case Direction::RIGHT:
++      return Direction::LEFT;
++    case Direction::LEFT:
++      return Direction::RIGHT;
++    default:
++      assert(0);
++      return Direction::UP;
++  }
++}
