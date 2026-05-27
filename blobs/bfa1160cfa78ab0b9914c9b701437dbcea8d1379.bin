@@ -1,0 +1,5 @@
+===================================================================
+--- link.txt (before)	snapshot
++++ link.txt (after)	create
+@@ -0,0 +1,1 @@
++/usr/bin/c++ -g CMakeFiles/ahc062.dir/src/main.cpp.o CMakeFiles/ahc062.dir/src/logger.cpp.o CMakeFiles/ahc062.dir/src/simulator.cpp.o CMakeFiles/ahc062.dir/src/state.cpp.o CMakeFiles/ahc062.dir/src/strategy/strategy.cpp.o CMakeFiles/ahc062.dir/src/strategy/greedy.cpp.o CMakeFiles/ahc062.dir/src/strategy/sorround.cpp.o -o ahc062 
