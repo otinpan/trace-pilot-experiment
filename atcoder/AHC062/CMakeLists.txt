@@ -14,6 +14,8 @@ add_executable(ahc062
     src/strategy/strategy.cpp
     src/strategy/greedy.cpp
     src/strategy/surround.cpp
+    src/strategy/turn_back.cpp
+    src/strategy/block.cpp
 )
 
 target_include_directories(ahc062 PRIVATE

@@ -1,3 +1,4 @@
+// @trace-pilot 19373a4389b9655ebc3fee5d236a93c428b42892
 #include <cassert>
 
 int map_size = 200;
@@ -54,6 +55,14 @@ void test_direction_tables() {
   assert(DIRS[static_cast<int>(Direction::UP_LEFT)] == Pos(-1, -1));
 }
 
+void test_get_direction() {
+  const Pos from(10, 10);
+
+  for(int i=0;i<static_cast<int>(DIRS.size());i++){
+    assert(get_direction(from, from + DIRS[i]) == static_cast<Direction>(i));
+  }
+}
+
 int main() {
   test_is_on_map();
   test_is_on_block();
@@ -61,4 +70,5 @@ int main() {
   test_pos_subtraction();
   test_segment_constructor();
   test_direction_tables();
+  test_get_direction();
 }

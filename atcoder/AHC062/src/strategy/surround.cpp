@@ -21,7 +21,7 @@ Direction opposite_direction(Direction dir);
 
 Surround::Surround()
   :Strategy()
-  ,depth_(9)
+  ,depth_(11)
 {
 
 }

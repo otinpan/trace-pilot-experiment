@@ -1,4 +1,6 @@
 #pragma once
+// @trace-pilot 19373a4389b9655ebc3fee5d236a93c428b42892
+#include<cassert>
 #include<iostream>
 #include<vector>
 #include<array>
@@ -63,4 +65,16 @@ const std::array<Pos,8> DIRS={
   Pos(-1,-1)
 };
 
+
+// @trace-pilot 19373a4389b9655ebc3fee5d236a93c428b42892
+inline Direction get_direction(const Pos& from,const Pos& to){
+  Pos diff=to-from;
+  for(int i=0;i<static_cast<int>(DIRS.size());i++){
+    if(DIRS[i]==diff){
+      return static_cast<Direction>(i);
+    }
+  }
+  assert(false);
+  return Direction::UP;
+}
 
