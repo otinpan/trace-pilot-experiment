@@ -1,0 +1,49 @@
++  std::vector<Pos> result;
++  result.emplace_back(state.pos());
++  if(block_path.empty()){
++    return result;
++  }
++
+-  Pos pos=Pos(0,0);
+-  for(int i=1;i<block_path.size();i++){
++  for(int i=1;i<static_cast<int>(block_path.size());i++){
++    Pos pos=state.pos();
+-    std::vector<Direction> dirs=blocks_[n_block.i][n_block.j].best_paths[rel_pos.i][rel_pos.j]
+-    .paths[dist_pos_1_dim];
++    const std::vector<Direction>& dirs=
++      blocks_[n_block.i][n_block.j]
++        .best_paths[rel_pos.i][rel_pos.j]
++        .paths[dist_pos_1_dim];
+-      state.apply(dir);
++      if(!state.apply(dir)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++    }
++
++    if(!state.apply(block_dir)){
++      return result;
++    result.emplace_back(state.pos());
++    n_block=nx_block;
++  }
++
++  Pos pos=state.pos();
++  Pos rel_pos=Pos(pos.i%block_size_,pos.j%block_size_);
++  const BestBlockPaths& best_paths=
++    blocks_[n_block.i][n_block.j].best_paths[rel_pos.i][rel_pos.j];
++
++  int best_id=0;
++  for(int id=1;id<static_cast<int>(best_paths.scores.size());id++){
++    if(best_paths.scores[id]>best_paths.scores[best_id]){
++      best_id=id;
++    }
++  }
++
++  const std::vector<Direction>& dirs=best_paths.paths[best_id];
++  for(auto& dir:dirs){
++    if(!state.apply(dir)){
++      return result;
++    }
++    result.emplace_back(state.pos());
++
++  return result;
