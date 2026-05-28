@@ -8,6 +8,7 @@
 // @trace-pilot 459aadc7d949bf4c6b61391b35a1fa84905c19a6
 #include"strategy/surround.h"
 #include"strategy/turn_back.h"
+#include"strategy/block.h"
 #include"simulator.h"
 int map_size = 0;
 
@@ -28,6 +29,10 @@ int main(){
   // @trace-pilot bc2acd1161adf02d20c90c2d7140ffbac271d20c ////////////////////////////////////
 //## `greedy.cpp`で縦方向と横方向にジグザグ動く2パターンでよい方を採用
   // @trace-pilot 8df6e90bf6b89471b82eaeda517c4f1aa2bc3e1f
+
+  // @trace-pilot 2077d430e01dd283c57e2788c7a493da1c93d338
+  // best score465355057//  
+
   /*Logger horizontal_logger("horizontal.log");
   Logger vertical_logger("vertical.log");
 
@@ -55,7 +60,6 @@ int main(){
   State state(g);
   Logger logger("log.txt");
 
-  //Surround strategy;
   TurnBack strategy;
   std::vector<Pos> result=strategy.solve(state,logger);
 

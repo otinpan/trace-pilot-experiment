@@ -23,6 +23,8 @@ SOURCE_ORDER = [
     "src/strategy/surround.cpp",
     "src/strategy/turn_back.h",
     "src/strategy/turn_back.cpp",
+    "src/strategy/block.h",
+    "src/strategy/block.cpp",
     "src/simulator.h",
     "src/simulator.cpp",
     "src/main.cpp",
