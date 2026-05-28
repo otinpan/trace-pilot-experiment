@@ -1,0 +1,4 @@
+-  assert((block_size_/2)%2==0);
++  assert(map_size%block_size_==0);
++  assert(bs>=1);
+-
