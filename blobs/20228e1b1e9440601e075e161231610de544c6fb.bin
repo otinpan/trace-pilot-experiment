@@ -1,0 +1,176 @@
+-  vector<Pos> res;
+-  long long score=0;
+-  vector<vector<bool>> visited(b,vector<bool>(b,false));
+-  Pos now=Pos(0,0);
+-  res.emplace_back(now);
+-  visited[now.i][now.j]=true;
+ 
+-  int up=blocks_[0][1].sum;
+-  int down=blocks_[1][1].sum;
+-  now=up>down ? Pos(1,1) : Pos(0,1);
+-  visited[now.i][now.j]=true;
++  auto block_sum=[&](Pos p,bool transpose)->int{
++    if(transpose){
++      return blocks_[p.j][p.i].sum;
++    }
++    return blocks_[p.i][p.j].sum;
++  };
++
++  auto to_real_pos=[&](Pos p,bool transpose)->Pos{
++    if(transpose){
++      return Pos(p.j,p.i);
++    }
++    return p;
++  };
++
++  auto solve_horizontal_like=[&](bool transpose)->vector<Pos>{
++    vector<Pos> virtual_path;
++    vector<vector<bool>> visited(b,vector<bool>(b,false));
++
++    auto push=[&](Pos p){
++      assert(p.i>=0&&p.i<b&&p.j>=0&&p.j<b);
++      assert(!visited[p.i][p.j]);
++      virtual_path.emplace_back(p);
++      visited[p.i][p.j]=true;
++    };
++
++    Pos now(0,0);
++    push(now);
++
++    if(b==1){
++      vector<Pos> result;
++      result.emplace_back(to_real_pos(virtual_path[0],transpose));
++      return result;
++    }
++
++    if(b==2){
++      Pos a(0,1);
++      Pos c(1,0);
++      if(block_sum(a,transpose)>block_sum(c,transpose)){
++        push(c);
++        push(Pos(1,1));
++        push(a);
++      }else{
++        push(a);
++        push(Pos(1,1));
++        push(c);
++      }
++
++      vector<Pos> result;
++      for(Pos p:virtual_path){
++        result.emplace_back(to_real_pos(p,transpose));
++      }
++      return result;
++    }
++
++    int up=block_sum(Pos(0,1),transpose);
++    int down=block_sum(Pos(1,1),transpose);
++    now=up>down ? Pos(1,1) : Pos(0,1);
++    push(now);
++
++    for(int i=0;i<b;i+=2){
++      while(true){
++        int j=i%4==0 ? now.j+1 : now.j-1;
++        assert(j>=1&&j<b-1);
++        int up=block_sum(Pos(i,j),transpose);
++        int down=block_sum(Pos(i+1,j),transpose);
++        Pos next=up>down ? Pos(i+1,j) : Pos(i,j);
++
++        if(j==b-2&&i%4==0){
++          next=Pos(i+1,j);
++        }
++        if(j==1&&i%4!=0){
++          next=Pos(i+1,j);
++        }
++
++        now=next;
++        push(now);
++
++        if(now.j==b-2||now.j==1){
++          break;
++        }
++      }
++
++      if(i+2>=b){
++        break;
++      }
++
++      int j=i%4==0 ? b-2 : 1;
++      now=Pos(i+2,j);
++      push(now);
++    }
+ 
+-  for(int i=0;i<b;i+=2){
+-    while(true){
+-      int j=i%4==0 ? now.j+1 : now.j-1;
+-      assert(j>=1&&j<b-1);
+-      
++    if(now==Pos(b-1,1)){
++      for(Pos next:{
++        Pos(b-2,0),
++        Pos(b-1,0),
++        Pos(b-2,1)
++      }){
++        now=next;
++        push(now);
++      }
++    }else if(now==Pos(b-1,b-2)){
++      for(Pos next:{
++        Pos(b-2,b-1),
++        Pos(b-1,b-1),
++        Pos(b-2,b-2)
++      }){
++        now=next;
++        push(now);
++      }
++
++    for(int i=b-2;i>=0;i-=2){
++      while(true){
++        int j=i%4==0 ? now.j-1 : now.j+1;
++        assert(j>=0&&j<b);
++        Pos next=!visited[i][j] ? Pos(i,j) : Pos(i+1,j);
++        if(j==0||j==b-1){
++          next=Pos(i+1,j);
++        }
++
++        now=next;
++        push(now);
++
++        if(now.j==0||now.j==b-1){
++          break;
++        }
++      }
++
++      if(i==0){
++        break;
++      }
++
++      while(now.i!=i-2){
++        now=Pos(now.i-1,now.j);
++        push(now);
++      }
++    }
++
++    assert(static_cast<int>(virtual_path.size())==b*b);
++    vector<Pos> result;
++    result.reserve(virtual_path.size());
++    for(Pos p:virtual_path){
++      result.emplace_back(to_real_pos(p,transpose));
++    }
++    return result;
++  };
++
++  auto calc_score=[&](const vector<Pos>& path)->long long{
++    long long result=0;
++    for(int turn=0;turn<static_cast<int>(path.size());turn++){
++      Pos p=path[turn];
++      result+=1LL*turn*blocks_[p.i][p.j].sum;
++    }
++    return result;
++  };
++
++  vector<Pos> horizontal=solve_horizontal_like(false);
++  vector<Pos> vertical=solve_horizontal_like(true);
++  if(calc_score(vertical)>calc_score(horizontal)){
++    return vertical;
++  return horizontal;

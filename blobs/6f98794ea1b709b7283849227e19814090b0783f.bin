@@ -1,0 +1,4 @@
+-      std::vector<Direction> paths;
++      std::vector<std::vector<Direction>> paths;
+-};
++};
