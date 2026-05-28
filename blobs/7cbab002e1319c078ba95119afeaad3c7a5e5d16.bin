@@ -1,0 +1,27 @@
++    case Direction::DOWN:
++      for(int j=0;j<block_size_;j++){
++        update(Pos(block_size_-1,j));
++      }
++      break;
++    case Direction::LEFT:
++      for(int i=0;i<block_size_;i++){
++        update(Pos(i,0));
++      }
++      break;
++    case Direction::RIGHT:
++      for(int i=0;i<block_size_;i++){
++        update(Pos(i,block_size_-1));
++      }
++      break;
++    case Direction::UP_LEFT:
++      update(Pos(0,0));
++      break;
++    case Direction::UP_RIGHT:
++      update(Pos(0,block_size_-1));
++      break;
++    case Direction::DOWN_LEFT:
++      update(Pos(block_size_-1,0));
++      break;
++    case Direction::DOWN_RIGHT:
++      update(Pos(block_size_-1,block_size_-1));
++      break;
