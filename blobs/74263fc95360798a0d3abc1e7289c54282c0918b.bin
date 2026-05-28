@@ -1,0 +1,62 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/block.cpp
+```diff
+===================================================================
+--- block.cpp (before)	snapshot
++++ block.cpp (after)	idle
+@@ -353,8 +353,35 @@
+       for(int j=0;j<block_size_;j++){
+         update(Pos(0,j));
+       }
+       break;
++    case Direction::DOWN:
++      for(int j=0;j<block_size_;j++){
++        update(Pos(block_size_-1,j));
++      }
++      break;
++    case Direction::LEFT:
++      for(int i=0;i<block_size_;i++){
++        update(Pos(i,0));
++      }
++      break;
++    case Direction::RIGHT:
++      for(int i=0;i<block_size_;i++){
++        update(Pos(i,block_size_-1));
++      }
++      break;
++    case Direction::UP_LEFT:
++      update(Pos(0,0));
++      break;
++    case Direction::UP_RIGHT:
++      update(Pos(0,block_size_-1));
++      break;
++    case Direction::DOWN_LEFT:
++      update(Pos(block_size_-1,0));
++      break;
++    case Direction::DOWN_RIGHT:
++      update(Pos(block_size_-1,block_size_-1));
++      break;
+     default:
+       assert(false);
+   }
+ 
+
+```
+
+斜め方向も含めて `select_best_square()` を完成形にします。上下左右は辺から最大スコアを選び、斜めは対応する角をそのまま返す形です。
+
+手元の関数が少し変わっているので、該当部分を確認してから差し込みます。
+
+`select_best_square()` を上下左右と斜め方向すべてに対応させました。
+
+挙動は以下です。
+
+- `UP`: 上端から最大スコア
+- `DOWN`: 下端から最大スコア
+- `LEFT`: 左端から最大スコア
+- `RIGHT`: 右端から最大スコア
+- `UP_LEFT`: 左上角
+- `UP_RIGHT`: 右上角
+- `DOWN_LEFT`: 左下角
+- `DOWN_RIGHT`: 右下角
+
+変更箇所は [src/strategy/block.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/block.cpp:333) です。ビルドとテストは実行していません。
