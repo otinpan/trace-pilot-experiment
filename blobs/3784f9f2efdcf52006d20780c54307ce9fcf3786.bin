@@ -1,0 +1,44 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/block.cpp
+```diff
+===================================================================
+--- block.cpp (before)	snapshot
++++ block.cpp (after)	idle
+@@ -307,5 +307,6 @@
+ 
+ std::vector<Pos> BlockSearch::solve(State& state,Logger& logger){
+   create_blocks(state,logger);
+   std::vector<Pos> block_path=solve_block_path();
++  return block_path;
+ }
+
+```
+
+`solve_block_path()` を実装するには、`blocks_` をブロック数で持つ前提も必要なので、そこも合わせて直します。ブロック順は horizontal / vertical の2案を作り、ブロック合計値ベースの近似スコアで良い方を返す形にします。
+
+ブロック経路だけを返す実装に絞って、`solve_block_path()` を置き換えます。`TurnBack` の水平走査を基準にし、縦方向は同じロジックを転置して作ります。
+
+`solve_block_path()` の本体は入りました。指定どおりビルドやテストは走らせず、実装差分だけ確認します。
+
+実装差分を確認したところ、既存の `BestBlockPaths` の型が `solve_best_paths_from_start()` の使い方と食い違っていました。終点ごとの経路を保持する必要があるため、そこだけ整合させます。
+
+`TurnBack` 型の2行/2列単位の経路なので、ブロック数が偶数である前提も明示しておきます。`b==1` は特例として処理済みです。
+
+`solve()` はまだブロック内経路への展開前なので、現段階では計算したブロック経路を返す形にしておきます。次の段階でこのブロック列を実マス列に展開できます。
+
+実装しました。
+
+主な変更は [src/strategy/block.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/block.cpp:140) です。
+
+`solve_block_path()` は以下の動きになっています。
+
+- `map_size / block_size_` をブロック盤面サイズ `b` として扱う
+- `TurnBack` と同じように2行単位で往路を作る
+- 往路では候補2ブロックのうち `sum` が小さい方を先に通る
+- 端まで行ったら折り返す
+- 復路では未訪問ブロックを通る
+- horizontal案とvertical案を両方作る
+- `turn * blocks_[i][j].sum` の近似スコアが高い方を採用する
+
+合わせて、`blocks_` のサイズ確保をブロック数基準にし、`BestBlockPaths::paths` も終点ごとの経路を持てるように [src/strategy/block.h](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/block.h:12) で `std::vector<std::vector<Direction>>` に戻しました。
+
+現時点の `solve()` は、まだブロック内の実マス経路へ展開せず、計算したブロック座標列を返しています。ビルドとテストは実行していません。
