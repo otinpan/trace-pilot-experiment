@@ -1,0 +1,79 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/block.cpp
+```diff
+===================================================================
+--- block.cpp (before)	snapshot
++++ block.cpp (after)	idle
+@@ -69,8 +69,9 @@
+       result[i][j]=best_paths_from_start;
+     }
+   }
+ 
++  return result;
+ }
+ 
+ auto BlockSearch::solve_best_paths_from_start(
+     const std::vector<std::vector<int>>& g,
+@@ -82,12 +83,47 @@
+   int n=g.size();
+   int tot=n*n;
+   result.paths.resize(n*n);
+ 
+-  vector<ll> score(tot,-1);
++  vector<ll> best_score(tot,-1);
+   vector<vector<bool>> used(n,vector<bool>(n,false));
+   vector<Direction> path;
+-  
++
++  auto dfs=[&](auto&& self,Pos pos,int turn,ll score)->void{
++    if(turn==tot-1){
++      int id=pos.i*n+pos.j;
++      if(score>best_score[id]){
++        best_score[id]=score;
++        result.paths[id]=path;
++      }
++      return;
++    }
++
++    for(int d=0;d<static_cast<int>(DIRS.size());d++){
++      Pos next=pos+DIRS[d];
++      if(next.i<0 || next.i>=n || next.j<0 || next.j>=n){
++        continue;
++      }
++      if(used[next.i][next.j]){
++        continue;
++      }
++
++      used[next.i][next.j]=true;
++      path.emplace_back(static_cast<Direction>(d));
++
++      int next_turn=turn+1;
++      ll next_score=score+1LL*next_turn*g[next.i][next.j];
++      self(self,next,next_turn,next_score);
++
++      path.pop_back();
++      used[next.i][next.j]=false;
++    }
++  };
++
++  used[start.i][start.j]=true;
++  dfs(dfs,start,0,0);
++
++  return result;
+ }
+ 
+ 
+ 
+
+```
+
+`BestBlockPaths::paths[to_id]` に終点ごとの最適な `Direction` 列を入れる形で完成させます。DFSは全マス訪問し終わった時点だけで `best_score[to_id]` を更新する実装にします。
+
+手元の差分と少しずれていたので、該当範囲を取り直して最小パッチで当てます。
+
+`solve_best_paths_from_start` をDFSで完成させました。
+
+実装内容は、`BestBlockPaths::paths[to_id]` に「`start` から `to_id` を終点として全マスを通る最適経路」を入れる形です。`to_id` は `i * n + j` です。
+
+また、`solve_best_paths_each()` に不足していた `return result;` も追加しました。
+
+指定どおり、ビルドとテストは実行していません。
