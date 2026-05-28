@@ -1,0 +1,34 @@
+# Record 1: file:///home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/block.cpp
+```diff
+===================================================================
+--- block.cpp (before)	snapshot
++++ block.cpp (after)	idle
+@@ -437,6 +437,6 @@
+     std::string pos="("+std::to_string(b.i)+","+std::to_string(b.j)+")";
+     logger.log("pos: "+pos+"\n");
+   }
+ 
+-  return block_path;
++  return solve_best_path(state,logger,block_path);
+ }
+
+```
+
+`solve_best_path()` を実マス経路へ展開する形に直します。合わせて `scores` の未初期化も直し、`solve()` からブロック経路ではなく展開済み経路を返すようにします。
+
+差分が少し進んでいるので、該当範囲を取り直してから小さく当てます。
+
+`solve_best_path()` を実装しました。
+
+対応した内容:
+
+- `solve_best_paths_from_start()` で `scores` を `n*n` に初期化
+- 各ブロックで `select_best_square()` により出口を選択
+- `blocks_[bi][bj].best_paths[entry.i][entry.j].paths[exit_id]` をなぞって `state.apply()`
+- ブロック間の1歩移動も `state.apply(block_dir)` で実行
+- 最後のブロックは `scores` 最大の終点を選んで内部パスをなぞる
+- `solve()` はブロック経路ではなく、展開済みの実マス経路を返すように変更
+
+変更箇所は [src/strategy/block.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/block.cpp:95) と [src/strategy/block.cpp](/home/hase/trace-pilot-experiment/atcoder/AHC062/src/strategy/block.cpp:310) です。
+
+ビルドとテストは実行していません。
