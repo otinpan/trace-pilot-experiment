@@ -1,0 +1,41 @@
++  return result;
+ 
+-  vector<ll> score(tot,-1);
++  vector<ll> best_score(tot,-1);
+-  
++
++  auto dfs=[&](auto&& self,Pos pos,int turn,ll score)->void{
++    if(turn==tot-1){
++      int id=pos.i*n+pos.j;
++      if(score>best_score[id]){
++        best_score[id]=score;
++        result.paths[id]=path;
++      }
++      return;
++    }
++
++    for(int d=0;d<static_cast<int>(DIRS.size());d++){
++      Pos next=pos+DIRS[d];
++      if(next.i<0 || next.i>=n || next.j<0 || next.j>=n){
++        continue;
++      }
++      if(used[next.i][next.j]){
++        continue;
++      }
++
++      used[next.i][next.j]=true;
++      path.emplace_back(static_cast<Direction>(d));
++
++      int next_turn=turn+1;
++      ll next_score=score+1LL*next_turn*g[next.i][next.j];
++      self(self,next,next_turn,next_score);
++
++      path.pop_back();
++      used[next.i][next.j]=false;
++    }
++  };
++
++  used[start.i][start.j]=true;
++  dfs(dfs,start,0,0);
++
++  return result;
