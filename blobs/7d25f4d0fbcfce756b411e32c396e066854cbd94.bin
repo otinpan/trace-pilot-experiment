@@ -1,0 +1,2 @@
+-  return block_path;
++  return solve_best_path(state,logger,block_path);
