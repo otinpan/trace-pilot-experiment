@@ -23,8 +23,6 @@ TurnBack::TurnBack()
 TurnBack::~TurnBack()=default;
 
 std::vector<Pos> TurnBack::solve(State& state,Logger& logger){
-  // @trace-pilot d6faf2958c2b47bf39f319dd534c576d17b29346 //////////////////////////////
-//## `turn_back`でvertical(縦方向)の探索をCodexに作らせた
 // @trace-pilot 21fbc68a09068f8675300a6509c8adee08226f48
   State horizontal_state=state;
   State vertical_state=state;
@@ -208,8 +206,6 @@ std::vector<Pos> TurnBack::solve_horizontal(State& state,Logger& logger){
     res.emplace_back(state.pos());
   }
 
-// @trace-pilot 6292e70ebdc98b67b2f5e04ebcfe01b2e7d7e79c //////////////////////////
-// ## `turn_back`で未訪問のマスがあったため、Codexに修正させた
 // @trace-pilot 463788e8703320cd86f6dcbf38868cdad42b2456
   if(state.pos()==Pos(map_size-1,1)){
     for(const Pos& next:{

@@ -9,8 +9,6 @@ class Surround: public Strategy{
     std::vector<Pos> solve(State& state,Logger& logger) override;
   private:
 
-// @trace-pilot 74ef05a827d5e6f9b0326ebce6ff9aaee0217f3e ////////////////////////
-// ## `surround`の`solve`をCodexに実装してもらった
 // @trace-pilot 1eadc07aa10d0526a249473eac1c1a4fd6cd7882
     struct SearchResult{
       long long score;
