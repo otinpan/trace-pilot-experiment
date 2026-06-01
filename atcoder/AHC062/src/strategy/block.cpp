@@ -1,3 +1,5 @@
+// @trace-pilot 4704197afcd17be72efe1e08058ade1de435003a
+// Focused map
 #include"block.h"
 
 BlockSearch::BlockSearch()
@@ -33,6 +35,7 @@ void BlockSearch::create_blocks(const State& state,Logger& logger){
   }
 }
 
+// block内の総和を求める
 long long BlockSearch::solve_block_score(
   const State& state,
   Logger& logger,
@@ -47,6 +50,7 @@ long long BlockSearch::solve_block_score(
   return result;
 }
 
+// ブロック内の各マスから最適経路を求める
 auto BlockSearch::solve_best_paths_each(
   const State& state,
   Logger& logger,
@@ -83,6 +87,7 @@ auto BlockSearch::solve_best_paths_each(
   return result;
 }
 
+// ブロック内の位置startから、各マスへの最適経路を求める
 auto BlockSearch::solve_best_paths_from_start(
     const std::vector<std::vector<int>>& g,
     Pos start
@@ -139,6 +144,7 @@ auto BlockSearch::solve_best_paths_from_start(
   return result;
 }
 
+// blocksの経路を求める
 // @trace-pilot 211ce63df747156813362dc12d3ada14c54f3b1f
 std::vector<Pos> BlockSearch::solve_block_path(){
   using namespace std;

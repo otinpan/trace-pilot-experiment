@@ -1,7 +1,7 @@
+// @trace-pilot b6bef543946e6eb44b6ffb6145bb811e0c845f27
+// Focused map
 #include"surround.h"
 
-// @trace-pilot 9196c435bca567f9c84168cccf7001ae4960cb68 /////////////////////////////
-// ## `surroung.cpp`で外周移動をdfsで探索する`dfs`関数を修正してもらった
 // @trace-pilot 0232a54618a1e1d058f6147882aad590716ac605
 std::pair<Pos,Pos> solve_next_block(
   const Direction& pre_dir,
